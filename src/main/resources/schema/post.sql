@@ -1,0 +1,14 @@
+CREATE TABLE post(
+    post_id         INT         NOT NULL AUTO_INCREMENT,
+    member_id       INT         NOT NULL ,
+    title           CHAR(32)    NOT NULL ,
+    body            TEXT        NOT NULL ,
+    vibe_id         INT         NOT NULL ,
+    like_number     INT         DEFAULT 0,
+    scrap_number    INT         DEFAULT 0,
+    tag_number      INT         DEFAULT 0,
+
+    PRIMARY KEY (post_id),
+    FOREIGN KEY (member_id) REFERENCES member(member_id)
+                 ON DELETE CASCADE
+);
