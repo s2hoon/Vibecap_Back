@@ -2,6 +2,8 @@
 credential/
 ### captured images ####
 capturedImgs/*
+### secret ###
+**/Secret.java
 
 *.DS_Store
 .gradle
