@@ -1,4 +1,4 @@
-package com.example.vibecap_back.domain.model.request;
+package com.example.vibecap_back.domain.member.dto.request;
 
 import lombok.NoArgsConstructor;
 import lombok.Getter;

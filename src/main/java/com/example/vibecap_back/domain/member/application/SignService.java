@@ -8,16 +8,14 @@ import com.example.vibecap_back.util.Encryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-
 @Service
-public class MemberService {
+public class SignService {
 
     // private MemberRepository memberRepository;
     private MemberRepository memberRepository;
 
     @Autowired
-    public MemberService(MemberRepository memberRepository) {
+    public SignService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
