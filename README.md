@@ -1,18 +1,12 @@
-# Vibecap backend
+# Vibecap backend : prototype
 
-### Tech stack
+## test db
 
-### architecture
+테스트 db는 [H2](https://github.com/h2database/h2database/releases/download/version-2.1.214/h2-2022-06-13.zip) 사용.
 
-### Additional Links
-These additional references should also help you:
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.7.7/gradle-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.7.7/gradle-plugin/reference/html/#build-image)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.7.7/reference/htmlsingle/#web)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.7.7/reference/htmlsingle/#data.sql.jpa-and-spring-data)
-* [JDBC API](https://docs.spring.io/spring-boot/docs/2.7.7/reference/htmlsingle/#data.sql)
-* [Spring Configuration Processor](https://docs.spring.io/spring-boot/docs/2.7.7/reference/htmlsingle/#appendix.configuration-metadata.annotation-processor)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/2.7.7/reference/htmlsingle/#using.devtools)
+1. `~/Vibecap/test` db 파일 생성
+2. `$ ./h2.sh` 실행
 
+    * url : jdbc:h2:tcp://localhost/~/Vibecap/test
+    * 사용자명 : sa
+    * 비밀번호 : 0000
