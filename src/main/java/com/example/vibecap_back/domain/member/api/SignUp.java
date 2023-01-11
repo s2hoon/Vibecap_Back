@@ -5,8 +5,8 @@ import com.example.vibecap_back.domain.member.dto.MemberDto;
 import com.example.vibecap_back.domain.member.exception.EmailAlreadyExistException;
 import com.example.vibecap_back.domain.model.Authority;
 import com.example.vibecap_back.domain.model.MemberStatus;
-import com.example.vibecap_back.domain.member.dto.SignupResultDto;
-import com.example.vibecap_back.domain.member.dto.request.SignupWithoutGmailRequest;
+import com.example.vibecap_back.domain.member.dto.SignUpResult;
+import com.example.vibecap_back.domain.member.dto.request.SignUpRequest;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import com.example.vibecap_back.global.common.response.BaseResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
  * 회원 가입
  */
 @RestController
-@RequestMapping("/app/member")
-public class Signup {
+@RequestMapping("/app/sign-api")
+public class SignUp {
 
     private SignService signService;
 
     @Autowired
-    public Signup(SignService signService) {
+    public SignUp(SignService signService) {
         this.signService = signService;
     }
 
@@ -34,9 +34,9 @@ public class Signup {
      * @param request email, password, nickname
      * @return member_id
      */
-    @PostMapping("/signup")
-    public BaseResponse<SignupResultDto> signupWithoutGmail(
-            @RequestBody SignupWithoutGmailRequest request) {
+    @PostMapping("/sign-up")
+    public BaseResponse<SignUpResult> signupWithoutGmail(
+            @RequestBody SignUpRequest request) {
 
         MemberDto memberDto = MemberDto.builder()
                                 .email(request.getEmail())
@@ -47,13 +47,13 @@ public class Signup {
                                 .build();
 
         MemberDto createdMemberDto;
-        SignupResultDto result;
-        BaseResponse<SignupResultDto> response;
+        SignUpResult result;
+        BaseResponse<SignUpResult> response;
 
         try {
             // 계정 생성 시도
-            createdMemberDto = signService.createMemberWithoutGmail(memberDto);
-            result = new SignupResultDto(createdMemberDto.getMemberId());
+            createdMemberDto = signService.signUp(memberDto);
+            result = new SignUpResult(createdMemberDto.getMemberId());
             response = new BaseResponse<>(result);
         } catch (EmailAlreadyExistException e) {
             // 이미 회원가입에 사용된 이메일이였던 경우

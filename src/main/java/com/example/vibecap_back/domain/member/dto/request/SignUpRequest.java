@@ -7,7 +7,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class SignupWithoutGmailRequest {
+public class SignUpRequest {
     private String email;
     private String password;
     private String nickname;

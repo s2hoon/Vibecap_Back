@@ -1,4 +1,4 @@
-package com.example.vibecap_back.util;
+package com.example.vibecap_back.global.config.security;
 
 import com.example.vibecap_back.global.config.security.Secret;
 import org.springframework.stereotype.Component;

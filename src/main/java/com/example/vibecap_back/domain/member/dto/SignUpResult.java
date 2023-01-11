@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SignupResultDto {
+public class SignUpResult {
     private Long memberId;
     // private String jwt;
 }

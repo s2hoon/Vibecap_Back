@@ -12,4 +12,9 @@ public enum Authority {
     private Authority(String role) {
         this.role = role;
     }
+
+    @Override
+    public String toString() {
+        return role;
+    }
 }
