@@ -1,6 +1,7 @@
 package com.example.vibecap_back.util;
 
 import com.example.vibecap_back.global.config.security.Secret;
+import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
