@@ -17,9 +17,9 @@ public class MemberDto {
     private String email;
     private String password;
     private String gmail;
-    private Authority role;
+    private String role;
     private String nickname;
-    private MemberStatus status;
+    private String status;
 
     public MemberDto(Member member) {
         this.memberId = member.getMemberId();

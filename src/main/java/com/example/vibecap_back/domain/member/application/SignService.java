@@ -51,9 +51,9 @@ public class SignService {
         Member member = Member.builder()
                 .email(memberDto.getEmail())
                 .password(cypher)
-                .role(memberDto.getRole())
+                .role(memberDto.getRole().toString())
                 .nickname(memberDto.getNickname())
-                .status(memberDto.getStatus())
+                .status(memberDto.getStatus().toString())
                 .build();
 
         insertedMember = memberRepository.save(member);

@@ -39,17 +39,15 @@ public class Member implements UserDetails {
     private String gmail;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
-    private Authority role;
+    private String role;
 
     @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false, name = "state")
-    @Enumerated(EnumType.STRING)
     // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
-    private MemberStatus status;
+    private String status;
 
     @Lob
     @Column
@@ -62,7 +60,7 @@ public class Member implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = new ArrayList<>();
-        roles.add(this.role.toString());
+        roles.add(this.role);
 
         return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
@@ -116,7 +114,7 @@ public class Member implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return (status == MemberStatus.ACTIVE);
+        return (status == MemberStatus.ACTIVE.toString());
     }
 
 

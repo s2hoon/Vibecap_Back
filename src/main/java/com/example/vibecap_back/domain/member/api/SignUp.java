@@ -41,9 +41,9 @@ public class SignUp {
         MemberDto memberDto = MemberDto.builder()
                                 .email(request.getEmail())
                                 .password(request.getPassword())
-                                .role(Authority.ROLE_MEMBER)
+                                .role(Authority.ROLE_MEMBER.toString())
                                 .nickname(request.getNickname())
-                                .status(MemberStatus.ACTIVE)
+                                .status(MemberStatus.ACTIVE.toString())
                                 .build();
 
         MemberDto createdMemberDto;
