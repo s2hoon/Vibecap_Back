@@ -30,8 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/app/sign-api/sign-in", "/app/sign-api/sign-up",
-                        "/app/sign-api/exception", "/capture").permitAll()
+                .antMatchers("/app/sign-api/**", "/capture").permitAll()
                 // TODO 홈 화면 경로 : /app 으로 임시 설정
                 .antMatchers(HttpMethod.GET, "/app").permitAll()
                 .antMatchers("**exception**").permitAll()
