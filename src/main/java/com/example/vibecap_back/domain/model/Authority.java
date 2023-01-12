@@ -3,10 +3,10 @@ package com.example.vibecap_back.domain.model;
 public enum Authority {
 
     // 일반 사용자
-    NORMAL("normal"),
+    ROLE_MEMBER("ROLE_MEMBER"),
 
     // 관리자
-    ADMIN("admin");
+    ADMIN("ROLE_ADMIN");
 
     private String role;
     private Authority(String role) {
