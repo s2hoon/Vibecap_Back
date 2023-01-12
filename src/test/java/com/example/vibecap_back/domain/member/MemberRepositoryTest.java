@@ -22,10 +22,6 @@ import java.util.stream.IntStream;
 @ActiveProfiles("test")
 public class MemberRepositoryTest {
 
-    private final String TEST_EMAIL = "hello@naver.com";
-    private final String TEST_PW = "qwer1234";
-    private final String TEST_NICKNAME = "Nick";
-
     @Autowired
     private MemberRepository memberRepository;
 
@@ -36,21 +32,9 @@ public class MemberRepositoryTest {
     @DisplayName("DB 동작 확인")
     void insertDummies() {
         IntStream.rangeClosed(1, 100).forEach(i->{
-            Member dummy = createMember(i);
+            Member dummy = MemberFactory.createMember(i);
             memberRepository.save(dummy);
         });
-    }
-
-    Member createMember(Integer i) {
-        Member dummy = Member.builder()
-                .email(TEST_EMAIL + i.toString())
-                .password(TEST_PW)
-                .role(Authority.NORMAL)
-                .nickname(TEST_NICKNAME)
-                .status(MemberStatus.ACTIVE)
-                .build();
-
-        return dummy;
     }
 
 }
