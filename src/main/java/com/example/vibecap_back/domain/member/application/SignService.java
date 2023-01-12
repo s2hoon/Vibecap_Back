@@ -83,8 +83,13 @@ public class SignService {
 
         // 인증 성공
         String token = jwtTokenProvider.createToken(expectedMember.getEmail(), expectedMember.getRole().toString());
+        SignInResult result = SignInResult.builder()
+                .token(token)
+                .nickname(expectedMember.getNickname())
+                .memberId(expectedMember.getMemberId())
+                .build();
 
-        return new SignInResult(token);
+        return result;
     }
 
     /**
