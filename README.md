@@ -1,19 +1,19 @@
-# Vibecap backend : prototype
+# Vibecap backend : distribute
 
-## 애플리케이션 GUI
+배포 전용 브랜치
 
-[figma 화면 설계서](https://www.figma.com/file/NycTb1CTdhqTgJfcRAdnEo/GUI-%ED%99%94%EB%A9%B4%EC%84%A4%EA%B3%84%EC%84%9C-%EC%9D%B4%EC%8B%9D?node-id=0%3A1&t=HdeaObyKOnZ7fXJy-0)
+## EC2 instance
 
-## architecture
-<img src="/assets/image/architecture.jpeg" alt="architecture">
+* public IPv4 address : 175.41.230.93
+* public IPv4 DNS : ec2-175-41-230-93.ap-northeast-1.compute.amazonaws.com
+* architecture : linux/**amd64**
 
-## test db
+## RDS instance
 
-테스트 db : [H2](https://github.com/h2database/h2database/releases/download/version-2.1.214/h2-2022-06-13.zip) 사용.
+* vendor/version : mysql 8.0.25
 
-1. `~/Vibecap/test` db 파일 생성
-2. `$ ./h2.sh` 실행
+## Docker image 
 
-    * url : jdbc:h2:tcp://localhost/~/Vibecap/test
-    * 사용자명 : sa
-    * 비밀번호 : 0000
+```shell
+$ docker image pull docker image pull mingeun2154/vibecap-server:latest
+```
