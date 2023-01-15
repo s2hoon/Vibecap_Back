@@ -1,15 +1,21 @@
 package com.example.vibecap_back.domain.mypage.api;
 
+import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dto.GetMyPageResult;
-import com.example.vibecap_back.domain.mypage.dto.request.MyPageRequest;
+import com.example.vibecap_back.domain.mypage.dto.request.GetMyPageRequest;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
+import com.example.vibecap_back.global.common.response.BaseResponseStatus;
+import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 마이페이지
@@ -22,11 +28,13 @@ public class MyPage {
 
     private final MyPageRepository myPageRepository;
     private final MyPageService myPageService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public MyPage(MyPageRepository myPageRepository, MyPageService myPageService) {
+    public MyPage(MyPageRepository myPageRepository, MyPageService myPageService, JwtTokenProvider jwtTokenProvider) {
         this.myPageRepository = myPageRepository;
         this.myPageService = myPageService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     /**
@@ -35,18 +43,24 @@ public class MyPage {
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<GetMyPageResult> loadMyPage(@RequestBody MyPageRequest request) {
-
-        BaseResponse<GetMyPageResult> response;
+    public BaseResponse<GetMyPageResult> getMyPage(@RequestBody GetMyPageRequest request) {
 
         try {
-            GetMyPageResult getMyPageRes = myPageService.loadMyPage(request);
-            response = new BaseResponse<>(getMyPageRes);
-        } catch (BaseException exception) {
-            response = new BaseResponse<>((exception.getStatus()));
-        }
+            // JWT
+            // jwt에서 email 추출
+            String email = jwtTokenProvider.extractEmail();
+            Optional<Member> member = myPageRepository.findByEmail(email);
+            // memberId와 접근한 회원이 같은지 확인
+            if (!Objects.equals(request.getMemberId(), member.get().getMemberId())) {
+                return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+            }
 
-        return response;
+            GetMyPageResult getMyPageResult = myPageService.getMyPage(request);
+
+            return new BaseResponse<>(getMyPageResult);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
     }
 
 }

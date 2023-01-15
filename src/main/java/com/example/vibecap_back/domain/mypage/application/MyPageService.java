@@ -3,7 +3,7 @@ package com.example.vibecap_back.domain.mypage.application;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dto.GetMyPageResult;
-import com.example.vibecap_back.domain.mypage.dto.request.MyPageRequest;
+import com.example.vibecap_back.domain.mypage.dto.request.GetMyPageRequest;
 import com.example.vibecap_back.global.common.response.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class MyPageService {
 
 
     // 마이페이지 조회 (사용자 정보 load)
-    public GetMyPageResult loadMyPage(MyPageRequest request) throws BaseException {
+    public GetMyPageResult getMyPage(GetMyPageRequest request) throws BaseException {
 
         Optional<Member> optionalMember = myPageRepository.findById(request.getMemberId());
         Member member = optionalMember.get();

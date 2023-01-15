@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MyPageRequest {
+public class GetMyPageRequest {
     @JsonProperty("member_id")
     private Long memberId;
 }

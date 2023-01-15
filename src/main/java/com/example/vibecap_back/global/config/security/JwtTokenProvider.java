@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -129,6 +131,32 @@ public class JwtTokenProvider {
                 .getSubject();
 
         return email;
+    }
+
+    /**
+     * token에서 email 추출
+     * @return email
+     */
+    public String extractEmail() {
+        String token = getToken();
+        String email = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .requireAudience(audience)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+
+        return email;
+    }
+
+    /**
+     * HTTP header에서 token 값 추출
+     * @return String
+     */
+    public String getToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader("X-AUTH-TOKEN");
     }
 
     /**
