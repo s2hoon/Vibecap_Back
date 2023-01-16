@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ChangeNicknameRequest {
     @JsonProperty("member_id")
     private Long memberId;
