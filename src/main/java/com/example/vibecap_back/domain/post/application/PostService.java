@@ -1,7 +1,7 @@
 package com.example.vibecap_back.domain.post.application;
 
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
-import com.example.vibecap_back.domain.post.dto.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Posts;
 import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;

@@ -1,12 +1,14 @@
 package com.example.vibecap_back.domain.post.dto.Request;
 
-import com.example.vibecap_back.domain.post.dto.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Posts;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 // 게시물 작성 Dto
 @Getter
+@Setter
 @NoArgsConstructor
 public class PostSaveRequestDto {
 

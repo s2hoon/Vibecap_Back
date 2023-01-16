@@ -6,7 +6,7 @@ CREATE TABLE post(
     vibe_id         INT         NOT NULL ,
     like_number     INT         DEFAULT 0,
     scrap_number    INT         DEFAULT 0,
-    tag_number      INT         DEFAULT 0,
+    comment_number      INT         DEFAULT 0,
 
     PRIMARY KEY (post_id),
     FOREIGN KEY (member_id) REFERENCES member(member_id)

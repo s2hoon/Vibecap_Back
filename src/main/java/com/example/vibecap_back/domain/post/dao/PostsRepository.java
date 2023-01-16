@@ -1,6 +1,6 @@
 package com.example.vibecap_back.domain.post.dao;
 
-import com.example.vibecap_back.domain.post.dto.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Posts;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

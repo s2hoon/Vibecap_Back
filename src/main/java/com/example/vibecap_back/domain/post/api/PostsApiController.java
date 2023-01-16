@@ -45,6 +45,7 @@ public class PostsApiController{
     /** 게시물 조회 API - 특정 게시물 **/
     @GetMapping("/{postId}")
     public PostResponseDto findById(@PathVariable Long postId) {
+
         return postService.findById(postId);
     }
 
@@ -53,33 +54,4 @@ public class PostsApiController{
     public List<PostListResponseDto> findAll(@PathVariable String tag_name) {
         return postService.findAllDesc(tag_name);
     }
-
-    /** 언젠간 참고할지도...
-     * 모든 게시글 조회
-    // Param으로 tag_name을 받아와야하나?
-    @ResponseBody
-    @GetMapping("")
-    public BaseResponse<List<PostResponseDto>> getPosts(@RequestParam int member_id) {
-        try {
-            List<PostResponseDto> getAllPostsRes = postProvider.retrievePosts(member_id);
-            return new BaseResponse<>(getAllPostsRes);
-        } catch (BaseException exception) {
-            System.out.println(exception);
-            return new BaseResponse<>((exception.getStatus()));
-        }
-    }
-
-    // 특정 게시글 조회
-    @ResponseBody
-    @GetMapping("/{postId}")
-    public BaseResponse<List<PostResponseDto>> getPost(@PathVariable("post_id") int post_id) {
-        try {
-            List<PostResponseDto> postResponseDto = postProvider.getPost(post_id);
-            return new BaseResponse<>(postResponseDto);
-        } catch (BaseException exception) {
-            System.out.println(exception);
-            return new BaseResponse<>((exception.getStatus()));
-        }
-
-    }**/
 }

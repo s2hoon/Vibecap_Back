@@ -1,5 +1,6 @@
-package com.example.vibecap_back.domain.post.dto.domain;
+package com.example.vibecap_back.domain.post.domain;
 
+import com.example.vibecap_back.domain.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +38,7 @@ public class Posts {
     private Long scrap_number;
 
     @Column
-    private Long tag_number;
+    private Long comment_number;
 
     @Column(table = "Tag")
     private String tag_name;
@@ -54,7 +55,7 @@ public class Posts {
     public Posts(Long post_id, Long member_id,
                  String title, String body,
                  Long vibe_id, Long like_number,
-                 Long scrap_number, Long tag_number, String tag_name)
+                 Long scrap_number, Long comment_number, String tag_name)
     {
         this.post_id = post_id;
         this.member_id = member_id;
@@ -63,7 +64,7 @@ public class Posts {
         this.vibe_id = vibe_id;
         this.like_number = like_number;
         this.scrap_number = scrap_number;
-        this.tag_number = tag_number;
+        this.comment_number = comment_number;
         this.tag_name = tag_name;
     }
 

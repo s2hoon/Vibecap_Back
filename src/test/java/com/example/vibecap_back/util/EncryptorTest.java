@@ -1,5 +1,6 @@
 package com.example.vibecap_back.util;
 
+import com.example.vibecap_back.global.config.security.Encryptor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
