@@ -22,8 +22,10 @@ public enum BaseResponseStatus {
     // mypage
 
     // post
+    USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
 
     // vibe
+
 
     /**
      * 3XXX : 내부 로직 오류
@@ -45,10 +47,10 @@ public enum BaseResponseStatus {
     // vibe
 
     /**
-     * 4XXX : DB 오류
+     * 4XXX : DB, server 오류
      */
-    DBCONN_ERROR(false, 4000, "데이터베이스 연결 오류");
-
+    DBCONN_ERROR(false, 4000, "데이터베이스 연결 오류"),
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다.");
     private final boolean isSuccess;
     private final int code;
     private final String message;
