@@ -18,9 +18,9 @@ public class MemberFactory {
         Member dummy = Member.builder()
                 .email(TEST_EMAIL + i.toString())
                 .password(TEST_PW)
-                .role(Authority.ROLE_MEMBER)
+                .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME + i.toString())
-                .status(MemberStatus.ACTIVE)
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;
@@ -34,9 +34,9 @@ public class MemberFactory {
         Member dummy = Member.builder()
                 .email(TEST_EMAIL)
                 .password(TEST_PW)
-                .role(Authority.ROLE_MEMBER)
+                .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME)
-                .status(MemberStatus.ACTIVE)
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;
@@ -52,9 +52,9 @@ public class MemberFactory {
                 .memberId(123L)
                 .email(TEST_EMAIL)
                 .password(TEST_PW)
-                .role(Authority.ROLE_MEMBER)
+                .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME)
-                .status(MemberStatus.ACTIVE)
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;
@@ -71,9 +71,9 @@ public class MemberFactory {
                 .memberId(i.longValue())
                 .email(TEST_EMAIL)
                 .password(TEST_PW)
-                .role(Authority.ROLE_MEMBER)
+                .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME + i.toString())
-                .status(MemberStatus.ACTIVE)
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;
