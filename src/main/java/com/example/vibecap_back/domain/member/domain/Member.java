@@ -1,8 +1,12 @@
 package com.example.vibecap_back.domain.member.domain;
 
+import com.example.vibecap_back.domain.model.Authority;
 import com.example.vibecap_back.domain.model.MemberStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,20 +18,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
+@Entity
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
 @Table(name="member")
 public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
-    @Column(name = "MEMBER_ID")
     private Long memberId;
 
     @Column(nullable = false)
@@ -40,27 +40,30 @@ public class Member implements UserDetails {
     private String gmail;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
-    private String role;
+    private Authority role;
 
     @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false, name = "state")
+    @Enumerated(EnumType.STRING)
     // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
-    private String status;
+    private MemberStatus status;
 
     @Lob
     @Column
     // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
     private byte[] profileImage;
 
+
     /************ UserDetails interface 구현 ************/
     // TODO Collection framework 사용법, UserDetails interface 공부...
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = new ArrayList<>();
-        roles.add(this.role);
+        roles.add(this.role.toString());
 
         return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
@@ -114,7 +117,7 @@ public class Member implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return (status == MemberStatus.ACTIVE.toString());
+        return (status == MemberStatus.ACTIVE);
     }
 
 

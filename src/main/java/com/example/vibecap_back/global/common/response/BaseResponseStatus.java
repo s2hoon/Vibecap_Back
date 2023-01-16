@@ -20,6 +20,7 @@ public enum BaseResponseStatus {
     // member
 
     // mypage
+    INVALID_MEMBER_JWT(false,2300,"권한이 없는 회원의 접근입니다."),
 
     // post
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),

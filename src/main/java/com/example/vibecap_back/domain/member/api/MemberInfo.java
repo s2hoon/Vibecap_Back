@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+<<<<<<< HEAD
+=======
+import java.awt.desktop.QuitResponse;
+
+>>>>>>> 7a50d302fb7694d19f611a87898caf97f5bb1dbb
 @RestController
 @RequestMapping("/app/member")
 public class MemberInfo {

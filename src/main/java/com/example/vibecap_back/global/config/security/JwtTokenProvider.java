@@ -3,7 +3,6 @@ package com.example.vibecap_back.global.config.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
@@ -68,6 +65,7 @@ public class JwtTokenProvider {
      * @return
      */
     public String createToken(String email, String role) {
+
         // Set registered claim.
         Date now = new Date();
         Claims claims = Jwts.claims()
@@ -83,20 +81,10 @@ public class JwtTokenProvider {
         Key key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
 
         // token 생성
-        /**
-         * header
-         * {
-         *      "alg": "HS256,
-         *      "typ": "JWT"
-         * }
-         */
-        Map<String, Object> header = new HashMap<>();
-        header.put("alg", "HS256");
-        header.put("typ", "JWT");
+        // TODO header는 필요없는건가?
         String token = Jwts.builder()
-                .setHeader(header)
                 .setClaims(claims)  // payload
-                .signWith(key, SignatureAlgorithm.HS256)      // sign
+                .signWith(key)      // sign
                 .compact();
 
         return token;
@@ -109,8 +97,8 @@ public class JwtTokenProvider {
      */
     // TODO credential?
     public Authentication getAuthentication(String token) {
-        String email = extractEmail(token);
-        UserDetails memberDetails = memberDetailService.loadUserByUsername(email);
+        Long memberId = Long.parseLong(this.extractEmail(token));
+        UserDetails memberDetails = memberDetailService.loadUserByUsername(token);
 
         return new UsernamePasswordAuthenticationToken(memberDetails, "",
                 memberDetails.getAuthorities());
@@ -123,10 +111,9 @@ public class JwtTokenProvider {
      */
     public String extractEmail(String token) {
         String email = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
                 .requireAudience(audience)
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJwt(token)
                 .getBody()
                 .getSubject();
 
@@ -151,11 +138,10 @@ public class JwtTokenProvider {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
-                    .build().
-                    parseClaimsJws(token);
+                    .build().parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
-            LOGGER.info("[validateToken] 토큰 유효 체크 예외 발생\n" + e.getMessage());
+            LOGGER.info("[validateToken] 토큰 유효 체크 예외 발생");
             return false;
         }
     }
