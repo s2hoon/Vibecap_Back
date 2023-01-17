@@ -27,6 +27,7 @@ public class Member implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
+    @Column(name = "member_id")
     private Long memberId;
 
     @Column(nullable = false)
@@ -35,7 +36,7 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "googleEmail")
+    @Column(name = "google_email")
     private String gmail;
 
     @Column(nullable = false)
@@ -50,7 +51,7 @@ public class Member implements UserDetails {
     private String status;
 
     @Lob
-    @Column
+    @Column(name = "profile_image")
     // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
     private byte[] profileImage;
 
