@@ -27,7 +27,7 @@ public enum BaseResponseStatus {
     // vibe
 
     /**
-     * 3XXX : 내부 로직 오류
+     * 3XXX : 내부 오류
      */
     // Common
 
@@ -44,6 +44,9 @@ public enum BaseResponseStatus {
     // post
 
     // vibe
+    SAVE_TEMPORARY_FILE_FAILED(false, 3500, "이미지 파일 전달 실패"),
+    EMPTY_IMAGE(false, 3501, "이미지를 보내 주세요"),
+    EXTERNAL_API_FAILED(false, 3502,"외부 API 호출 실패"),
 
     /**
      * 4XXX : DB 오류
