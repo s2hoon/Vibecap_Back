@@ -43,4 +43,9 @@ public class ExternalAPITest {
             // imageAnalyzer.detectLabelsByWebReference(data);
         });
     }
+
+    @Test
+    void 플레이리스트_추천() {
+
+    }
 }
