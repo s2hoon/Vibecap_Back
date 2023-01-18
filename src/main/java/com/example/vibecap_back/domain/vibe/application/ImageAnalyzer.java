@@ -11,15 +11,15 @@ public interface ImageAnalyzer {
      * @return
      * 키워드 배열
      */
+    @Deprecated
     public List<String> detectLabels(byte[] data) throws ExternalApiException;
 
     /**
      * 해당 이미지를 웹에서 검색하여 label을 추측한다.
+     *
      * @param data
      * @return
-     * @throws ExternalApiException
-     *
-     * https://cloud.google.com/vision/docs/detecting-web
+     * @throws ExternalApiException https://cloud.google.com/vision/docs/detecting-web
      */
-    public List<String> detectLabelsByWebReference(byte[] data) throws ExternalApiException;
+    public String detectLabelsByWebReference(byte[] data) throws ExternalApiException;
 }

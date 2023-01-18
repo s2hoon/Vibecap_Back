@@ -8,11 +8,8 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @NoArgsConstructor
 public class LabelDetectionClient implements ImageAnalyzer {
@@ -73,10 +70,10 @@ public class LabelDetectionClient implements ImageAnalyzer {
     }
 
     /**
-     * 해당 이미지와 유사한 이미지를 웹에서 찾아 이미지를 잘 설명하는 label을 추측한다.
+     * 해당 이미지와 유사한 이미지를 웹에서 찾아 이미지를 잘 설명하는 label을 결정한다.
      */
     @Override
-    public List<String> detectLabelsByWebReference(byte[] data) throws ExternalApiException {
+    public String detectLabelsByWebReference(byte[] data) throws ExternalApiException {
 
         // 이미지 준비
         ByteString imageBytes = ByteString.copyFrom(data);
@@ -105,7 +102,7 @@ public class LabelDetectionClient implements ImageAnalyzer {
                     labels.add(label.getLabel());
                 }
 
-                 // verbose(res.getWebDetection());
+                  verbose(res.getWebDetection());
 
             }
         } catch (Exception e) {
@@ -114,7 +111,7 @@ public class LabelDetectionClient implements ImageAnalyzer {
 
         // Web entities를 바탕으로 추측한 label
 
-        return labels;
+        return labels.get(0);
     }
 
     private void verbose(WebDetection annotation) {

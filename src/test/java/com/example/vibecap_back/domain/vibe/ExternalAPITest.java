@@ -1,4 +1,4 @@
-package com.example.vibecap_back.vibe;
+package com.example.vibecap_back.domain.vibe;
 
 import com.example.vibecap_back.domain.vibe.application.ImageAnalyzer;
 import com.example.vibecap_back.domain.vibe.application.Impl.LabelDetectionClient;
@@ -19,7 +19,13 @@ public class ExternalAPITest {
     private ImageAnalyzer imageAnalyzer;
     private PlaylistRecommender playlistRecommender;
     private byte[] data;
-    private static final String SAMPLE_IMAGE = "flags.jpeg";
+    // private static final String SAMPLE_IMAGE = "attack-on-titan.jpeg";
+    // private static final String SAMPLE_IMAGE = "pokemon.jpeg";
+    // private static final String SAMPLE_IMAGE = "flags.jpeg";
+     private static final String SAMPLE_IMAGE = "food.jpeg";
+
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
 
     @BeforeEach
     void init() throws Exception {
@@ -39,7 +45,9 @@ public class ExternalAPITest {
     @Test
     void 웹_개체_탐지() throws Exception {
         Assertions.assertDoesNotThrow(() -> {
-            System.out.println(imageAnalyzer.detectLabelsByWebReference(data));
+            System.out.println(ANSI_GREEN +
+                    imageAnalyzer.detectLabelsByWebReference(data) +
+                    ANSI_RESET);
             // imageAnalyzer.detectLabelsByWebReference(data);
         });
     }
