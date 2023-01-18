@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,6 +14,7 @@ public class PostUpdateRequestDto {
 
     private String title;
     private String body;
+    @Column(table = "tag")
     private String tag_name;
 
     @Builder

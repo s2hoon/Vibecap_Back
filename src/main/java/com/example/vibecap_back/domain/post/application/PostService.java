@@ -22,7 +22,7 @@ public class PostService {
     /** 게시물 작성 API - 저장 **/
     @Transactional
     public Long save(PostSaveRequestDto requestDto) {
-        return postsRepository.save(requestDto.toEntity()).getPost_id();
+        return postsRepository.save(requestDto.toEntity()).getId();
     }
 
     /** 게시물 수정 API **/
@@ -56,8 +56,8 @@ public class PostService {
 
     /** 게시물 조회 API - 전체 **/
     @Transactional(readOnly = true)
-    public List<PostListResponseDto> findAllDesc(String tag_name) {
-        return postsRepository.findAllDesc(tag_name).stream()
+    public List<PostListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }

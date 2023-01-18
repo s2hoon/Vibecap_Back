@@ -19,7 +19,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostsRepository postsRepository;
 
-    /** 댓글 작성 API **/
+    /** 댓글 작성 **/
     @Transactional
     public CommentDto writeComment(Long PostId, CommentDto commentDto, Member member) {
         Comments comment = new Comments();
@@ -38,10 +38,10 @@ public class CommentService {
     }
 
 
-    /** 댓글 조회 API **/
+    /** 댓글 조회 **/
     @Transactional(readOnly = true)
     public List<CommentDto> getComments(Long PostId) {
-        List<Comments> comments = commentRepository.findAllByPost(PostId);
+        List<Comments> comments = commentRepository.findAllByPostId(PostId);
         List<CommentDto> commentDto = new ArrayList<>();
 
         comments.forEach(s -> commentDto.add(CommentDto.toDto(s)));
@@ -49,7 +49,7 @@ public class CommentService {
     }
 
 
-    /** 댓글 삭제 API **/
+    /** 댓글 삭제 **/
     @Transactional
     public String deleteComment(Long commentId) {
         Comments comment = commentRepository.findById(commentId).orElseThrow(()-> {

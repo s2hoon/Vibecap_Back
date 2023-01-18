@@ -4,17 +4,11 @@ import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-=======
-import org.springframework.web.bind.annotation.*;
-
-import javax.swing.text.html.Option;
->>>>>>> 7a50d302fb7694d19f611a87898caf97f5bb1dbb
 import java.util.Optional;
 
 @RestController

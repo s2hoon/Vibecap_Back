@@ -24,7 +24,7 @@ public class CommentApiController {
     /** 댓글 작성 API **/
     @ApiOperation(value = "댓글 작성", notes = "게시글에 댓글 작성")
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/comments/{PostId}")
+    @PostMapping("/{PostId}")
     public BaseResponse<CommentDto> writeComment(@PathVariable("PostId") Long PostId,
                                                  @RequestBody CommentDto commentDto)
     {
@@ -40,7 +40,7 @@ public class CommentApiController {
     /** 댓글 조회 API **/
     @ApiOperation(value = "댓글 불러오기", notes = "게시글에 달린 모든 댓글 불러오기.")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/comments/{PostId}")
+    @GetMapping("/{PostId}")
     public BaseResponse<List<CommentDto>> getComments(@PathVariable("PostId") Long PostId)
     {
         List<CommentDto> result = commentService.getComments(PostId);
@@ -52,7 +52,7 @@ public class CommentApiController {
     /** 댓글 삭제 API **/
     @ApiOperation(value = "댓글 삭제", notes = "게시글에 달린 댓글 삭제")
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/comments/{PostId}/{commentId}")
+    @DeleteMapping("/{PostId}/{commentId}")
     public BaseResponse<String> deleteComment(@PathVariable("PostId") Long PostId,
                                                   @PathVariable("commentId") Long commentId)
     {

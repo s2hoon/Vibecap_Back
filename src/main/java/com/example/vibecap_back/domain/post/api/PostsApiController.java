@@ -51,7 +51,7 @@ public class PostsApiController{
 
     /** 게시물 조회 API - 해시태그별 게시물(전체) **/
     @GetMapping("")
-    public List<PostListResponseDto> findAll(@PathVariable String tag_name) {
-        return postService.findAllDesc(tag_name);
+    public List<PostListResponseDto> findAll() {
+        return postService.findAllDesc();
     }
 }

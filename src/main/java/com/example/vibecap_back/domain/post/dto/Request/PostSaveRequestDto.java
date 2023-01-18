@@ -6,19 +6,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
+
 // 게시물 작성 Dto
 @Getter
 @Setter
 @NoArgsConstructor
 public class PostSaveRequestDto {
 
+    private Long member_id;
     private String title;
     private String body;
     private Long vibe_id;
+    @Column(table = "tag")
     private String tag_name;
 
     @Builder
-    public PostSaveRequestDto(String title, String body, Long vibe_id, String tag_name){
+    public PostSaveRequestDto(Long member_id, String title, String body, Long vibe_id, String tag_name){
+        this.member_id = member_id;
         this.title = title;
         this.body = body;
         this.vibe_id = vibe_id;
@@ -27,6 +32,7 @@ public class PostSaveRequestDto {
 
     public Posts toEntity(){
         return Posts.builder()
+                .member_id(member_id)
                 .title(title)
                 .body(body)
                 .vibe_id(vibe_id)

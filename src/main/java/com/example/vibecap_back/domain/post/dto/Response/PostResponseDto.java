@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostResponseDto {
 
-    private Long post_id;
+    private Long id;
     private Long member_id;
     private String title;
     private String body;
@@ -25,7 +25,7 @@ public class PostResponseDto {
     @Builder
     public PostResponseDto(Posts entity)
     {
-        this.post_id = entity.getPost_id();
+        this.id = entity.getId();
         this.member_id = entity.getMember_id();
         this.title = entity.getTitle();
         this.body = entity.getBody();

@@ -4,14 +4,19 @@ import com.example.vibecap_back.domain.comment.domain.Comments;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnTransformer;
+import org.hibernate.annotations.Table;
+
+import javax.persistence.Column;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto {
+
     private Long comment_id;
     private String content;
-    private String writer;
+    private String nickname;
 
     public static CommentDto toDto(Comments comment) {
         return new CommentDto(

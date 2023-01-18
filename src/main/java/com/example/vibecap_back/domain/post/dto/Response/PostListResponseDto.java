@@ -12,17 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PostListResponseDto {
 
-    private Long post_id;
+    private Long id;
     private Long Member_id;
     private Long vibe_id;
 
-    private String tag_name;
-
     public PostListResponseDto(Posts entity)
     {
-        this.post_id = entity.getPost_id();
+        this.id = entity.getId();
         this.Member_id = entity.getMember_id();
         this.vibe_id = entity.getVibe_id();
-        this.tag_name = entity.getTag_name();
     }
 }

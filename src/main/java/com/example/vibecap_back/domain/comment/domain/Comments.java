@@ -3,10 +3,7 @@ package com.example.vibecap_back.domain.comment.domain;
 import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.post.domain.Posts;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 

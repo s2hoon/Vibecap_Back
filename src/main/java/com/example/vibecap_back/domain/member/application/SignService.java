@@ -8,6 +8,8 @@ import com.example.vibecap_back.domain.member.dto.request.SignInRequest;
 import com.example.vibecap_back.domain.member.exception.EmailAlreadyExistException;
 import com.example.vibecap_back.domain.member.exception.WrongEmailException;
 import com.example.vibecap_back.domain.member.exception.WrongPasswordException;
+import com.example.vibecap_back.domain.model.Authority;
+import com.example.vibecap_back.domain.model.MemberStatus;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +52,9 @@ public class SignService {
         Member member = Member.builder()
                 .email(memberDto.getEmail())
                 .password(cypher)
-                .role(memberDto.getRole().toString())
+                .role(Authority.valueOf(memberDto.getRole().toString()))
                 .nickname(memberDto.getNickname())
-                .status(memberDto.getStatus().toString())
+                .status(MemberStatus.valueOf(memberDto.getStatus().toString()))
                 .build();
 
         insertedMember = memberRepository.save(member);

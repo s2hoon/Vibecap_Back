@@ -6,7 +6,8 @@ public enum Authority {
     ROLE_MEMBER("ROLE_MEMBER"),
 
     // 관리자
-    ROLE_ADMIN("ROLE_ADMIN");
+    ROLE_ADMIN("ROLE_ADMIN"),
+    NORMAL("ROLE_NORMAL");
 
     private String role;
     private Authority(String role) {

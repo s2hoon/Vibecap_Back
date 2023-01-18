@@ -25,8 +25,8 @@ public class MemberDto {
         this.memberId = member.getMemberId();
         this.password = member.getPassword();
         this.gmail = member.getGmail();
-        this.role = member.getRole();
+        this.role = String.valueOf(member.getRole());
         this.nickname = member.getNickname();
-        this.status = member.getStatus();
+        this.status = String.valueOf(member.getStatus());
     }
 }
