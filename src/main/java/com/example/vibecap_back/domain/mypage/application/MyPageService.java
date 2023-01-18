@@ -47,7 +47,6 @@ public class MyPageService {
 
     // 마이페이지 조회 (사용자 정보 load)
     public GetMyPageResponse getMyPage(GetMyPageRequest request) throws BaseException, IOException {
-        // 이미지 파일 응답 수정 필요
         Optional<Member> optionalMember = myPageRepository.findById(request.getMemberId());
         Member member = optionalMember.get();
 
@@ -70,6 +69,13 @@ public class MyPageService {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(imageByte);
         BufferedImage bufferedImage = ImageIO.read(inputStream);
         ImageIO.write(bufferedImage, "png", new File("C:\\Users\\최지은\\Downloads\\image.png")); //저장하고자 하는 파일 경로를 입력
+    }
+
+    // 내 게시물 (전체) 조회
+    public List<GetMyPostsResponse> getMyPosts(GetMyPostsRequest request) throws BaseException {
+
+        return myPostsRepository.findByMember_id(request.getMemberId())
+                .stream().map(GetMyPostsResponse::new).collect(Collectors.toList());
     }
 
     // 토큰으로 회원 권한 검사
