@@ -14,6 +14,7 @@ public enum BaseResponseStatus {
      * 2XXX : Request 내용 오류
      */
     // Common
+    REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
 
     // album
 
@@ -21,6 +22,7 @@ public enum BaseResponseStatus {
 
     // mypage
     INVALID_MEMBER_JWT(false,2300,"권한이 없는 회원의 접근입니다."),
+    EMPTY_PROFILE_IMAGE(false, 2301, "프로필 이미지를 입력해주세요."),
 
     // post
 
@@ -30,6 +32,7 @@ public enum BaseResponseStatus {
      * 3XXX : 내부 오류
      */
     // Common
+    RESPONSE_ERROR(false, 3000, "값을 불러오는 데 실패하였습니다."),
 
     // album
 
