@@ -3,7 +3,7 @@ package com.example.vibecap_back.domain.vibe;
 import com.example.vibecap_back.domain.vibe.application.ImageAnalyzer;
 import com.example.vibecap_back.domain.vibe.application.Impl.LabelDetectionClient;
 import com.example.vibecap_back.domain.vibe.application.Impl.YouTubeClient;
-import com.example.vibecap_back.domain.vibe.application.PlaylistRecommender;
+import com.example.vibecap_back.domain.vibe.application.PlaylistSearchEngine;
 import com.example.vibecap_back.util.FileWorker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 public class ExternalAPITest {
 
     private ImageAnalyzer imageAnalyzer;
-    private PlaylistRecommender playlistRecommender;
+    private PlaylistSearchEngine playlistSearchEngine;
     private byte[] data;
     // private static final String SAMPLE_IMAGE = "attack-on-titan.jpeg";
     // private static final String SAMPLE_IMAGE = "pokemon.jpeg";
@@ -30,7 +30,7 @@ public class ExternalAPITest {
     @BeforeEach
     void init() throws Exception {
         imageAnalyzer = new LabelDetectionClient();
-        playlistRecommender = new YouTubeClient();
+        playlistSearchEngine = new YouTubeClient();
         data = FileWorker.loadFile(SAMPLE_IMAGE);
     }
 
@@ -54,6 +54,8 @@ public class ExternalAPITest {
 
     @Test
     void 플레이리스트_추천() {
-
+        Assertions.assertDoesNotThrow(() -> {
+            System.out.println(playlistSearchEngine.search("신나는 밤"));
+        });
     }
 }

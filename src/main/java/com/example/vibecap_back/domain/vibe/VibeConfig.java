@@ -3,7 +3,7 @@ package com.example.vibecap_back.domain.vibe;
 import com.example.vibecap_back.domain.vibe.application.ImageAnalyzer;
 import com.example.vibecap_back.domain.vibe.application.Impl.LabelDetectionClient;
 import com.example.vibecap_back.domain.vibe.application.Impl.YouTubeClient;
-import com.example.vibecap_back.domain.vibe.application.PlaylistRecommender;
+import com.example.vibecap_back.domain.vibe.application.PlaylistSearchEngine;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +16,7 @@ public class VibeConfig {
     }
 
     @Bean
-    public PlaylistRecommender playlistRecommender() {
+    public PlaylistSearchEngine playlistSearchEngine() {
         return new YouTubeClient();
     }
 

@@ -11,7 +11,6 @@ public interface ImageAnalyzer {
      * @return
      * 키워드 배열
      */
-    @Deprecated
     public List<String> detectLabels(byte[] data) throws ExternalApiException;
 
     /**
