@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/app/sign-api/**", "/capture", "/app/comments/**"
-                        , "/app/posts/**").permitAll()
+                        , "/app/posts/**", "/app/posts/**/**").permitAll()
                 // TODO 홈 화면 경로 : /app 으로 임시 설정
                 .antMatchers(HttpMethod.GET, "/app").permitAll()
                 .antMatchers("**exception**").permitAll()

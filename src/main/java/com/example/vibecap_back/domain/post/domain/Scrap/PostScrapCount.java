@@ -1,4 +1,4 @@
-package com.example.vibecap_back.domain.post.domain.Count.Scrap;
+package com.example.vibecap_back.domain.post.domain.Scrap;
 
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

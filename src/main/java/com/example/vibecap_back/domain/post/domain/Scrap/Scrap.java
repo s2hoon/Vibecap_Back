@@ -1,6 +1,5 @@
-package com.example.vibecap_back.domain.post.domain.Count.Scrap;
+package com.example.vibecap_back.domain.post.domain.Scrap;
 
-import com.example.vibecap_back.domain.post.domain.Count.Like.PostLikeCount;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name="Scrap")
-@IdClass(PostLikeCount.class)
+@IdClass(PostScrapCount.class)
 public class Scrap {
 
     @Id

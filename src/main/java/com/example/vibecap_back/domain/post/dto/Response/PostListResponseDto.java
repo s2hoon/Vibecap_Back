@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 // 게시물 조회 Dto - 전체
 @Getter
 @Setter
@@ -15,11 +17,12 @@ public class PostListResponseDto {
     private Long id;
     private Long Member_id;
     private Long vibe_id;
+    //private LocalDateTime modifiedDate;
 
     public PostListResponseDto(Posts entity)
     {
         this.id = entity.getId();
-        this.Member_id = entity.getMember_id();
+        this.Member_id = entity.getMember().getMemberId();
         this.vibe_id = entity.getVibe_id();
     }
 }

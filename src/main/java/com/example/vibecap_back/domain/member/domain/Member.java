@@ -2,6 +2,7 @@ package com.example.vibecap_back.domain.member.domain;
 
 import com.example.vibecap_back.domain.model.Authority;
 import com.example.vibecap_back.domain.model.MemberStatus;
+import com.example.vibecap_back.domain.post.domain.Like.Likes;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,6 +57,12 @@ public class Member implements UserDetails {
     // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
     private byte[] profileImage;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Likes> likes = new ArrayList<>();
+
+    public void mappingPostLike(Likes postLike) {
+        this.likes.add(postLike);
+    }
 
     /************ UserDetails interface 구현 ************/
     // TODO Collection framework 사용법, UserDetails interface 공부...
@@ -118,7 +125,6 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return (status == MemberStatus.ACTIVE);
     }
-
 
     @Override
     public boolean equals(Object obj) {

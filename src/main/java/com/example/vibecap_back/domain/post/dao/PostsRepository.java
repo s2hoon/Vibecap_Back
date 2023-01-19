@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PostsRepository extends JpaRepository<Posts, Long> {
-    @Query("SELECT p FROM Posts p ORDER BY p.id DESC")
-    List<Posts> findAllDesc();
+    @Query(value = "SELECT p FROM Posts p where p.tag_name = ?1 order by p.id DESC")
+    //List<Posts> findAllDesc();
+
+    List<Posts> findByTag_name(String tag_name);
+
 }

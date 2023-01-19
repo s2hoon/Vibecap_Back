@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.Lob;
+import java.util.List;
+
 // 게시물 조회 Dto - 특정 게시물
 @Getter
 @Setter
@@ -22,11 +26,13 @@ public class PostResponseDto {
     private Long comment_number;
     private String tag_name;
 
+    private byte[] profileImage;
+
     @Builder
     public PostResponseDto(Posts entity)
     {
         this.id = entity.getId();
-        this.member_id = entity.getMember_id();
+        this.member_id = entity.getMember().getMemberId();
         this.title = entity.getTitle();
         this.body = entity.getBody();
         this.vibe_id = entity.getVibe_id();
@@ -34,6 +40,7 @@ public class PostResponseDto {
         this.scrap_number = entity.getScrap_number();
         this.comment_number = entity.getComment_number();
         this.tag_name = entity.getTag_name();
+        this.profileImage = entity.getMember().getProfileImage();
     }
 
 }

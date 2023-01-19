@@ -3,6 +3,8 @@ package com.example.vibecap_back.global.common.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.swagger.annotations.ApiResponse;
+import lombok.Builder;
 import lombok.Getter;
 
 import static com.example.vibecap_back.global.common.response.BaseResponseStatus.*;
@@ -36,4 +38,5 @@ public class BaseResponse<T> {
         this.code = status.getCode();
         this.message = status.getMessage();
     }
+
 }
