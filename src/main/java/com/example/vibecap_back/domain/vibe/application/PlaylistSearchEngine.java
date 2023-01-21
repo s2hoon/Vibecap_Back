@@ -9,7 +9,7 @@ public interface PlaylistSearchEngine {
      * @param query
      * youtube 검색어
      * @return
-     * key: "link", "videoId"
      */
-    public Map<String, String> search(String query) throws ExternalApiException;
+
+    public String search(String query) throws ExternalApiException;
 }

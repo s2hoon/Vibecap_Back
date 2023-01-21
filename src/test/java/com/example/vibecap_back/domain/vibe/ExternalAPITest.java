@@ -55,7 +55,8 @@ public class ExternalAPITest {
     @Test
     void 플레이리스트_추천() {
         Assertions.assertDoesNotThrow(() -> {
-            System.out.println(playlistSearchEngine.search("신나는 밤"));
+            System.out.println("www.youtube.com/watch?v=" +
+                    playlistSearchEngine.search("exciting morning"));
         });
     }
 }

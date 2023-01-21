@@ -48,7 +48,7 @@ public class YouTubeClient implements PlaylistSearchEngine {
     private final static String CATEGORY_ID_MUSIC = "10";
 
     @Override
-    public Map<String, String> search(String query) throws ExternalApiException {
+    public String search(String query) throws ExternalApiException {
 
         try {
             youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
@@ -77,7 +77,9 @@ public class YouTubeClient implements PlaylistSearchEngine {
             SearchListResponse searchResponse = search.execute();
             List<SearchResult> searchResultList = searchResponse.getItems();
 
-            return recommendRandomVideo(searchResultList);
+            // prettyPrint(searchResultList.iterator(), query);
+
+            return selectRandomVideo(searchResultList);
 
         } catch (GoogleJsonResponseException e) {
             LOGGER.error("Service error: " + e.getDetails().getMessage());
@@ -99,20 +101,16 @@ public class YouTubeClient implements PlaylistSearchEngine {
      * @return
      * key: "link", "videoId"
      */
-    private Map<String, String> recommendRandomVideo(List<SearchResult> searchResultList) {
+    private String selectRandomVideo(List<SearchResult> searchResultList) {
         // 현재 시간을 시드 값으로 사용하는 난수 생성기 초기화
         Random random = new Random(new Date().getTime());
         int randomIdx = random.nextInt(searchResultList.size());
-        Map<String, String> recommendation = new HashMap<>();
 
         // 임의의 컨텐츠 1개 획득
         SearchResult singleVideo = searchResultList.get(randomIdx);
         ResourceId rId = singleVideo.getId();
 
-        recommendation.put("link", String.format("https://www.youtube.com/watch?v=%s", rId.getVideoId()));
-        recommendation.put("videoId", rId.getVideoId());
-
-        return recommendation;
+        return rId.getVideoId();
     }
 
     private void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {
