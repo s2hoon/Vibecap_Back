@@ -47,7 +47,7 @@ public enum BaseResponseStatus {
     // post
 
     // vibe
-    SAVE_TEMPORARY_FILE_FAILED(false, 3500, "이미지 파일 전달 실패"),
+    SAVE_TEMPORARY_FILE_FAILED(false, 3500, "이미지 파일 전달 실패. 요청을 다시 전송해주세요."),
     EMPTY_IMAGE(false, 3501, "이미지를 보내 주세요"),
     EXTERNAL_API_FAILED(false, 3502,"외부 API 호출 실패"),
 
