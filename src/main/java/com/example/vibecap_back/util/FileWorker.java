@@ -11,9 +11,10 @@ import java.util.UUID;
 
 public class FileWorker {
 
+    // 프로젝트 root 디렉토리 경로
+    private static String rootPath = System.getProperty("user.dir");
     // 이미지 파일이 저장될 디렉토리 경로
-    // TODO DB에 저장하도록 수정
-    private static final String DIR_PATH = "/Users/mingeun/Vibecap/prototype01/capturedImgs/";
+    private static final String DIR_PATH = rootPath + "/capturedImgs/";
 
     /**
      * 파일을 disk에 저장
@@ -37,6 +38,11 @@ public class FileWorker {
         String savedPath = DIR_PATH + savedName;
         file.transferTo(new File(savedPath));
         return savedPath;
+    }
+
+    public static String saveFile(byte[] data) {
+        // 바이트 배열로 표현된 데이터를 파일로 복원 (disk)에 저장
+        return null;
     }
 
     /**
