@@ -4,9 +4,7 @@ import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dao.MyPostsRepository;
 import com.example.vibecap_back.domain.mypage.dto.response.GetMyPageResponse;
-import com.example.vibecap_back.domain.mypage.dto.response.GetMyPostsResponse;
 import com.example.vibecap_back.domain.mypage.dto.request.GetMyPageRequest;
-import com.example.vibecap_back.domain.mypage.dto.request.GetMyPostsRequest;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
@@ -21,12 +19,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Blob;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MyPageService {
@@ -69,13 +63,6 @@ public class MyPageService {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(imageByte);
         BufferedImage bufferedImage = ImageIO.read(inputStream);
         ImageIO.write(bufferedImage, "png", new File("C:\\Users\\최지은\\Downloads\\image.png")); //저장하고자 하는 파일 경로를 입력
-    }
-
-    // 내 게시물 (전체) 조회
-    public List<GetMyPostsResponse> getMyPosts(GetMyPostsRequest request) throws BaseException {
-
-        return myPostsRepository.findByMember_id(request.getMemberId())
-                .stream().map(GetMyPostsResponse::new).collect(Collectors.toList());
     }
 
     // 토큰으로 회원 권한 검사

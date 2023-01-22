@@ -8,7 +8,6 @@ import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import com.example.vibecap_back.global.common.response.BaseResponseStatus;
-import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +27,13 @@ public class MyPage {
 
     private final MyPageRepository myPageRepository;
     private final MyPageService myPageService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public MyPage(MyPageRepository myPageRepository, MyPageService myPageService, JwtTokenProvider jwtTokenProvider) {
+    public MyPage(MyPageRepository myPageRepository, MyPageService myPageService) {
         this.myPageRepository = myPageRepository;
         this.myPageService = myPageService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
+
 
     /**
      * 마이페이지 조회
