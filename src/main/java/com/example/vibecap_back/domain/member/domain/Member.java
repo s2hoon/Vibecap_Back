@@ -2,7 +2,6 @@ package com.example.vibecap_back.domain.member.domain;
 
 import com.example.vibecap_back.domain.model.Authority;
 import com.example.vibecap_back.domain.model.MemberStatus;
-import com.example.vibecap_back.domain.post.domain.Like.Likes;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,8 +16,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -27,7 +26,7 @@ public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMBER_ID")
+    @Setter(AccessLevel.NONE)
     private Long memberId;
 
     @Column(nullable = false)
@@ -40,36 +39,28 @@ public class Member implements UserDetails {
     private String gmail;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
-    private Authority role;
+    private String role;
 
     @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false, name = "state")
-    @Enumerated(EnumType.STRING)
     // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
-    private MemberStatus status;
+    private String status;
 
     @Lob
     @Column
     // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
     private byte[] profileImage;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<Likes> likes = new ArrayList<>();
-
-    public void mappingPostLike(Likes postLike) {
-        this.likes.add(postLike);
-    }
 
     /************ UserDetails interface 구현 ************/
     // TODO Collection framework 사용법, UserDetails interface 공부...
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = new ArrayList<>();
-        roles.add(this.role.toString());
+        roles.add(this.role);
 
         return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
@@ -123,8 +114,9 @@ public class Member implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return (status == MemberStatus.ACTIVE);
+        return (status == MemberStatus.ACTIVE.toString());
     }
+
 
     @Override
     public boolean equals(Object obj) {

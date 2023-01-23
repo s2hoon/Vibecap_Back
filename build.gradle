@@ -41,6 +41,7 @@ dependencies {
     implementation 'io.springfox:springfox-swagger2:2.9.2'
 
     // Google Vision Api
+    // implementation 'org.springframework.cloud:spring-cloud-gcp-starter-vision:1.2.8'
     implementation platform('com.google.cloud:libraries-bom:26.1.5')
     implementation 'com.google.cloud:google-cloud-vision'
     // Google API java client & youtube

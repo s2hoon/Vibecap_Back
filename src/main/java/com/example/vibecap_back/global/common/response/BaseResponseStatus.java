@@ -14,6 +14,7 @@ public enum BaseResponseStatus {
      * 2XXX : Request 내용 오류
      */
     // Common
+    REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
 
     // album
 
@@ -21,6 +22,7 @@ public enum BaseResponseStatus {
 
     // mypage
     INVALID_MEMBER_JWT(false,2300,"권한이 없는 회원의 접근입니다."),
+    EMPTY_PROFILE_IMAGE(false, 2301, "프로필 이미지를 입력해주세요."),
 
     // post
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
@@ -29,9 +31,10 @@ public enum BaseResponseStatus {
 
 
     /**
-     * 3XXX : 내부 로직 오류
+     * 3XXX : 내부 오류
      */
     // Common
+    RESPONSE_ERROR(false, 3000, "값을 불러오는 데 실패하였습니다."),
 
     // album
 
@@ -46,6 +49,9 @@ public enum BaseResponseStatus {
     // post
 
     // vibe
+    SAVE_TEMPORARY_FILE_FAILED(false, 3500, "이미지 파일 전달 실패. 요청을 다시 전송해주세요."),
+    EMPTY_IMAGE(false, 3501, "이미지를 보내 주세요"),
+    EXTERNAL_API_FAILED(false, 3502,"외부 API 호출 실패"),
 
     /**
      * 4XXX : DB, server 오류
