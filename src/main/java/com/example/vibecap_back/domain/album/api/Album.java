@@ -3,6 +3,7 @@ package com.example.vibecap_back.domain.album.api;
 import com.example.vibecap_back.domain.album.application.AlbumService;
 import com.example.vibecap_back.domain.album.dao.AlbumRepository;
 import com.example.vibecap_back.domain.album.dto.GetAlbumResponse;
+import com.example.vibecap_back.domain.album.dto.GetVibeResponse;
 import com.example.vibecap_back.domain.album.dto.request.GetAlbumRequest;
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
@@ -28,7 +29,7 @@ public class Album {
     private final MyPageService myPageService;
 
     @Autowired
-    public Album(AlbumRepository albumRepository, AlbumService albumService, MyPageService myPageService) {
+    public Album(AlbumRepository albumRepository, AlbumService albumService, MyPageService myPageService ) {
         this.albumRepository = albumRepository;
         this.albumService = albumService;
         this.myPageService = myPageService;
@@ -54,6 +55,22 @@ public class Album {
         }
     }
 
+    /**
+     * 앨범에서 개별 Vibe 조회
+     * [GET] /app/album/{vibe_id}
+     */
+    @ResponseBody
+    @GetMapping("/{vibe_id}")
+    public BaseResponse<GetVibeResponse> getVibe(@PathVariable("vibe_id") Long vibeId) {
+        try {
+            GetVibeResponse getVibeResponse = albumService.getVibe(vibeId);
 
+            return new BaseResponse<>(getVibeResponse);
+        } catch (InvalidMemberException e) {
+            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }
 

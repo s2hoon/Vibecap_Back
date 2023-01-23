@@ -18,8 +18,8 @@ public class GetAlbumResponse {
     private String email;
     @JsonProperty("google_email")
     private String gmail;
-    @JsonProperty("vibes")
-    private List<Album> vibes;
+    @JsonProperty("album")
+    private List<Album> album;
 
     /* nickname : String
      * email : String
