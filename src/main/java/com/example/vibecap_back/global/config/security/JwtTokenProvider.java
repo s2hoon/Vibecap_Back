@@ -1,8 +1,7 @@
 package com.example.vibecap_back.global.config.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
@@ -65,7 +68,6 @@ public class JwtTokenProvider {
      * @return
      */
     public String createToken(String email, String role) {
-
         // Set registered claim.
         Date now = new Date();
         Claims claims = Jwts.claims()
@@ -81,10 +83,20 @@ public class JwtTokenProvider {
         Key key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
 
         // token 생성
-        // TODO header는 필요없는건가?
+        /**
+         * header
+         * {
+         *      "alg": "HS256,
+         *      "typ": "JWT"
+         * }
+         */
+        Map<String, Object> header = new HashMap<>();
+        header.put("alg", "HS256");
+        header.put("typ", "JWT");
         String token = Jwts.builder()
+                .setHeader(header)
                 .setClaims(claims)  // payload
-                .signWith(key)      // sign
+                .signWith(key, SignatureAlgorithm.HS256)      // sign
                 .compact();
 
         return token;
@@ -97,8 +109,8 @@ public class JwtTokenProvider {
      */
     // TODO credential?
     public Authentication getAuthentication(String token) {
-        Long memberId = Long.parseLong(this.extractEmail(token));
-        UserDetails memberDetails = memberDetailService.loadUserByUsername(token);
+        String email = extractEmail(token);
+        UserDetails memberDetails = memberDetailService.loadUserByUsername(email);
 
         return new UsernamePasswordAuthenticationToken(memberDetails, "",
                 memberDetails.getAuthorities());
@@ -111,13 +123,40 @@ public class JwtTokenProvider {
      */
     public String extractEmail(String token) {
         String email = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
                 .requireAudience(audience)
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
 
         return email;
+    }
+
+    /**
+     * token에서 email 추출
+     * @return email
+     */
+    public String extractEmail() {
+        String token = getToken();
+        String email = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .requireAudience(audience)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+
+        return email;
+    }
+
+    /**
+     * HTTP header에서 token 값 추출
+     * @return String
+     */
+    public String getToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader("X-AUTH-TOKEN");
     }
 
     /**
@@ -138,10 +177,11 @@ public class JwtTokenProvider {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
-                    .build().parseClaimsJws(token);
+                    .build().
+                    parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
-            LOGGER.info("[validateToken] 토큰 유효 체크 예외 발생");
+            LOGGER.info("[validateToken] 토큰 유효 체크 예외 발생\n" + e.getMessage());
             return false;
         }
     }

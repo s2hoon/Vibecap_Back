@@ -39,7 +39,7 @@ public class MemberInfoService {
         Optional<Member> optionalMember = memberRepository.findById(request.getMemberId());
         // 이미 로그인에 성공한 회원이라면 반드시 찾을 수 있다.
         Member member = optionalMember.get();
-        member.setStatus(MemberStatus.valueOf(MemberStatus.QUIT.toString()));
+        member.setStatus(MemberStatus.QUIT.toString());
         Member quitMember = memberRepository.save(member);
 
         QuitResult result = new QuitResult(quitMember.getNickname());
