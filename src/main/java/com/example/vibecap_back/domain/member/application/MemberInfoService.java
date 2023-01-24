@@ -9,6 +9,7 @@ import com.example.vibecap_back.domain.member.dto.request.QuitRequest;
 import com.example.vibecap_back.domain.model.MemberStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -44,5 +45,14 @@ public class MemberInfoService {
 
         QuitResult result = new QuitResult(quitMember.getNickname());
         return result;
+    }
+
+    public Long updateProfileImage(Long memberId, byte[] image) {
+
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Member member = optionalMember.get();
+        member.setProfileImage(image);
+
+        return memberRepository.save(member).getMemberId();
     }
 }
