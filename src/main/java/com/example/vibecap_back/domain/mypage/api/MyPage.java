@@ -61,7 +61,8 @@ public class MyPage {
      */
     @ResponseBody
     @PatchMapping(value = "/profile-image")
-    public BaseResponse<String> updateProfileImage(@RequestPart(name = "member_id") Long memberId, @RequestPart(name = "profile_image") MultipartFile profileImage) {
+    public BaseResponse<String> updateProfileImage(@RequestParam(name = "member_id") Long memberId,
+                                                   @RequestParam(name = "profile_image") MultipartFile profileImage) {
         try {
             if (memberId == null) {
                 return new BaseResponse<>(BaseResponseStatus.REQUEST_ERROR);
