@@ -102,10 +102,11 @@ public class LabelDetectionClient implements ImageAnalyzer {
                     labels.add(label.getLabel());
                 }
 
-                  verbose(res.getWebDetection());
+                  // verbose(res.getWebDetection());
 
             }
         } catch (Exception e) {
+            LOGGER.error("detectLabelsWebReference: " + e.getMessage());
             throw new ExternalApiException();
         }
 

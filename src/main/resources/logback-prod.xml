@@ -3,8 +3,7 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
     <!-- 변수 설정 -->
-    <property name="LOG_DIR" value="/Users/mingeun/logs" />
-    <property name="LOG_PATH" value="${LOG_DIR}/data.log" />
+    <property name="LOG_DIR" value="/home/ec2-user/vibecap/logs" />
 
     <!-- console appender -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -18,24 +17,19 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>WARN</level>
         </filter>
-        <file>${LOG_PATH}</file>
         <!-- 날짜별로 로그파일 생성(rollover daily) -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}.%d{yyyyMMdd}</fileNamePattern>
-            <maxHistory>30</maxHistory> <!-- 최대 30일까지 백업파일 보관-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/data.%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <maxHistory>7</maxHistory> <!-- 최대 30일까지 백업파일 보관-->
+            <maxFileSize>5MB</maxFileSize>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{32} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <root level="warn">
+    <root level="info">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
 </configuration>
-
-<!-- https://taetaetae.github.io/2017/02/19/logback/ -->
-<!-- filter를 사용하여 INFO 이상의 로그만 파일에 저장 -->
-<!-- logback manual page
-    https://logback.qos.ch/manual/appenders.html -->
