@@ -45,9 +45,9 @@ public class MemberRepositoryTest {
         Member dummy = Member.builder()
                 .email(TEST_EMAIL + i.toString())
                 .password(TEST_PW)
-                .role(Authority.NORMAL)
+                .role(Authority.NORMAL.toString())
                 .nickname(TEST_NICKNAME)
-                .status(MemberStatus.ACTIVE)
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;

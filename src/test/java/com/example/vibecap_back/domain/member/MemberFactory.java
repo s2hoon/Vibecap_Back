@@ -8,6 +8,7 @@ public class MemberFactory {
     private static final String TEST_EMAIL = "hello@naver.com";
     private static final String TEST_PW = "qwer1234";
     private static final String TEST_NICKNAME = "Nick";
+    public static final Long TEST_MEMBER_ID = 123L;
 
     /**
      * email, password, role, nickname, status 필드에 값이 들어있다.
@@ -18,9 +19,9 @@ public class MemberFactory {
         Member dummy = Member.builder()
                 .email(TEST_EMAIL + i.toString())
                 .password(TEST_PW)
-                .role(Authority.valueOf(Authority.ROLE_MEMBER.toString()))
+                .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME + i.toString())
-                .status(MemberStatus.valueOf(MemberStatus.ACTIVE.toString()))
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;
@@ -34,9 +35,9 @@ public class MemberFactory {
         Member dummy = Member.builder()
                 .email(TEST_EMAIL)
                 .password(TEST_PW)
-                .role(Authority.valueOf(Authority.ROLE_MEMBER.toString()))
+                .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME)
-                .status(MemberStatus.valueOf(MemberStatus.ACTIVE.toString()))
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;
@@ -49,12 +50,12 @@ public class MemberFactory {
     static Member selectMember() {
 
         Member dummy = Member.builder()
-                .memberId(123L)
+                .memberId(TEST_MEMBER_ID)
                 .email(TEST_EMAIL)
                 .password(TEST_PW)
-                .role(Authority.valueOf(Authority.ROLE_MEMBER.toString()))
+                .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME)
-                .status(MemberStatus.valueOf(MemberStatus.ACTIVE.toString()))
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;
@@ -71,9 +72,9 @@ public class MemberFactory {
                 .memberId(i.longValue())
                 .email(TEST_EMAIL)
                 .password(TEST_PW)
-                .role(Authority.valueOf(Authority.ROLE_MEMBER.toString()))
+                .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME + i.toString())
-                .status(MemberStatus.valueOf(MemberStatus.ACTIVE.toString()))
+                .status(MemberStatus.ACTIVE.toString())
                 .build();
 
         return dummy;
