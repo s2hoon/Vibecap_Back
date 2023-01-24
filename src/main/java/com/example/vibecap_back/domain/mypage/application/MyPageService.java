@@ -43,7 +43,7 @@ public class MyPageService {
         Optional<Member> optionalMember = myPageRepository.findById(request.getMemberId());
         Member member = optionalMember.get();
 
-        byteArrayConvertToImageFile(member.getProfileImage());  // 이미지 저장 확인용
+//        byteArrayConvertToImageFile(member.getProfileImage());  // 이미지 저장 확인용
 
         return new GetMyPageResponse(member.getMemberId(), member.getEmail(),
                 member.getGmail(), member.getNickname(), member.getProfileImage());
@@ -58,11 +58,11 @@ public class MyPageService {
     }
 
     // 바이트 배열을 로컬에 이미지 파일로 저장
-    public void byteArrayConvertToImageFile(byte[] imageByte) throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageByte);
-        BufferedImage bufferedImage = ImageIO.read(inputStream);
-        ImageIO.write(bufferedImage, "png", new File("C:\\Users\\최지은\\Downloads\\image.png")); //저장하고자 하는 파일 경로를 입력
-    }
+//    public void byteArrayConvertToImageFile(byte[] imageByte) throws IOException {
+//        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageByte);
+//        BufferedImage bufferedImage = ImageIO.read(inputStream);
+//        ImageIO.write(bufferedImage, "png", new File("C:\\Users\\최지은\\Downloads\\image.png")); //저장하고자 하는 파일 경로를 입력
+//    }
 
     // 토큰으로 회원 권한 검사
     public void checkMemberValid(Long memberId) throws InvalidMemberException {
