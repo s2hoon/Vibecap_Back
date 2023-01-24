@@ -32,9 +32,9 @@ public class MyPostsService {
 
 
     // 내 게시물 (전체) 조회
-    public List<GetMyPostsResponse> getMyPosts(GetMyPostsRequest request) throws BaseException {
+    public List<GetMyPostsResponse> getMyPosts(Long memberId) throws BaseException {
 
-        return myPostsRepository.findMyPostsByMember_id(request.getMemberId())
+        return myPostsRepository.findMyPostsByMember_id(memberId)
                 .stream().map(GetMyPostsResponse::new).collect(Collectors.toList());
     }
 
