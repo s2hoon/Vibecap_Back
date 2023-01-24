@@ -14,7 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="PostLike")
+@Table(name="post_like")
 public class Likes {
 
     @Id
@@ -22,11 +22,11 @@ public class Likes {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "MEMBER_ID", foreignKey = @ForeignKey(name = "FK_PostLike_Member"))
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "FK_PostLike_Member"))
     private Member member;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "POST_ID", foreignKey = @ForeignKey(name = "FK_PostLike_Post"))
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_PostLike_Post"))
     private Posts post;
 
     public static boolean isVotedPost(Optional<Likes> optionalPostLike) {
@@ -42,5 +42,4 @@ public class Likes {
         this.post = post;
         post.mappingPostLike(this);
     }
-
 }

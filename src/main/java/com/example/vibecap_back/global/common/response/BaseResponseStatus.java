@@ -26,6 +26,8 @@ public enum BaseResponseStatus {
 
     // post
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
+    POST_POSTS_INVALID_TITLE(false, 2011, "제목의 글자수를 확인해주세요."),
+    POST_POSTS_INVALID_BODY(false, 2012, "내용의 글자수를 확인해주세요."),
 
     // vibe
 

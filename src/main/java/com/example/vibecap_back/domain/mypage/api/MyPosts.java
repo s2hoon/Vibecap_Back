@@ -34,14 +34,14 @@ public class MyPosts {
 
     /**
      * 내 게시물 (전체) 조회
-     * [GET] /app/my-page/posts
+     * [GET] /app/my-page/posts/:member_id
      */
     @ResponseBody
-    @GetMapping("/posts")
-    public BaseResponse<List<GetMyPostsResponse>> getMyPosts(@RequestBody GetMyPostsRequest request) {
+    @GetMapping("/posts/{member_id}")
+    public BaseResponse<List<GetMyPostsResponse>> getMyPosts(@PathVariable("member_id") Long memberId) {
         try {
-            myPageService.checkMemberValid(request.getMemberId());
-            List<GetMyPostsResponse> getMyPostsResponse = myPostsService.getMyPosts(request);
+            myPageService.checkMemberValid(memberId);
+            List<GetMyPostsResponse> getMyPostsResponse = myPostsService.getMyPosts(memberId);
 
             return new BaseResponse<>(getMyPostsResponse);
         } catch (InvalidMemberException e) {

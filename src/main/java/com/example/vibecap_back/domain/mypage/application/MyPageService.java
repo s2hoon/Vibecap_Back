@@ -39,8 +39,8 @@ public class MyPageService {
 
 
     // 마이페이지 조회 (사용자 정보 load)
-    public GetMyPageResponse getMyPage(GetMyPageResponse request) throws BaseException, IOException {
-        Optional<Member> optionalMember = myPageRepository.findById(request.getMemberId());
+    public GetMyPageResponse getMyPage(Long memberId) throws BaseException, IOException {
+        Optional<Member> optionalMember = myPageRepository.findById(memberId);
         Member member = optionalMember.get();
 
 //        byteArrayConvertToImageFile(member.getProfileImage());  // 이미지 저장 확인용

@@ -36,14 +36,14 @@ public class MyPage {
 
     /**
      * 마이페이지 조회
-     * [GET] /app/my-page
+     * [GET] /app/my-page/:member_id
      */
     @ResponseBody
-    @GetMapping("")
-    public BaseResponse<GetMyPageResponse> getMyPage(@RequestBody GetMyPageResponse request) {
+    @GetMapping("{member_id}")
+    public BaseResponse<GetMyPageResponse> getMyPage(@PathVariable("member_id") Long memberId) {
         try {
-            myPageService.checkMemberValid(request.getMemberId());
-            GetMyPageResponse getMyPageResponse = myPageService.getMyPage(request);
+            myPageService.checkMemberValid(memberId);
+            GetMyPageResponse getMyPageResponse = myPageService.getMyPage(memberId);
 
             return new BaseResponse<>(getMyPageResponse);
         } catch (InvalidMemberException e) {

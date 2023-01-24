@@ -1,25 +1,46 @@
 package com.example.vibecap_back.domain.post.domain.Scrap;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.post.domain.Like.Likes;
+import com.example.vibecap_back.domain.post.domain.Posts;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Optional;
 
-@Getter
-@NoArgsConstructor
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
-@Table(name="Scrap")
-@IdClass(PostScrapCount.class)
+@Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name="post_scrap")
 public class Scrap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long member_id;
+    private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long post_id;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "FK_PostScrap_Member"))
+    private Member member;
 
-    /*@Column(table = "post")
-    private Long scrap_number;*/
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_PostScrap_Post"))
+    private Posts post;
+
+    public static boolean isVotedPost(Optional<Scrap> optionalPostScrap) {
+        return optionalPostScrap.isPresent();
+    }
+
+    public void mappingMember(Member member) {
+        this.member = member;
+        member.mappingPostScrap(this);
+    }
+
+    public void mappingPost(Posts post) {
+        this.post = post;
+        post.mappingPostScrap(this);
+    }
 }

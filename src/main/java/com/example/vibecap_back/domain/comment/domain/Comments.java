@@ -14,26 +14,26 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="Comment")
+@Table(name="comment")
 public class Comments {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COMMENT_ID")
-    private Long comment_id;
+    @Column(name = "comment_id")
+    private Long commentId;
 
     @Column(length = 255, nullable = false)
     private String content;
 
     /** Member 가 탈퇴하면 Member 가 작성한 모든 댓글 삭제 **/
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     /** Post 가 삭제되면 Post 에 작성된 모든 댓글 삭제 **/
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "POST_ID")
+    @JoinColumn(name = "post_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Posts post;
 

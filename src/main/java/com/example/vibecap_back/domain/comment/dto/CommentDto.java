@@ -15,7 +15,7 @@ import javax.persistence.Lob;
 @AllArgsConstructor
 public class CommentDto {
 
-    private Long comment_id;
+    private Long commentId;
     private String content;
     private String nickname;
 
@@ -23,10 +23,9 @@ public class CommentDto {
     @Column(table = "member")
     private byte[] profileImage;
 
-
     public static CommentDto toDto(Comments comment) {
         return new CommentDto(
-                comment.getComment_id(),
+                comment.getCommentId(),
                 comment.getContent(),
                 comment.getMember().getNickname(),
                 comment.getMember().getProfileImage()

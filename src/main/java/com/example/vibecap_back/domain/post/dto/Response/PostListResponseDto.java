@@ -15,14 +15,16 @@ import java.time.LocalDateTime;
 public class PostListResponseDto {
 
     private Long id;
-    private Long Member_id;
-    private Long vibe_id;
-    //private LocalDateTime modifiedDate;
+    private Long memberId;
+    private Long vibeId;
+
+    private byte[] vibeImage;
 
     public PostListResponseDto(Posts entity)
     {
         this.id = entity.getId();
-        this.Member_id = entity.getMember().getMemberId();
-        this.vibe_id = entity.getVibe_id();
+        this.memberId = entity.getMember().getMemberId();
+        this.vibeId = entity.getVibe().getVibeId();
+        this.vibeImage = entity.getVibe().getVibeImage();
     }
 }

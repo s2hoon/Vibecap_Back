@@ -22,10 +22,10 @@ public class Tags {
 
     @Setter
     @Column(length = 16, nullable = false)
-    private String tag_name;
+    private String tagName;
 
-    public Tags(Long id, String tag_name) {
+    public Tags(Long id, String tagName) {
         this.id = id;
-        this.tag_name = tag_name;
+        this.tagName = tagName;
     }
 }

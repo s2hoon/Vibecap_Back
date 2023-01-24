@@ -38,14 +38,14 @@ public class Album {
 
     /**
      * 앨범 조회
-     * [GET] /app/album
+     * [GET] /app/album/:member_id
      */
     @ResponseBody
-    @GetMapping("")
-    public BaseResponse<GetAlbumResponse> getAlbum(@RequestBody GetAlbumRequest request) {
+    @GetMapping("{member_id}")
+    public BaseResponse<GetAlbumResponse> getAlbum(@PathVariable("member_id") Long memberId) {
         try {
-            myPageService.checkMemberValid(request.getMemberId());
-            GetAlbumResponse getAlbumResponse = albumService.getAlbum(request);
+            myPageService.checkMemberValid(memberId);
+            GetAlbumResponse getAlbumResponse = albumService.getAlbum(memberId);
 
             return new BaseResponse<>(getAlbumResponse);
         } catch (InvalidMemberException e) {
@@ -55,22 +55,41 @@ public class Album {
         }
     }
 
-    /**
-     * 앨범에서 개별 Vibe 조회
-     * [GET] /app/album/{vibe_id}
-     */
-    @ResponseBody
-    @GetMapping("/{vibe_id}")
-    public BaseResponse<GetVibeResponse> getVibe(@PathVariable("vibe_id") Long vibeId) {
-        try {
-            GetVibeResponse getVibeResponse = albumService.getVibe(vibeId);
+//    /**
+//     * 앨범에서 개별 Vibe 조회
+//     * [GET] /app/album/{vibe_id}
+//     */
+//    @ResponseBody
+//    @GetMapping("/{vibe_id}")
+//    public BaseResponse<GetVibeResponse> getVibe(@PathVariable("vibe_id") Long vibeId) {
+//        try {
+//            GetVibeResponse getVibeResponse = albumService.getVibe(vibeId);
+//
+//            return new BaseResponse<>(getVibeResponse);
+//        } catch (InvalidMemberException e) {
+//            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+//        } catch (BaseException exception) {
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//    }
 
-            return new BaseResponse<>(getVibeResponse);
-        } catch (InvalidMemberException e) {
-            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
+//    /**
+//     * 앨범에서 개별 Vibe 삭제
+//     * [PATCH] /app/album/{vibe_id}
+//     */
+//    @ResponseBody
+//    @DeleteMapping("/{vibe_id}")
+//    public BaseResponse<String> deleteVibe(@PathVariable("vibe_id") Long vibeId) {
+//        try {
+//            albumService.deleteVibe(vibeId);
+//
+//            String result = "해당 Vibe 삭제에 성공했습니다.";
+//            return new BaseResponse<>(result);
+//        } catch (InvalidMemberException e) {
+//            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+//        } catch (BaseException exception) {
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//    }
 }
 

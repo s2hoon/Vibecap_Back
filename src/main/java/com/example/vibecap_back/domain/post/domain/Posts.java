@@ -1,8 +1,13 @@
 package com.example.vibecap_back.domain.post.domain;
 
+import com.example.vibecap_back.domain.comment.domain.Comments;
+import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
+import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
 import com.example.vibecap_back.domain.post.domain.Tag.Tags;
+import com.example.vibecap_back.domain.vibe.domain.Vibe;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -19,13 +24,13 @@ import static javax.persistence.FetchType.LAZY;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name="Post")
-@SecondaryTable(name = "Tag",
-        pkJoinColumns = @PrimaryKeyJoinColumn(name = "TAG_ID"))
+@Table(name="post")
+@SecondaryTable(name = "tag",
+        pkJoinColumns = @PrimaryKeyJoinColumn(name = "tag_id"))
 public class Posts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "POST_ID")
+    @Column(name = "post_id")
     private Long id;
 
     @Column(length = 32, nullable = false)
@@ -34,58 +39,54 @@ public class Posts {
     @Column(length = 140, nullable = false)
     private String body;
 
-    private Long vibe_id;
+    @OneToOne
+    @JoinColumn(name = "vibe_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Vibe vibe;
 
-    private Long like_number;
+    private Long likeNumber;
 
-    private Long scrap_number;
+    private Long scrapNumber;
 
-    private Long comment_number;
+    private Long commentNumber;
 
     @PrePersist
     public void prePersist(){
-        this.like_number = this.like_number == null ? 0 : this.like_number;
-        this.scrap_number = this.scrap_number == null ? 0 : this.scrap_number;
-        this.comment_number = this.comment_number == null ? 0 : this.comment_number;
+        this.likeNumber = this.likeNumber == null ? 0 : this.likeNumber;
+        this.scrapNumber = this.scrapNumber == null ? 0 : this.scrapNumber;
+        this.commentNumber = this.commentNumber == null ? 0 : this.commentNumber;
     }
 
-    @Column(table = "Tag")
-    private String tag_name;
+    @Column(table = "tag")
+    private String tagName;
 
     //post 테이블이랑 tag 테이블 조인
     @ManyToMany
-    @JoinTable(name = "Post_Tag",
-            joinColumns = @JoinColumn(name = "POST_ID"),
-            inverseJoinColumns = @JoinColumn(name = "TAG_ID")
+    @JoinTable(name = "post_tag",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<Tags> tagsList = new ArrayList<>();
+    private List<Tags> tagList = new ArrayList<>();
 
     /** Member 가 탈퇴하면 Member 가 작성한 모든 게시글 삭제 **/
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    /*@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "like_number")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Member member;*/
-
     @Builder
-    public Posts(Long id
-            ,String title, String body,
-                 Long vibe_id,
-                 Long like_number, Long scrap_number, Long comment_number, String tag_name,
+    public Posts(Long id,String title, String body, Vibe vibe,
+                 Long likeNumber, Long scrapNumber, Long commentNumber, String tagName,
                  Member member)
     {
         this.id = id;
         this.title = title;
         this.body = body;
-        this.vibe_id = vibe_id;
-        this.like_number = like_number;
-        this.scrap_number = scrap_number;
-        this.comment_number = comment_number;
-        this.tag_name = tag_name;
+        this.vibe = vibe;
+        this.likeNumber = likeNumber;
+        this.scrapNumber = scrapNumber;
+        this.commentNumber = commentNumber;
+        this.tagName = tagName;
         this.member = member;
     }
 
@@ -102,11 +103,25 @@ public class Posts {
     }
 
     public void updateLikeCount() {
-        this.like_number = (long) this.postLikeList.size();
+        this.likeNumber = (long) this.postLikeList.size();
     }
 
     public void discountLike(Likes postLike) {
         this.postLikeList.remove(postLike);
+    }
 
+    @OneToMany(fetch = LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Scrap> postScrapList = new ArrayList<>();
+
+    public void mappingPostScrap(Scrap postScrap) {
+        this.postScrapList.add(postScrap);
+    }
+
+    public void updateScrapCount() {
+        this.scrapNumber = (long) this.postScrapList.size();
+    }
+
+    public void discountScrap(Scrap postScrap) {
+        this.postScrapList.remove(postScrap);
     }
 }

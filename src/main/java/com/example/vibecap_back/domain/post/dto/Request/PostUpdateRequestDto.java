@@ -14,14 +14,11 @@ public class PostUpdateRequestDto {
 
     private String title;
     private String body;
-    @Column(table = "tag")
-    private String tag_name;
 
     @Builder
-    public PostUpdateRequestDto(String title, String body, String tag_name) {
+    public PostUpdateRequestDto(String title, String body) {
         this.title = title;
         this.body = body;
-        this.tag_name = tag_name;
     }
 
 }

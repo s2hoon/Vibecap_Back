@@ -1,22 +1,28 @@
 package com.example.vibecap_back.domain.post.application;
 
+import com.example.vibecap_back.domain.comment.domain.Comments;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.domain.post.dao.PostsLikeRepository;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
+import com.example.vibecap_back.domain.post.dao.PostsScrapRepository;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
 import com.example.vibecap_back.domain.post.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
 import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostUpdateRequestDto;
 import com.example.vibecap_back.domain.post.exception.PostNotFound;
+import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +35,7 @@ public class PostService {
     private final PostsRepository postsRepository;
 
     private final PostsLikeRepository postsLikeRepository;
+    private final PostsScrapRepository postsScrapRepository;
 
     /** 게시물 작성 API - 저장 **/
     @Transactional
@@ -76,11 +83,12 @@ public class PostService {
     /** 게시물 좋아요 API **/
     public void postLike(Long postId, Long memberId) {
         Posts post = getPostInService(postId);
-        Member member = getMemberInService(memberId);
-        Optional<Likes> byPostAndUser = postsLikeRepository.findByPostAndMember(post, member);
+        Member member = getMemberInService(1l);
 
-        byPostAndUser.ifPresentOrElse(
-                // 좋아요 있을경우 삭제
+        Optional<Likes> byPostAndMember = postsLikeRepository.findByPostAndMember(post, member);
+
+        byPostAndMember.ifPresentOrElse(
+                // 좋아요 있을 경우 삭제
                 postLike -> {
                     postsLikeRepository.delete(postLike);
                     post.discountLike(postLike);
@@ -94,6 +102,32 @@ public class PostService {
                     post.updateLikeCount();
 
                     postsLikeRepository.save(postLike);
+
+                }
+        );
+    }
+
+    /** 게시물 스크랩 API **/
+    public void postScrap(Long postId, Long memberId) {
+        Posts post = getPostInService(postId);
+        Member member = getMemberInService(1l);
+        Optional<Scrap> byPostAndMember = postsScrapRepository.findByPostAndMember(post, member);
+
+        byPostAndMember.ifPresentOrElse(
+                // 스크랩 있을경우 삭제
+                postScrap -> {
+                    postsScrapRepository.delete(postScrap);
+                    post.discountScrap(postScrap);
+                },
+                // 스크랩이 없을 경우 좋아요 추가
+                () -> {
+                    Scrap postScrap = Scrap.builder().build();
+
+                    postScrap.mappingPost(post);
+                    postScrap.mappingMember(member);
+                    post.updateScrapCount();
+
+                    postsScrapRepository.save(postScrap);
                 }
         );
     }
@@ -108,4 +142,16 @@ public class PostService {
         Member member = byMemberId.orElseThrow(() -> new UsernameNotFoundException("게시글 작성 권한이 없습니다."));
         return member;
     }
+
+    // 토큰으로 회원 권한 검사
+    /*public void checkMemberValid(Member memberId) throws InvalidMemberException {
+        // JWT 에서 email 추출
+        String email = jwtTokenProvider.extractEmail();
+        Optional<Member> member = postsRepository.findByEmail(email);
+
+        // memberId와 접근한 회원이 같은지 확인
+        if (!Objects.equals(memberId, member.get().getMemberId())) {
+            throw new InvalidMemberException();
+        }
+    }*/
 }

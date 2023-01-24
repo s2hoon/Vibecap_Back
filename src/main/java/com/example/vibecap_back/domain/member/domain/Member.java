@@ -2,6 +2,7 @@ package com.example.vibecap_back.domain.member.domain;
 
 import com.example.vibecap_back.domain.model.MemberStatus;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
+import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -55,11 +56,22 @@ public class Member implements UserDetails {
     // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
     private byte[] profileImage;
 
+    // 좋아요 count
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<Likes> likes = new ArrayList<>();
+    private List<Likes> postLikeList = new ArrayList<>();
 
     public void mappingPostLike(Likes postLike) {
-        this.likes.add(postLike);
+        this.postLikeList.add(postLike);
+    }
+
+    // 스크랩 count
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Scrap> postScrapList = new ArrayList<>();
+
+    public void mappingPostScrap(Scrap postScrap) {
+        this.postScrapList.add(postScrap);
     }
 
     /************ UserDetails interface 구현 ************/

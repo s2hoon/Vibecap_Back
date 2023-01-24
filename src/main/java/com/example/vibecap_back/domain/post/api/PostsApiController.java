@@ -2,20 +2,25 @@ package com.example.vibecap_back.domain.post.api;
 
 import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.member.application.MemberDetailsService;
+import com.example.vibecap_back.domain.member.dao.MemberRepository;
+import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.domain.post.application.PostService;
 import com.example.vibecap_back.domain.post.domain.Posts;
 import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostUpdateRequestDto;
+import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
+import com.example.vibecap_back.global.common.response.BaseResponseStatus;
 import com.example.vibecap_back.global.common.response.SuccessResponse;
+import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Member;
 import java.util.List;
 
 
@@ -32,11 +37,30 @@ public class PostsApiController{
 
     @Autowired
     private final PostService postService;
+    private final MemberRepository memberRepository;
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     /** 게시물 작성 API **/
     @PostMapping("")
     public Long save(@RequestBody PostSaveRequestDto requestDto) {
+        /*try {
+            postService.checkMemberValid(requestDto.getMember_id());
 
+            if(requestDto.getTitle().length() > 32)
+            {
+                return new BaseResponse<>(BaseResponseStatus.POST_POSTS_INVALID_TITLE);
+            }
+            if(requestDto.getBody().length() > 140)
+            {
+                return new BaseResponse<>(BaseResponseStatus.POST_POSTS_INVALID_BODY);
+            }
+            PostSaveRequestDto requestDto = postService.save(requestDto.getMember_id(),postPostsReq);
+            return new BaseResponse<>(requestDto);
+        } catch (InvalidMemberException e) {
+            throw new RuntimeException(e);
+        }*/
+        //Member member = memberRepository.findById(1L).get();
         return postService.save(requestDto);
     }
 
@@ -72,6 +96,15 @@ public class PostsApiController{
     public SuccessResponse<String> postLike(@PathVariable(name = "postId") Long postId, Long memberId) {
 
         postService.postLike(postId, memberId);
+
+        return SuccessResponse.success(null);
+    }
+
+    /** 게시물 스크랩 API **/
+    @PostMapping("/{postId}/scrap")
+    public SuccessResponse<String> postScrap(@PathVariable(name = "postId") Long postId, Long memberId) {
+
+        postService.postScrap(postId, memberId);
 
         return SuccessResponse.success(null);
     }
