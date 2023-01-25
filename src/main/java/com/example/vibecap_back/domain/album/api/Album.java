@@ -29,7 +29,7 @@ public class Album {
     private final MyPageService myPageService;
 
     @Autowired
-    public Album(AlbumRepository albumRepository, AlbumService albumService, MyPageService myPageService ) {
+    public Album(AlbumRepository albumRepository, AlbumService albumService, MyPageService myPageService) {
         this.albumRepository = albumRepository;
         this.albumService = albumService;
         this.myPageService = myPageService;
@@ -57,7 +57,7 @@ public class Album {
 
 //    /**
 //     * 앨범에서 개별 Vibe 조회
-//     * [GET] /app/album/{vibe_id}
+//     * [GET] /app/album/vibe/:vibe_id
 //     */
 //    @ResponseBody
 //    @GetMapping("/{vibe_id}")

@@ -1,8 +1,10 @@
 package com.example.vibecap_back.domain.mypage.dto.response;
 
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.util.ByteArraySerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ public class GetMyPageResponse {
     @JsonProperty("google_email")
     private String gmail;
     private String nickname;
+    @JsonSerialize(using= ByteArraySerializer.class)
     @JsonProperty("profile_image")
     private byte[] profileImage;
 
@@ -30,6 +33,5 @@ public class GetMyPageResponse {
         this.nickname = member.getNickname();
         this.profileImage = member.getProfileImage();
     }
-
 }
 

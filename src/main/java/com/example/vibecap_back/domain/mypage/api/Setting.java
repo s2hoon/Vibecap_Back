@@ -2,15 +2,12 @@ package com.example.vibecap_back.domain.mypage.api;
 
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.application.SettingService;
-import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dto.response.SaveGmailResponse;
 import com.example.vibecap_back.domain.mypage.dto.request.SaveGmailRequest;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import com.example.vibecap_back.global.common.response.BaseResponseStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,18 +18,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/app/my-page/setting")
 public class Setting {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
-    private final MyPageRepository myPageRepository;
     private final MyPageService myPageService;
     private final SettingService settingService;
 
     @Autowired
-    public Setting(MyPageRepository myPageRepository, MyPageService myPageService, SettingService settingService) {
-        this.myPageRepository = myPageRepository;
+    public Setting(MyPageService myPageService, SettingService settingService) {
         this.myPageService = myPageService;
         this.settingService = settingService;
     }
+
 
     /**
      * 구글 계정 연동(저장)
@@ -41,7 +35,6 @@ public class Setting {
     @ResponseBody
     @PatchMapping("/sync-gmail")
     public BaseResponse<SaveGmailResponse> updateGmail(@RequestBody SaveGmailRequest request) {
-
         try {
             myPageService.checkMemberValid(request.getMemberId());
             SaveGmailResponse saveGmailResponse = settingService.updateGmail(request);
@@ -52,7 +45,6 @@ public class Setting {
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
-
     }
 
 }

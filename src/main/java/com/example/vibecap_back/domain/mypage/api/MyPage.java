@@ -1,14 +1,11 @@
 package com.example.vibecap_back.domain.mypage.api;
 
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
-import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dto.response.GetMyPageResponse;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import com.example.vibecap_back.global.common.response.BaseResponseStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,14 +19,10 @@ import java.io.IOException;
 @RequestMapping("/app/my-page")
 public class MyPage {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
-    private final MyPageRepository myPageRepository;
     private final MyPageService myPageService;
 
     @Autowired
-    public MyPage(MyPageRepository myPageRepository, MyPageService myPageService) {
-        this.myPageRepository = myPageRepository;
+    public MyPage(MyPageService myPageService) {
         this.myPageService = myPageService;
     }
 
@@ -39,7 +32,7 @@ public class MyPage {
      * [GET] /app/my-page/:member_id
      */
     @ResponseBody
-    @GetMapping("{member_id}")
+    @GetMapping("/{member_id}")
     public BaseResponse<GetMyPageResponse> getMyPage(@PathVariable("member_id") Long memberId) {
         try {
             myPageService.checkMemberValid(memberId);
