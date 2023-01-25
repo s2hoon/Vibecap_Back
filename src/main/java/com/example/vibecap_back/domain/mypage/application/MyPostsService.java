@@ -3,7 +3,6 @@ package com.example.vibecap_back.domain.mypage.application;
 import com.example.vibecap_back.domain.mypage.dao.MyLikesRepository;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dao.MyPostsRepository;
-import com.example.vibecap_back.domain.mypage.dto.request.GetMyPostsRequest;
 import com.example.vibecap_back.domain.mypage.dto.response.GetMyPostsResponse;
 import com.example.vibecap_back.global.common.response.BaseException;
 import org.slf4j.Logger;
