@@ -112,7 +112,7 @@ public class VibeService {
     }
 
     /**
-     * 날씨, 시간, 기분 정보만 사용하여 음악 추천.
+     * 추가정보만 사용하여 음악 추천.
      * vibe는 생성하지 않는다.
      * @param extraInfo
      * @return

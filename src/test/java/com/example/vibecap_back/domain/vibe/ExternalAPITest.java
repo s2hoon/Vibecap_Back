@@ -65,7 +65,7 @@ public class ExternalAPITest {
     void 플레이리스트_추천_추가정보_이용() {
         Assertions.assertDoesNotThrow(() -> {
             System.out.println("www.youtube.com/watch?v=" +
-                    playlistSearchEngine.search("눈 내리는 아침"));
+                    playlistSearchEngine.search("여름 아침 신나는"));
         });
     }
 
