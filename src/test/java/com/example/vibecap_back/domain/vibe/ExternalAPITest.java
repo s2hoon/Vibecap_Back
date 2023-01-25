@@ -2,12 +2,10 @@ package com.example.vibecap_back.domain.vibe;
 
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.model.ExtraInfo;
-import com.example.vibecap_back.domain.vibe.application.ImageAnalyzer;
+import com.example.vibecap_back.domain.vibe.application.*;
+import com.example.vibecap_back.domain.vibe.application.Impl.GoogleCloudTranslationClient;
 import com.example.vibecap_back.domain.vibe.application.Impl.LabelDetectionClient;
 import com.example.vibecap_back.domain.vibe.application.Impl.YouTubeClient;
-import com.example.vibecap_back.domain.vibe.application.PlaylistSearchEngine;
-import com.example.vibecap_back.domain.vibe.application.QueryMaker;
-import com.example.vibecap_back.domain.vibe.application.VibeService;
 import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
 import com.example.vibecap_back.util.FileWorker;
@@ -74,6 +72,7 @@ public class ExternalAPITest {
         QueryMaker queryMaker = new QueryMaker();
         ImageAnalyzer imageAnalyzer = new LabelDetectionClient();
         PlaylistSearchEngine playlistSearchEngine = new YouTubeClient();
+        TextTranslator textTranslator = new GoogleCloudTranslationClient();
         ExtraInfo extraInfo = new ExtraInfo("여름 아침 신나는");
         String label;
         String query;
@@ -81,8 +80,9 @@ public class ExternalAPITest {
 
         try {
             label = imageAnalyzer.detectLabelsByWebReference(data);
+            label = textTranslator.translate(label);
             query = queryMaker.assemble(extraInfo, label);
-            videoId = playlistSearchEngine.search(label);
+            videoId = playlistSearchEngine.search(query);
             printFullURL(videoId);
         } catch (ExternalApiException e) {
             Assertions.fail(e.getMessage());

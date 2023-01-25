@@ -42,12 +42,15 @@ dependencies {
 
     // Google Vision Api
     // implementation 'org.springframework.cloud:spring-cloud-gcp-starter-vision:1.2.8'
+    // TODO what is BOM??
     implementation platform('com.google.cloud:libraries-bom:26.1.5')
     implementation 'com.google.cloud:google-cloud-vision'
     // Google API java client & youtube
-    implementation 'com.google.api-client:google-api-client:1.25.0'
+    implementation 'com.google.api-client:google-api-client:1.31.1'
     implementation 'com.google.apis:google-api-services-youtube:v3-rev222-1.25.0'
     implementation 'com.google.http-client:google-http-client-jackson2:1.42.3'
+    // Google translation
+    implementation 'com.google.cloud:google-cloud-translate'
 }
 
 tasks.named('test') {

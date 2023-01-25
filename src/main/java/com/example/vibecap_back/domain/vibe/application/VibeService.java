@@ -22,16 +22,19 @@ public class VibeService {
     private final VibeRepository vibeRepository;
     private ImageAnalyzer imageAnalyzer;
     private PlaylistSearchEngine playlistSearchEngine;
+    private TextTranslator textTranslator;
     private final QueryMaker queryMaker;
 
     @Autowired
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
                        QueryMaker queryMaker,
-                       VibeRepository vibeRepository) {
+                       VibeRepository vibeRepository,
+                       TextTranslator textTranslator) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
         this.queryMaker = queryMaker;
         this.vibeRepository = vibeRepository;
+        this.textTranslator = textTranslator;
     }
 
     /**
@@ -55,6 +58,7 @@ public class VibeService {
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
+        label = textTranslator.translate(label);
         // label로부터 youtube query 생성
         query = queryMaker.assemble(extraInfo, label);
         // query 결과 획득
@@ -95,6 +99,7 @@ public class VibeService {
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
+        label = textTranslator.translate(label);
         keywords[0] = label;
         // label로 바로 검색
         videoId = playlistSearchEngine.search(label);
