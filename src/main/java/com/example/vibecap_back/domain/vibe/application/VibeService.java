@@ -93,6 +93,7 @@ public class VibeService {
 
         byte[] data = imageFile.getBytes();
         String label;
+        String query;
         String videoId;
         String videoLink;
         String[] keywords = new String[1];
@@ -101,8 +102,9 @@ public class VibeService {
         label = imageAnalyzer.detectLabelsByWebReference(data);
         label = textTranslator.translate(label);
         keywords[0] = label;
-        // label로 바로 검색
-        videoId = playlistSearchEngine.search(label);
+        // query 생성
+        query = queryMaker.assemble(label);
+        videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);
         // vibe를 DB에 저장
         saveVibe(memberId, data, videoLink, label);

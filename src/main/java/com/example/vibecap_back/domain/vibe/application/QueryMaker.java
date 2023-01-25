@@ -45,6 +45,20 @@ public class QueryMaker {
     }
 
     /**
+     * 사진만으로 검색어 생성
+     * @param label
+     * @return
+     */
+    public String assemble(String label) {
+        String query;
+
+        query = String.format("%s %s",
+                label, PLAYLIST_KR);
+
+        return query;
+    }
+
+    /**
      * 추가 정보만 사용해서 query 생성
      * @param extraInfo
      * season, time, feeling
