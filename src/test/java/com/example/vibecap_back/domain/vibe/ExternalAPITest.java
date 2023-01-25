@@ -1,6 +1,7 @@
 package com.example.vibecap_back.domain.vibe;
 
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
+import com.example.vibecap_back.domain.model.ExtraInfo;
 import com.example.vibecap_back.domain.vibe.application.ImageAnalyzer;
 import com.example.vibecap_back.domain.vibe.application.Impl.LabelDetectionClient;
 import com.example.vibecap_back.domain.vibe.application.Impl.YouTubeClient;
@@ -27,8 +28,8 @@ public class ExternalAPITest {
     private ImageAnalyzer imageAnalyzer;
     private PlaylistSearchEngine playlistSearchEngine;
     private byte[] data;
-//    private static final String SAMPLE_IMAGE = "sea.jpeg";
-    private static final String SAMPLE_IMAGE = "desk.JPG";
+    private static final String SAMPLE_IMAGE = "sea.jpeg";
+//    private static final String SAMPLE_IMAGE = "desk.JPG";
 //    private static final String SAMPLE_IMAGE = "airplane.JPG";
 //    private static final String SAMPLE_IMAGE = "flags.jpeg";
 
@@ -70,13 +71,17 @@ public class ExternalAPITest {
 
     @Test
     void 플레이리스트_추천_사진_이용() {
+        QueryMaker queryMaker = new QueryMaker();
         ImageAnalyzer imageAnalyzer = new LabelDetectionClient();
         PlaylistSearchEngine playlistSearchEngine = new YouTubeClient();
+        ExtraInfo extraInfo = new ExtraInfo("여름 아침 신나는");
         String label;
+        String query;
         String videoId;
 
         try {
             label = imageAnalyzer.detectLabelsByWebReference(data);
+            query = queryMaker.assemble(extraInfo, label);
             videoId = playlistSearchEngine.search(label);
             printFullURL(videoId);
         } catch (ExternalApiException e) {
