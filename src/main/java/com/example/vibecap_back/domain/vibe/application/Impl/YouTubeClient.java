@@ -2,6 +2,7 @@ package com.example.vibecap_back.domain.vibe.application.Impl;
 
 import com.example.vibecap_back.domain.vibe.application.PlaylistSearchEngine;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import com.example.vibecap_back.global.config.security.Secret;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
@@ -48,7 +49,7 @@ public class YouTubeClient implements PlaylistSearchEngine {
     private final static String CATEGORY_ID_MUSIC = "10";
 
     @Override
-    public String search(String query) throws ExternalApiException {
+    public String search(String query) throws ExternalApiException, NoProperVideoException {
 
         try {
             youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
@@ -89,6 +90,8 @@ public class YouTubeClient implements PlaylistSearchEngine {
         } catch (IOException e) {
             LOGGER.warn(e.getMessage());
             throw new ExternalApiException();
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoProperVideoException();
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ExternalApiException();
@@ -120,7 +123,10 @@ public class YouTubeClient implements PlaylistSearchEngine {
      * @param searchResultList
      * @return
      */
-    private String selectTheFirstVideo(List<SearchResult> searchResultList) {
+    private String selectTheFirstVideo(List<SearchResult> searchResultList)
+            throws IndexOutOfBoundsException {
+        if (searchResultList.size() == 0)
+            throw new IndexOutOfBoundsException();
         return searchResultList.get(0).getId().getVideoId();
     }
 

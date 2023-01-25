@@ -8,6 +8,7 @@ import com.example.vibecap_back.domain.vibe.application.Impl.LabelDetectionClien
 import com.example.vibecap_back.domain.vibe.application.Impl.YouTubeClient;
 import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import com.example.vibecap_back.util.FileWorker;
 import com.google.api.services.youtube.model.Playlist;
 import org.junit.jupiter.api.Assertions;
@@ -86,6 +87,8 @@ public class ExternalAPITest {
             printFullURL(videoId);
         } catch (ExternalApiException e) {
             Assertions.fail(e.getMessage());
+        } catch (NoProperVideoException e) {
+            System.out.println("적절한 영상 없음");
         }
     }
 

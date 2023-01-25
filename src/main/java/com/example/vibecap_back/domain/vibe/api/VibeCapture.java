@@ -8,6 +8,7 @@ import com.example.vibecap_back.domain.vibe.application.VibeService;
 import com.example.vibecap_back.domain.vibe.dto.CaptureResult;
 import com.example.vibecap_back.domain.vibe.dto.CaptureWithExtraInfoRequest;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,8 @@ public class VibeCapture {
             return new BaseResponse<>(EXTERNAL_API_FAILED);
         } catch (IOException e) {
             return new BaseResponse<>(SAVE_TEMPORARY_FILE_FAILED);
+        } catch (NoProperVideoException e) {
+            return new BaseResponse<>(NO_PROPER_VIDEO);
         }
     }
 
@@ -82,6 +85,8 @@ public class VibeCapture {
             return new BaseResponse(SAVE_TEMPORARY_FILE_FAILED);
         } catch (NullPointerException e) {
             return new BaseResponse(EMPTY_IMAGE);
+        } catch (NoProperVideoException e) {
+            return new BaseResponse<>(NO_PROPER_VIDEO);
         }
 
     }
@@ -99,6 +104,8 @@ public class VibeCapture {
             return new BaseResponse<>(result);
         } catch (ExternalApiException e) {
             return new BaseResponse(EXTERNAL_API_FAILED);
+        } catch (NoProperVideoException e) {
+            return new BaseResponse<>(NO_PROPER_VIDEO);
         }
 
     }

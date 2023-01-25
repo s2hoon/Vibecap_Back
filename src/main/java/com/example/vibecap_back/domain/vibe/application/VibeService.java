@@ -6,6 +6,7 @@ import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.example.vibecap_back.domain.vibe.dto.CaptureResult;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class VibeService {
      * @throws IOException
      */
     public CaptureResult capture(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
-            throws ExternalApiException, IOException {
+            throws ExternalApiException, IOException, NoProperVideoException {
 
         byte[] data = imageFile.getBytes();
         String label;
@@ -86,7 +87,7 @@ public class VibeService {
      * @throws IOException
      */
     public CaptureResult capture(Long memberId, MultipartFile imageFile)
-            throws ExternalApiException, IOException, NullPointerException {
+            throws ExternalApiException, IOException, NullPointerException, NoProperVideoException {
 
         if (memberId == null || imageFile == null)
             throw new NullPointerException("empty request");
@@ -124,7 +125,7 @@ public class VibeService {
      * @param extraInfo
      * @return
      */
-    public CaptureResult capture(ExtraInfo extraInfo) throws ExternalApiException {
+    public CaptureResult capture(ExtraInfo extraInfo) throws ExternalApiException, NoProperVideoException {
         String query;
         String videoId;
         String videoLink;
