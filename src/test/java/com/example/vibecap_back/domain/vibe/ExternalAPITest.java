@@ -27,11 +27,10 @@ public class ExternalAPITest {
     private ImageAnalyzer imageAnalyzer;
     private PlaylistSearchEngine playlistSearchEngine;
     private byte[] data;
-    // private static final String SAMPLE_IMAGE = "attack-on-titan.jpeg";
-    // private static final String SAMPLE_IMAGE = "pokemon.jpeg";
-    // private static final String SAMPLE_IMAGE = "flags.jpeg";
-    // private static final String SAMPLE_IMAGE = "food.jpeg";
-     private static final String SAMPLE_IMAGE = "sea.jpeg";
+//    private static final String SAMPLE_IMAGE = "sea.jpeg";
+    private static final String SAMPLE_IMAGE = "desk.JPG";
+//    private static final String SAMPLE_IMAGE = "airplane.JPG";
+//    private static final String SAMPLE_IMAGE = "flags.jpeg";
 
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_RESET = "\u001B[0m";
