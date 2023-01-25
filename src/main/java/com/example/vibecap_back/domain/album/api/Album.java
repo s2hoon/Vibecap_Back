@@ -4,6 +4,7 @@ import com.example.vibecap_back.domain.album.application.AlbumService;
 import com.example.vibecap_back.domain.album.dao.AlbumRepository;
 import com.example.vibecap_back.domain.album.dto.GetAlbumResponse;
 import com.example.vibecap_back.domain.album.dto.GetVibeResponse;
+import com.example.vibecap_back.domain.album.exception.NoAccessToVibeException;
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
@@ -54,23 +55,23 @@ public class Album {
         }
     }
 
-//    /**
-//     * 앨범에서 개별 Vibe 조회
-//     * [GET] /app/album/vibe/:vibe_id
-//     */
-//    @ResponseBody
-//    @GetMapping("/{vibe_id}")
-//    public BaseResponse<GetVibeResponse> getVibe(@PathVariable("vibe_id") Long vibeId) {
-//        try {
-//            GetVibeResponse getVibeResponse = albumService.getVibe(vibeId);
-//
-//            return new BaseResponse<>(getVibeResponse);
-//        } catch (InvalidMemberException e) {
-//            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
-//        } catch (BaseException exception) {
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
+    /**
+     * 앨범에서 개별 Vibe 조회
+     * [GET] /app/album/vibe/:vibe_id
+     */
+    @ResponseBody
+    @GetMapping("/vibe/{vibe_id}")
+    public BaseResponse<GetVibeResponse> getVibe(@PathVariable("vibe_id") Long vibeId) {
+        try {
+            GetVibeResponse getVibeResponse = albumService.getVibe(vibeId);
+
+            return new BaseResponse<>(getVibeResponse);
+        } catch (NoAccessToVibeException e) {
+            return new BaseResponse<>(BaseResponseStatus.NO_ACCESS_TO_VIBE);
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 //    /**
 //     * 앨범에서 개별 Vibe 삭제

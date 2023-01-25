@@ -17,6 +17,7 @@ public enum BaseResponseStatus {
     REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
 
     // album
+    NO_ACCESS_TO_VIBE(false, 2100, "해당 바이브에 대한 접근 권한이 없습니다."),
 
     // member
 
