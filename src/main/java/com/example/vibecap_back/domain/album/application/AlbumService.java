@@ -64,10 +64,10 @@ public class AlbumService {
     }
 
     // 앨범에서 개별 Vibe 삭제
-//    public void deleteVibe(Long vibeId) throws NoAccessToVibeException {
-//        checkAccessToVibe(vibeId);
-//        albumRepository.deleteById(vibeId);
-//    }
+    public void deleteVibe(Long vibeId) throws BaseException, NoAccessToVibeException {
+        checkAccessToVibe(vibeId);
+        albumRepository.deleteById(vibeId);
+    }
 
     // 요청한 vibe 에 접근 가능한 회원인지 검사
     public void checkAccessToVibe(Long vibeId) throws NoAccessToVibeException {
