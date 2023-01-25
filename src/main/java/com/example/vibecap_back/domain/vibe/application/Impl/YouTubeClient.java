@@ -82,10 +82,10 @@ public class YouTubeClient implements PlaylistSearchEngine {
             return selectRandomVideo(searchResultList);
 
         } catch (GoogleJsonResponseException e) {
-            LOGGER.error("Service error: " + e.getDetails().getMessage());
+            LOGGER.warn(e.getDetails().getMessage());
             throw new ExternalApiException();
         } catch (IOException e) {
-            LOGGER.error("IO error: " + e.getMessage());
+            LOGGER.warn(e.getMessage());
             throw new ExternalApiException();
         } catch (Throwable t) {
             t.printStackTrace();

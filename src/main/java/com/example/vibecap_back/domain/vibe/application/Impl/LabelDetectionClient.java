@@ -62,7 +62,7 @@ public class LabelDetectionClient implements ImageAnalyzer {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("detectLabels : " + e.getMessage());
+            LOGGER.warn(e.getMessage());
             throw new ExternalApiException();
         }
 
@@ -106,7 +106,7 @@ public class LabelDetectionClient implements ImageAnalyzer {
 
             }
         } catch (Exception e) {
-            LOGGER.error("detectLabelsWebReference: " + e.getMessage());
+            LOGGER.warn(e.getMessage());
             throw new ExternalApiException();
         }
 
