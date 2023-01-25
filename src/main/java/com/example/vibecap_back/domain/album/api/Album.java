@@ -4,7 +4,6 @@ import com.example.vibecap_back.domain.album.application.AlbumService;
 import com.example.vibecap_back.domain.album.dao.AlbumRepository;
 import com.example.vibecap_back.domain.album.dto.GetAlbumResponse;
 import com.example.vibecap_back.domain.album.dto.GetVibeResponse;
-import com.example.vibecap_back.domain.album.dto.request.GetAlbumRequest;
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;

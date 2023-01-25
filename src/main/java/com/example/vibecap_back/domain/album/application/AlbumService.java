@@ -4,7 +4,6 @@ import com.example.vibecap_back.domain.album.dao.AlbumRepository;
 import com.example.vibecap_back.domain.album.domain.Album;
 import com.example.vibecap_back.domain.album.dto.GetAlbumResponse;
 import com.example.vibecap_back.domain.album.dto.GetVibeResponse;
-import com.example.vibecap_back.domain.album.dto.request.GetAlbumRequest;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
