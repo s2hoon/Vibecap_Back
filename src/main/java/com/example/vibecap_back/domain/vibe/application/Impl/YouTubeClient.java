@@ -79,7 +79,9 @@ public class YouTubeClient implements PlaylistSearchEngine {
 
             // prettyPrint(searchResultList.iterator(), query);
 
-            return selectRandomVideo(searchResultList);
+            // 무작위로 1개의 비디오 전송
+            // return selectRandomVideo(searchResultList);
+            return selectTheFirstVideo(searchResultList);
 
         } catch (GoogleJsonResponseException e) {
             LOGGER.warn(e.getDetails().getMessage());
@@ -111,6 +113,15 @@ public class YouTubeClient implements PlaylistSearchEngine {
         ResourceId rId = singleVideo.getId();
 
         return rId.getVideoId();
+    }
+
+    /**
+     * 검색된 영상 중 첫 번째 비디오 아이디 반환.
+     * @param searchResultList
+     * @return
+     */
+    private String selectTheFirstVideo(List<SearchResult> searchResultList) {
+        return searchResultList.get(0).getId().getVideoId();
     }
 
     private void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {
