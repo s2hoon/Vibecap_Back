@@ -25,6 +25,9 @@ public class GoogleCloudTranslationClient implements TextTranslator {
         Detection detection = translate.detect(foreignString);
         String detectedLanguage = detection.getLanguage();
 
+        if (detectedLanguage.equals("ko"))
+            return foreignString;
+
         try {
             Translation translation = translate.translate(
                     foreignString,
