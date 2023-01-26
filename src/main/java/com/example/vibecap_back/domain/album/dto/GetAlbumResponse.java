@@ -24,9 +24,9 @@ public class GetAlbumResponse {
     /* nickname : String
      * email : String
      * google_email : String
-     * vibes : List
+     * album : List
      *  - vibe_id : int
-     *  - member_id : int
+     *  - vibe_image : byte[]
      */
 
 }

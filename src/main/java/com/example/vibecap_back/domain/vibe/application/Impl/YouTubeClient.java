@@ -2,6 +2,7 @@ package com.example.vibecap_back.domain.vibe.application.Impl;
 
 import com.example.vibecap_back.domain.vibe.application.PlaylistSearchEngine;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import com.example.vibecap_back.global.config.security.Secret;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
@@ -48,7 +49,7 @@ public class YouTubeClient implements PlaylistSearchEngine {
     private final static String CATEGORY_ID_MUSIC = "10";
 
     @Override
-    public String search(String query) throws ExternalApiException {
+    public String search(String query) throws ExternalApiException, NoProperVideoException {
 
         try {
             youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
@@ -79,14 +80,18 @@ public class YouTubeClient implements PlaylistSearchEngine {
 
             // prettyPrint(searchResultList.iterator(), query);
 
-            return selectRandomVideo(searchResultList);
+            // 무작위로 1개의 비디오 전송
+            // return selectRandomVideo(searchResultList);
+            return selectTheFirstVideo(searchResultList);
 
         } catch (GoogleJsonResponseException e) {
-            LOGGER.error("Service error: " + e.getDetails().getMessage());
+            LOGGER.warn(e.getDetails().getMessage());
             throw new ExternalApiException();
         } catch (IOException e) {
-            LOGGER.error("IO error: " + e.getMessage());
+            LOGGER.warn(e.getMessage());
             throw new ExternalApiException();
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoProperVideoException();
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ExternalApiException();
@@ -111,6 +116,18 @@ public class YouTubeClient implements PlaylistSearchEngine {
         ResourceId rId = singleVideo.getId();
 
         return rId.getVideoId();
+    }
+
+    /**
+     * 검색된 영상 중 첫 번째 비디오 아이디 반환.
+     * @param searchResultList
+     * @return
+     */
+    private String selectTheFirstVideo(List<SearchResult> searchResultList)
+            throws IndexOutOfBoundsException {
+        if (searchResultList.size() == 0)
+            throw new IndexOutOfBoundsException();
+        return searchResultList.get(0).getId().getVideoId();
     }
 
     private void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {

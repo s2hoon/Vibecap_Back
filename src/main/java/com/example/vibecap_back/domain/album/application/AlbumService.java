@@ -39,8 +39,8 @@ public class AlbumService {
 
 
     // 앨범 조회
-    public GetAlbumResponse getAlbum(Long memberId) throws BaseException {
-        Optional<Member> optionalMember = myPageRepository.findById(memberId);
+    public GetAlbumResponse getAlbum(GetAlbumRequest request) throws BaseException {
+        Optional<Member> optionalMember = myPageRepository.findById(request.getMemberId());
         Member member = optionalMember.get();
 
         List<Vibe> myVibe = albumRepository.findByMemberId(member.getMemberId());
@@ -62,13 +62,6 @@ public class AlbumService {
 
         return new GetVibeResponse(vibe.getVibeId(), vibe.getMemberId(), vibe.getVibeImage(),
                 vibe.getYoutubeLink(), vibe.getVibeKeywords());
-    }
-
-    // 앨범에서 개별 Vibe 삭제
-    public void deleteVibe(Long vibeId) throws BaseException, InvalidMemberException {
-//        checkVibeValid(vibeId);
-
-        albumRepository.deleteById(vibeId);
     }
 
     // 요청한 vibe 에 접근 가능한 회원인지 검사

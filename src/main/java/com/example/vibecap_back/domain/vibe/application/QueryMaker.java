@@ -3,15 +3,11 @@ package com.example.vibecap_back.domain.vibe.application;
 import com.example.vibecap_back.domain.model.ExtraInfo;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 @Component
 public class QueryMaker {
 
-    private String[] weatherList = {
-            "화창한", "흐린 날", "눈 내리는", "비오는", "쌀쌀한" ,"무더운"
-    };
     private String[] timeList = {
             "아침", "낮", "저녁", "밤", "새벽"
     };
@@ -29,19 +25,19 @@ public class QueryMaker {
     /**
      * 사진과 추가 정보 모두 사용해서 query 생성
      * @param extraInfo
-     * weather, time, feeling
+     * season, time, feeling
      * @param label
      * 이미지에서 추출한 label
      * @return
      */
     public String assemble(ExtraInfo extraInfo, String label) {
         String query;
-        String weather = extraInfo.getWeather();
+        String season = extraInfo.getSeason();
         String time = extraInfo.getTime();
         String feeling = extraInfo.getFeeling();
 
         query = String.format("%s %s %s %s %s",
-                weather, time, feeling, label, PLAYLIST_KR);
+                season, time, feeling, label, PLAYLIST_KR);
 
         System.out.println(query);
 
@@ -49,19 +45,33 @@ public class QueryMaker {
     }
 
     /**
+     * 사진만으로 검색어 생성
+     * @param label
+     * @return
+     */
+    public String assemble(String label) {
+        String query;
+
+        query = String.format("%s %s",
+                label, PLAYLIST_KR);
+
+        return query;
+    }
+
+    /**
      * 추가 정보만 사용해서 query 생성
      * @param extraInfo
-     * weather, time, feeling
+     * season, time, feeling
      * @return
      */
     public String assemble(ExtraInfo extraInfo) {
         String query;
-        String weather = extraInfo.getWeather();
+        String season = extraInfo.getSeason();
         String time = extraInfo.getTime();
         String feeling = extraInfo.getFeeling();
 
         query = String.format("%s %s %s %s",
-                weather, time, feeling, PLAYLIST_KR);
+                season, time, feeling, PLAYLIST_KR);
 
         System.out.println(query);
 

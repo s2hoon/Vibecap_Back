@@ -17,6 +17,7 @@ public enum BaseResponseStatus {
     REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
 
     // album
+    NO_ACCESS_TO_VIBE(false, 2100, "해당 바이브에 대한 접근 권한이 없습니다."),
 
     // member
 
@@ -54,6 +55,7 @@ public enum BaseResponseStatus {
     SAVE_TEMPORARY_FILE_FAILED(false, 3500, "이미지 파일 전달 실패. 요청을 다시 전송해주세요."),
     EMPTY_IMAGE(false, 3501, "이미지를 보내 주세요"),
     EXTERNAL_API_FAILED(false, 3502,"외부 API 호출 실패"),
+    NO_PROPER_VIDEO(false, 3503, "적절한 음악이 없습니다. (주어진 정보가 너무 복잡한 경우 발생) "),
 
     /**
      * 4XXX : DB, server 오류

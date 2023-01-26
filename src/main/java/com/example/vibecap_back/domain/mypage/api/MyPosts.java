@@ -4,7 +4,6 @@ import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.application.MyPostsService;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dto.response.GetMyPostsResponse;
-import com.example.vibecap_back.domain.mypage.dto.request.GetMyPostsRequest;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;

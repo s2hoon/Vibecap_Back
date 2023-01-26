@@ -6,6 +6,7 @@ import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.example.vibecap_back.domain.vibe.dto.CaptureResult;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,19 @@ public class VibeService {
     private final VibeRepository vibeRepository;
     private ImageAnalyzer imageAnalyzer;
     private PlaylistSearchEngine playlistSearchEngine;
+    private TextTranslator textTranslator;
     private final QueryMaker queryMaker;
 
     @Autowired
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
                        QueryMaker queryMaker,
-                       VibeRepository vibeRepository) {
+                       VibeRepository vibeRepository,
+                       TextTranslator textTranslator) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
         this.queryMaker = queryMaker;
         this.vibeRepository = vibeRepository;
+        this.textTranslator = textTranslator;
     }
 
     /**
@@ -44,7 +48,7 @@ public class VibeService {
      * @throws IOException
      */
     public CaptureResult capture(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
-            throws ExternalApiException, IOException {
+            throws ExternalApiException, IOException, NoProperVideoException {
 
         byte[] data = imageFile.getBytes();
         String label;
@@ -55,6 +59,7 @@ public class VibeService {
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
+        label = textTranslator.translate(label);
         // label로부터 youtube query 생성
         query = queryMaker.assemble(extraInfo, label);
         // query 결과 획득
@@ -82,22 +87,25 @@ public class VibeService {
      * @throws IOException
      */
     public CaptureResult capture(Long memberId, MultipartFile imageFile)
-            throws ExternalApiException, IOException, NullPointerException {
+            throws ExternalApiException, IOException, NullPointerException, NoProperVideoException {
 
         if (memberId == null || imageFile == null)
             throw new NullPointerException("empty request");
 
         byte[] data = imageFile.getBytes();
         String label;
+        String query;
         String videoId;
         String videoLink;
         String[] keywords = new String[1];
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
+        label = textTranslator.translate(label);
         keywords[0] = label;
-        // label로 바로 검색
-        videoId = playlistSearchEngine.search(label);
+        // query 생성
+        query = queryMaker.assemble(label);
+        videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);
         // vibe를 DB에 저장
         saveVibe(memberId, data, videoLink, label);
@@ -112,12 +120,12 @@ public class VibeService {
     }
 
     /**
-     * 날씨, 시간, 기분 정보만 사용하여 음악 추천.
+     * 추가정보만 사용하여 음악 추천.
      * vibe는 생성하지 않는다.
      * @param extraInfo
      * @return
      */
-    public CaptureResult capture(ExtraInfo extraInfo) throws ExternalApiException {
+    public CaptureResult capture(ExtraInfo extraInfo) throws ExternalApiException, NoProperVideoException {
         String query;
         String videoId;
         String videoLink;

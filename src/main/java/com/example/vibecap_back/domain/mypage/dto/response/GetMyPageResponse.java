@@ -30,6 +30,5 @@ public class GetMyPageResponse {
         this.nickname = member.getNickname();
         this.profileImage = member.getProfileImage();
     }
-
 }
 

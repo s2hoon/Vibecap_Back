@@ -1,6 +1,7 @@
 package com.example.vibecap_back.domain.vibe.application;
 
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 
 import java.util.Map;
 
@@ -11,5 +12,5 @@ public interface PlaylistSearchEngine {
      * @return
      */
 
-    public String search(String query) throws ExternalApiException;
+    public String search(String query) throws ExternalApiException, NoProperVideoException;
 }

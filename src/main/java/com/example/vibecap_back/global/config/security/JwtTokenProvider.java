@@ -31,7 +31,7 @@ public class JwtTokenProvider {
     @Value("${springboot.jwt.audience}")
     private final String audience = "vibecapDefaultServer";
     private String secretKey = Secret.JWT_SECRET_KEY;
-    private final long tokenValidMillisecond = 1000L * 60 * 60; // 1분
+    private final long tokenValidMillisecond = 1000L * 60 * 60 * 24 * 60; // 두 달 ( 3.26일 만료)
     private final UserDetailsService memberDetailService;
 
     @Autowired
