@@ -3,6 +3,7 @@ package com.example.vibecap_back.domain.member.api;
 import com.example.vibecap_back.domain.member.application.SignService;
 import com.example.vibecap_back.domain.member.dto.SignInResult;
 import com.example.vibecap_back.domain.member.dto.request.SignInRequest;
+import com.example.vibecap_back.domain.member.exception.DisabledMemberException;
 import com.example.vibecap_back.domain.member.exception.WrongEmailException;
 import com.example.vibecap_back.domain.member.exception.WrongPasswordException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
@@ -46,6 +47,8 @@ public class SignIn {
             response = new BaseResponse<>(BaseResponseStatus.WRONG_EMAIL);
         } catch (WrongPasswordException pwdException) {
             response = new BaseResponse<>(BaseResponseStatus.WRONG_PASSWORD);
+        } catch (DisabledMemberException e) {
+            response = new BaseResponse<>(BaseResponseStatus.DISABLED_MEMBER);
         }
 
         return response;

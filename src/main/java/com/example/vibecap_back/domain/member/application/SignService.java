@@ -5,6 +5,7 @@ import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.member.dto.MemberDto;
 import com.example.vibecap_back.domain.member.dto.SignInResult;
 import com.example.vibecap_back.domain.member.dto.request.SignInRequest;
+import com.example.vibecap_back.domain.member.exception.DisabledMemberException;
 import com.example.vibecap_back.domain.member.exception.EmailAlreadyExistException;
 import com.example.vibecap_back.domain.member.exception.WrongEmailException;
 import com.example.vibecap_back.domain.member.exception.WrongPasswordException;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static com.example.vibecap_back.domain.model.MemberStatus.ACTIVE;
 
 @Service
 public class SignService {
@@ -67,7 +70,8 @@ public class SignService {
      * @param request
      * @return
      */
-    public SignInResult signIn(SignInRequest request) throws WrongPasswordException, WrongEmailException {
+    public SignInResult signIn(SignInRequest request)
+            throws WrongPasswordException, WrongEmailException, DisabledMemberException {
         LOGGER.info("[SignInResult] signHandler로 회원 정보 요청");
         Member expectedMember;  // 로그인하려는 회원
 
@@ -77,6 +81,9 @@ public class SignService {
             expectedMember = member.get();
         else
             throw new WrongEmailException();
+
+        // 탈퇴 여부 확인
+        checkStatus(expectedMember);
 
         // 이메일 일치 여부 확인
         if (!passwordEncoder.matches(request.getPassword(), expectedMember.getPassword()))
@@ -104,4 +111,8 @@ public class SignService {
             throw new EmailAlreadyExistException();
     }
 
+    private void checkStatus(Member member) throws DisabledMemberException {
+        if (!member.getStatus().equals(ACTIVE.toString()))
+            throw new DisabledMemberException();
+    }
 }
