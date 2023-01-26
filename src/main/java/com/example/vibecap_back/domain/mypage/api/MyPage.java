@@ -6,6 +6,8 @@ import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import com.example.vibecap_back.global.common.response.BaseResponseStatus;
+import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
+import com.example.vibecap_back.global.config.storage.FireBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +22,12 @@ import java.io.IOException;
 public class MyPage {
 
     private final MyPageService myPageService;
+    private final FireBaseService fireBaseService;
 
     @Autowired
-    public MyPage(MyPageService myPageService) {
+    public MyPage(MyPageService myPageService, FireBaseService fireBaseService) {
         this.myPageService = myPageService;
+        this.fireBaseService = fireBaseService;
     }
 
 
@@ -53,7 +57,7 @@ public class MyPage {
      * [PATCH] /app/my-page/profile-image
      */
     @ResponseBody
-    @PatchMapping(value = "/profile-image")
+    @PostMapping(value = "/profile-image")
     public BaseResponse<String> updateProfileImage(@RequestParam(name = "member_id") Long memberId,
                                                    @RequestParam(name = "profile_image") MultipartFile profileImage) {
         try {
@@ -63,13 +67,17 @@ public class MyPage {
             if (profileImage.isEmpty()) {
                 return new BaseResponse<>(BaseResponseStatus.EMPTY_PROFILE_IMAGE);
             }
-            myPageService.checkMemberValid(memberId);
-            myPageService.updateProfileImage(memberId, profileImage);
 
-            String result = "프로필 이미지 변경에 성공했습니다.";
-            return new BaseResponse<>(result);
+            myPageService.checkMemberValid(memberId);
+
+            String profileImgUrl = fireBaseService.uploadFiles(profileImage, "profile_image" + memberId);
+            myPageService.updateProfileImage(memberId, profileImage); // profileImgUrl 전달해서 DB에 저장해야 함
+
+            return new BaseResponse<>(profileImgUrl);
         } catch (InvalidMemberException e) {
             return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+        } catch (FileSaveErrorException e) {
+            return new BaseResponse<>(BaseResponseStatus.FILE_SAVE_ERROR);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
