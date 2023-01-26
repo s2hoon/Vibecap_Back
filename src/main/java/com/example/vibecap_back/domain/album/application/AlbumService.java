@@ -4,11 +4,10 @@ import com.example.vibecap_back.domain.album.dao.AlbumRepository;
 import com.example.vibecap_back.domain.album.domain.Album;
 import com.example.vibecap_back.domain.album.dto.GetAlbumResponse;
 import com.example.vibecap_back.domain.album.dto.GetVibeResponse;
-import com.example.vibecap_back.domain.album.dto.request.GetAlbumRequest;
+import com.example.vibecap_back.domain.album.exception.NoAccessToVibeException;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
-import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
@@ -39,8 +38,8 @@ public class AlbumService {
 
 
     // 앨범 조회
-    public GetAlbumResponse getAlbum(GetAlbumRequest request) throws BaseException {
-        Optional<Member> optionalMember = myPageRepository.findById(request.getMemberId());
+    public GetAlbumResponse getAlbum(Long memberId) throws BaseException {
+        Optional<Member> optionalMember = myPageRepository.findById(memberId);
         Member member = optionalMember.get();
 
         List<Vibe> myVibe = albumRepository.findByMemberId(member.getMemberId());
@@ -54,8 +53,8 @@ public class AlbumService {
     }
 
     // 앨범에서 개별 Vibe 조회
-    public GetVibeResponse getVibe(Long vibeId) throws BaseException, InvalidMemberException {
-//        checkVibeValid(vibeId);
+    public GetVibeResponse getVibe(Long vibeId) throws BaseException, NoAccessToVibeException {
+        checkAccessToVibe(vibeId);
 
         Optional<Vibe> optionalVibe = albumRepository.findById(vibeId);
         Vibe vibe = optionalVibe.get();
@@ -64,18 +63,24 @@ public class AlbumService {
                 vibe.getYoutubeLink(), vibe.getVibeKeywords());
     }
 
+    // 앨범에서 개별 Vibe 삭제
+    public void deleteVibe(Long vibeId) throws BaseException, NoAccessToVibeException {
+        checkAccessToVibe(vibeId);
+        albumRepository.deleteById(vibeId);
+    }
+
     // 요청한 vibe 에 접근 가능한 회원인지 검사
-//    public void checkVibeValid(Long vibeId) throws InvalidMemberException {
-//        // JWT 에서 email 추출
-//        String email = jwtTokenProvider.extractEmail();
-//        Optional<Member> optionalMember = myPageRepository.findByEmail(email);
-//        Member member = optionalMember.get();
-//
-//        // memberId 추출해서 그 회원이 생성한 vibe 인지 확인
-//        List<Long> vibeIdList = albumRepository.findVibeIdByMemberId(member.getMemberId());
-//
-//        if (!albumRepository.existsVibeIdByMemberId(vibeIdList, vibeId)) {
-//            throw new InvalidMemberException();
-//        }
-//    }
+    public void checkAccessToVibe(Long vibeId) throws NoAccessToVibeException {
+        // JWT 에서 email 추출
+        String email = jwtTokenProvider.extractEmail();
+        Optional<Member> optionalMember = myPageRepository.findByEmail(email);
+        Member member = optionalMember.get();
+
+        // memberId 추출해서 회원이 생성한 vibe 인지 확인
+        List<Long> vibeIdList = albumRepository.findVibeIdByMemberId(member.getMemberId());
+
+        if (!vibeIdList.contains(vibeId)) {
+            throw new NoAccessToVibeException();
+        }
+    }
 }
