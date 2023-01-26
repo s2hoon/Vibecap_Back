@@ -13,11 +13,11 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @ToString
-@Table(name="Tag")
+@Table(name="tag")
 public class Tags {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TAG_ID")
+    @Column(name = "tag_id")
     private Long id;
 
     @Setter
