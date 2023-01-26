@@ -112,7 +112,18 @@ public class LabelDetectionClient implements ImageAnalyzer {
 
         // Web entities를 바탕으로 추측한 label
 
+        // return trimLabel(labels.get(0));
         return labels.get(0);
+    }
+
+    /**
+     * 특수문자 (부연 설명 제거)
+     * ex) "songpa naru park (seokchon lake park)" 에서 "(seokchon lake park)" 제거
+     * alphabet으로만 이루어진 문자열 반환
+     */
+    private String trimLabel(String rawLabel) {
+
+        return null;
     }
 
     private void verbose(WebDetection annotation) {
