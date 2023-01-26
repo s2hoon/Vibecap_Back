@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PostResponseDto {
 
-    private Long id;
+    private Long postId;
     private Long memberId;
     private String title;
     private String body;
@@ -29,13 +29,12 @@ public class PostResponseDto {
     private String tagName;
     //private List<Tags> tag_name;
     private byte[] profileImage;
-
     private String nickname;
 
     @Builder
     public PostResponseDto(Posts entity)
     {
-        this.id = entity.getId();
+        this.postId = entity.getPostId();
         this.memberId = entity.getMember().getMemberId();
         this.profileImage = entity.getMember().getProfileImage();
         this.nickname = entity.getMember().getNickname();
@@ -46,7 +45,7 @@ public class PostResponseDto {
         this.likeNumber = entity.getLikeNumber();
         this.scrapNumber = entity.getScrapNumber();
         this.commentNumber = entity.getCommentNumber();
-        this.tagName = entity.getTagName();
+        this.tagName = entity.getTagName() + " " + entity.getVibe().getVibeKeywords();
     }
 
 }

@@ -16,7 +16,7 @@ import javax.persistence.Lob;
 public class CommentDto {
 
     private Long commentId;
-    private String content;
+    private String commentBody;
     private String nickname;
 
     @Lob
@@ -26,7 +26,7 @@ public class CommentDto {
     public static CommentDto toDto(Comments comment) {
         return new CommentDto(
                 comment.getCommentId(),
-                comment.getContent(),
+                comment.getCommentBody(),
                 comment.getMember().getNickname(),
                 comment.getMember().getProfileImage()
         );

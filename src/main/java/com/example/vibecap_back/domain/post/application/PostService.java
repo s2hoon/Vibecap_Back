@@ -1,6 +1,5 @@
 package com.example.vibecap_back.domain.post.application;
 
-import com.example.vibecap_back.domain.comment.domain.Comments;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
@@ -15,8 +14,10 @@ import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostUpdateRequestDto;
 import com.example.vibecap_back.domain.post.exception.PostNotFound;
+import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.example.vibecap_back.global.common.response.BaseResponseStatus.DBCONN_ERROR;
 
 @RequiredArgsConstructor
 @Service
@@ -36,16 +38,29 @@ public class PostService {
 
     private final PostsLikeRepository postsLikeRepository;
     private final PostsScrapRepository postsScrapRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    public PostService(MemberRepository memberRepository,PostsLikeRepository postsLikeRepository,
+                       PostsRepository postsRepository, PostsScrapRepository postsScrapRepository, JwtTokenProvider jwtTokenProvider) throws InvalidMemberException {
+        this.memberRepository = memberRepository;
+        this.postsLikeRepository = postsLikeRepository;
+        this.postsRepository = postsRepository;
+        this.postsScrapRepository = postsScrapRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
 
     /** 게시물 작성 API - 저장 **/
     @Transactional
     public Long save(PostSaveRequestDto requestDto) {
-        return postsRepository.save(requestDto.toEntity()).getId();
+        return postsRepository.save(requestDto.toEntity()).getPostId();
     }
 
     /** 게시물 수정 API **/
     @Transactional
     public Long update(Long PostId, PostUpdateRequestDto requestDto) {
+
         Posts posts = postsRepository.findById(PostId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. post-id=" + PostId));
 
@@ -75,7 +90,7 @@ public class PostService {
     /** 게시물 조회 API - 전체 **/
     @Transactional(readOnly = true)
     public List<PostListResponseDto> findByTag_name(String tagName) {
-        return postsRepository.findByTag_name(tagName).stream()
+        return postsRepository.findByTagName(tagName).stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -132,26 +147,40 @@ public class PostService {
         );
     }
 
-    private Posts getPostInService(Long postId) {
+    public Posts getPostInService(Long postId) {
         Optional<Posts> byId = postsRepository.findById(postId);
         return byId.orElseThrow(() -> new PostNotFound("해당 게시글이 존재하지 않습니다."));
     }
 
-    private Member getMemberInService(Long memberId) {
+    public Member getMemberInService(Long memberId) {
         Optional<Member> byMemberId = memberRepository.findByMemberId(memberId);
         Member member = byMemberId.orElseThrow(() -> new UsernameNotFoundException("게시글 작성 권한이 없습니다."));
         return member;
     }
 
-    // 토큰으로 회원 권한 검사
-    /*public void checkMemberValid(Member memberId) throws InvalidMemberException {
+    /** 토큰으로 회원 권한 검사 **/
+    public void checkMemberValid(Long memberId) throws InvalidMemberException {
         // JWT 에서 email 추출
         String email = jwtTokenProvider.extractEmail();
-        Optional<Member> member = postsRepository.findByEmail(email);
+        Optional<Member> member = memberRepository.findByEmail(email);
 
         // memberId와 접근한 회원이 같은지 확인
         if (!Objects.equals(memberId, member.get().getMemberId())) {
             throw new InvalidMemberException();
         }
-    }*/
+        else{
+            System.out.println("memberId와 접근한 회원이 동일합니다.");
+        }
+    }
+
+    /**
+     * 유저가 존재하는지 확인
+     **/
+    public Optional<Member> checkUserExist(Long memberId) throws BaseException {
+        try{
+            return memberRepository.findByMemberId(memberId);
+        } catch (Exception exception){
+            throw new BaseException(DBCONN_ERROR);
+        }
+    }
 }

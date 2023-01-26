@@ -1,12 +1,9 @@
 package com.example.vibecap_back.domain.post.api;
 
-import com.example.vibecap_back.domain.comment.dto.CommentDto;
-import com.example.vibecap_back.domain.member.application.MemberDetailsService;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.domain.post.application.PostService;
-import com.example.vibecap_back.domain.post.domain.Posts;
 import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;
@@ -16,12 +13,14 @@ import com.example.vibecap_back.global.common.response.BaseResponse;
 import com.example.vibecap_back.global.common.response.BaseResponseStatus;
 import com.example.vibecap_back.global.common.response.SuccessResponse;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.vibecap_back.global.common.response.BaseResponseStatus.*;
 
 
 //모든 내용에 필요
@@ -30,49 +29,70 @@ import java.util.List;
 /**
  * 게시글 -> 생성/수정/삭제/조회 API
  */
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/app/posts")
 public class PostsApiController{
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
+
     private final PostService postService;
     private final MemberRepository memberRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    public PostsApiController(PostService postService, MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+        this.postService = postService;
+        this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     /** 게시물 작성 API **/
     @PostMapping("")
-    public Long save(@RequestBody PostSaveRequestDto requestDto) {
-        /*try {
-            postService.checkMemberValid(requestDto.getMember_id());
-
+    public BaseResponse<Long> save(@RequestBody PostSaveRequestDto requestDto) {
+        try {
+            postService.checkMemberValid(requestDto.getMember().getMemberId());
+            /*int userIdxByJwt = jwtTokenProvider.extractMemberId();
+            if(requestDto.getMember().getMemberId() !=userIdxByJwt){
+                return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+            }*/
             if(requestDto.getTitle().length() > 32)
             {
-                return new BaseResponse<>(BaseResponseStatus.POST_POSTS_INVALID_TITLE);
+                return new BaseResponse<>(POST_POSTS_INVALID_TITLE);
             }
             if(requestDto.getBody().length() > 140)
             {
-                return new BaseResponse<>(BaseResponseStatus.POST_POSTS_INVALID_BODY);
+                return new BaseResponse<>(POST_POSTS_INVALID_BODY);
             }
-            PostSaveRequestDto requestDto = postService.save(requestDto.getMember_id(),postPostsReq);
-            return new BaseResponse<>(requestDto);
         } catch (InvalidMemberException e) {
             throw new RuntimeException(e);
-        }*/
-        //Member member = memberRepository.findById(1L).get();
-        return postService.save(requestDto);
+        }
+        Long result = postService.save(requestDto);
+        return new BaseResponse<>(result);
     }
 
     /** 게시물 수정 API **/
     @PatchMapping("/{postId}")
-    public Long update(@PathVariable Long postId, @RequestBody PostUpdateRequestDto requestDto) {
-        return postService.update(postId, requestDto);
+    public BaseResponse<String> update(@PathVariable Long postId, @RequestBody PostUpdateRequestDto requestDto) {
+        try {
+            postService.checkMemberValid(requestDto.getMember().getMemberId());
+
+            if(requestDto.getTitle().length() > 32)
+            {
+                return new BaseResponse<>(POST_POSTS_INVALID_TITLE);
+            }
+            postService.update(postId, requestDto);
+            String result = "게시물 수정을 완료했습니다";
+            return new BaseResponse<>(result);
+        }catch (InvalidMemberException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /** 게시물 삭제 API **/
     @DeleteMapping("/{postId}") ///{postId}/status 고민
     public Long delete(@PathVariable Long postId) {
+        // 삭제하려는 사용자의 ID와 해당 글 작성자의 ID가 동일한지 확인 필요
         postService.delete(postId);
         return postId;
     }

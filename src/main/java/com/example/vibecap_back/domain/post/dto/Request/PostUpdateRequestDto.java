@@ -1,5 +1,6 @@
 package com.example.vibecap_back.domain.post.dto.Request;
 
+import com.example.vibecap_back.domain.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import javax.persistence.Column;
 @NoArgsConstructor
 public class PostUpdateRequestDto {
 
+    private Member member;
     private String title;
     private String body;
 

@@ -22,8 +22,8 @@ public class Comments {
     @Column(name = "comment_id")
     private Long commentId;
 
-    @Column(length = 255, nullable = false)
-    private String content;
+    @Column(name="comment_body",length = 255, nullable = false)
+    private String commentBody;
 
     /** Member 가 탈퇴하면 Member 가 작성한 모든 댓글 삭제 **/
     @ManyToOne(fetch = FetchType.LAZY)

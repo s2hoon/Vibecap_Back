@@ -56,7 +56,7 @@ public class Member implements UserDetails {
     // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
     private byte[] profileImage;
 
-    // 좋아요 count
+    /** 좋아요 count **/
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Likes> postLikeList = new ArrayList<>();
@@ -65,7 +65,7 @@ public class Member implements UserDetails {
         this.postLikeList.add(postLike);
     }
 
-    // 스크랩 count
+    /** 스크랩 count **/
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Scrap> postScrapList = new ArrayList<>();

@@ -20,7 +20,7 @@ public class PostSaveRequestDto {
     private String title;
     private String body;
     private Vibe vibe;
-    @Column(table = "tag")
+    //@Column(table = "tag")
     private String tagName;
 
     public Posts toEntity(){

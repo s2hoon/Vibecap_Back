@@ -23,7 +23,7 @@ public class CommentService {
     @Transactional
     public CommentDto writeComment(Long PostId, CommentDto commentDto, Member member) {
         Comments comment = new Comments();
-        comment.setContent(commentDto.getContent());
+        comment.setCommentBody(commentDto.getCommentBody());
 
         // 게시판 번호로 게시글 찾기
         Posts post = postsRepository.findById(PostId).orElseThrow(() -> {
@@ -41,7 +41,7 @@ public class CommentService {
     /** 댓글 조회 **/
     @Transactional(readOnly = true)
     public List<CommentDto> getComments(Long PostId) {
-        List<Comments> comments = commentRepository.findAllByPostId(PostId);
+        List<Comments> comments = commentRepository.findAllByPost_PostId(PostId);
         List<CommentDto> commentDto = new ArrayList<>();
 
         comments.forEach(s -> commentDto.add(CommentDto.toDto(s)));

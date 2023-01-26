@@ -10,13 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostsRepository extends JpaRepository<Posts, Long> {
-    @Query(value = "SELECT p FROM Posts p where p.tagName like %?1% order by p.id DESC")
+    @Query(value = "SELECT p FROM Posts p where p.tagName like %?1% order by p.postId DESC")
     //List<Posts> findAllDesc();
 
-    List<Posts> findByTag_name(String tagName);
-
-    //Optional<Member> findByEmail(String email);
-
+    List<Posts> findByTagName(String tagName);
 
 
 }

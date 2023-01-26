@@ -14,15 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostListResponseDto {
 
-    private Long id;
+    private Long postId;
     private Long memberId;
     private Long vibeId;
-
     private byte[] vibeImage;
 
     public PostListResponseDto(Posts entity)
     {
-        this.id = entity.getId();
+        this.postId = entity.getPostId();
         this.memberId = entity.getMember().getMemberId();
         this.vibeId = entity.getVibe().getVibeId();
         this.vibeImage = entity.getVibe().getVibeImage();

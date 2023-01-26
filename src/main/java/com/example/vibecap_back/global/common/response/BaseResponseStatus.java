@@ -29,7 +29,7 @@ public enum BaseResponseStatus {
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
     POST_POSTS_INVALID_TITLE(false, 2011, "제목의 글자수를 확인해주세요."),
     POST_POSTS_INVALID_BODY(false, 2012, "내용의 글자수를 확인해주세요."),
-
+    DELETE_FAIL_POST(false, 2013, "게시물 삭제에 실패하였습니다."),
     // vibe
 
 
@@ -62,7 +62,7 @@ public enum BaseResponseStatus {
      * 4XXX : DB, server 오류
      */
     DBCONN_ERROR(false, 4000, "데이터베이스 연결 오류"),
-    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다.");
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),;
     private final boolean isSuccess;
     private final int code;
     private final String message;

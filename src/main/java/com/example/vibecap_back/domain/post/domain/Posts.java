@@ -31,23 +31,24 @@ public class Posts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    private Long id;
+    private Long postId;
 
-    @Column(length = 32, nullable = false)
+    @Column(name = "post_title", length = 32, nullable = false)
     private String title;
 
-    @Column(length = 140, nullable = false)
+    @Column(name="post_body", length = 140, nullable = false)
     private String body;
 
     @OneToOne
     @JoinColumn(name = "vibe_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Vibe vibe;
-
+    @Column(name="like_number")
     private Long likeNumber;
-
+    @Column(name="scrap_number")
     private Long scrapNumber;
 
+    @Column(name="comment_number")
     private Long commentNumber;
 
     @PrePersist
@@ -57,7 +58,7 @@ public class Posts {
         this.commentNumber = this.commentNumber == null ? 0 : this.commentNumber;
     }
 
-    @Column(table = "tag")
+    @Column(table = "tag", name = "tag_name")
     private String tagName;
 
     //post 테이블이랑 tag 테이블 조인
@@ -75,11 +76,11 @@ public class Posts {
     private Member member;
 
     @Builder
-    public Posts(Long id,String title, String body, Vibe vibe,
+    public Posts(Long postId,String title, String body, Vibe vibe,
                  Long likeNumber, Long scrapNumber, Long commentNumber, String tagName,
                  Member member)
     {
-        this.id = id;
+        this.postId = postId;
         this.title = title;
         this.body = body;
         this.vibe = vibe;
