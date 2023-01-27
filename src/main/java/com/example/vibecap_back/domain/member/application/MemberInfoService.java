@@ -21,6 +21,7 @@ public class MemberInfoService {
 
     private final FireBaseService fireBaseService;
     private final MemberRepository memberRepository;
+    private static final String DISABLED_SUFFIX = " DISABLED";
 
     @Autowired
     public MemberInfoService(FireBaseService fireBaseService, MemberRepository memberRepository) {
@@ -40,12 +41,16 @@ public class MemberInfoService {
         return result;
     }
 
-    public QuitResult updateMemberStatus(QuitRequest request) {
+    public QuitResult disableMember(QuitRequest request) {
 
         Optional<Member> optionalMember = memberRepository.findById(request.getMemberId());
+        String originEmail;
         // 이미 로그인에 성공한 회원이라면 반드시 찾을 수 있다.
         Member member = optionalMember.get();
+        originEmail = member.getEmail();
         member.setStatus(MemberStatus.QUIT.toString());
+        // 탈퇴한 회원의 이메일이 검색되지 않도록 가린다ㅂ.
+        member.setEmail(originEmail + DISABLED_SUFFIX);
         Member quitMember = memberRepository.save(member);
 
         QuitResult result = new QuitResult(quitMember.getNickname());

@@ -44,7 +44,7 @@ public class MemberInfo {
     public BaseResponse<QuitResult> quitMember(
             @RequestBody QuitRequest request) {
 
-        QuitResult result = memberInfoService.updateMemberStatus(request);
+        QuitResult result = memberInfoService.disableMember(request);
 
         return new BaseResponse<>(result);
     }
