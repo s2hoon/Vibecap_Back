@@ -33,7 +33,7 @@ public class Vibe {
 
     /**
      * vibe 생성에 사용된 키워드
-     * "label weather time feeling" 으로 구성된 문자열
+     * "label season time feeling" 으로 구성된 문자열
      * ' '(공백)으로 split 했을 때 첫 번째 원소가 label, 마지막 원소가 feeling.
      * label + extraInfo.toString() 으로 생성 가능
      */

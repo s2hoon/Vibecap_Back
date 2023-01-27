@@ -1,8 +1,8 @@
 CREATE TABLE post(
     post_id         INT         NOT NULL AUTO_INCREMENT,
     member_id       INT         NOT NULL ,
-    title           CHAR(32)    NOT NULL ,
-    body            TEXT        NOT NULL ,
+    post_title           CHAR(32)    NOT NULL ,
+    post_body            TEXT        NOT NULL ,
     vibe_id         INT         NOT NULL ,
     like_number     INT         DEFAULT 0,
     scrap_number    INT         DEFAULT 0,
