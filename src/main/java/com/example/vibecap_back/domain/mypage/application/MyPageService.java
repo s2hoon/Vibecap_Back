@@ -7,16 +7,14 @@ import com.example.vibecap_back.domain.mypage.dto.response.GetMyPageResponse;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
+import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
+import com.example.vibecap_back.global.config.storage.FireBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,12 +24,14 @@ public class MyPageService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(MyPageService.class);
 
+    private final FireBaseService fireBaseService;
     private final MyPageRepository myPageRepository;
     private final MyPostsRepository myPostsRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public MyPageService(MyPageRepository myPageRepository, MyPostsRepository myPostsRepository, JwtTokenProvider jwtTokenProvider) {
+    public MyPageService(FireBaseService fireBaseService, MyPageRepository myPageRepository, MyPostsRepository myPostsRepository, JwtTokenProvider jwtTokenProvider) {
+        this.fireBaseService = fireBaseService;
         this.myPageRepository = myPageRepository;
         this.myPostsRepository = myPostsRepository;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -50,11 +50,20 @@ public class MyPageService {
     }
 
     // 프로필 이미지 변경
-    public void updateProfileImage(Long memberId, MultipartFile profileImage) throws IOException {
+    public String updateProfileImage(Long memberId, MultipartFile profileImage) throws IOException, FileSaveErrorException {
         Optional<Member> optionalMember = myPageRepository.findById(memberId);
         Member member = optionalMember.get();
+
+        // 프로필 이미지 존재할 경우, firebase 에서 삭제
+        if(member.getProfileImage() != null && member.getProfileImage().length != 0) {
+            String fileName = fireBaseService.getFileName(member.getProfileImage().toString());
+            fireBaseService.delete(fileName);
+        }
+        String profileImgUrl = fireBaseService.uploadFiles(profileImage);
         member.setProfileImage(profileImage.getBytes());
         myPageRepository.save(member);
+
+        return profileImgUrl;
     }
 
     // 바이트 배열을 로컬에 이미지 파일로 저장

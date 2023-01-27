@@ -40,6 +40,15 @@ public class FireBaseService implements ImageService {
     }
 
     @Override
+    public String getFileName(String imgUrl) {
+        int beginIndex = imgUrl.indexOf("/o/");
+        int endIndex = imgUrl.indexOf("?alt=media");
+        String fileName = imgUrl.substring(beginIndex + 3, endIndex);
+
+        return fileName;
+    }
+
+    @Override
     public String save(BufferedImage bufferedImage, String originalFileName) throws IOException {
         byte[] bytes = getByteArrays(bufferedImage, getExtension(originalFileName));
         Bucket bucket = StorageClient.getInstance().bucket();
@@ -52,7 +61,7 @@ public class FireBaseService implements ImageService {
 
     @Override
     public void delete(String name) throws IOException {
-        Bucket bucket = StorageClient.getInstance().bucket();
+        Bucket bucket = StorageClient.getInstance().bucket(firebaseBucket);
 
         if (StringUtils.isEmpty(name)) {
             throw new IOException("invalid file name");

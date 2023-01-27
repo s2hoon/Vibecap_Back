@@ -13,6 +13,8 @@ public interface ImageService {
 
     String getImageUrl(String name);
 
+    String getFileName(String imgUrl);
+
     String uploadFiles(MultipartFile file) throws FileSaveErrorException, IOException;
 
     String save(BufferedImage bufferedImage, String originalFileName) throws IOException;

@@ -69,9 +69,7 @@ public class MyPage {
             }
 
             myPageService.checkMemberValid(memberId);
-
-            String profileImgUrl = fireBaseService.uploadFiles(profileImage);
-            myPageService.updateProfileImage(memberId, profileImage); // profileImgUrl 전달해서 DB에 저장해야 함
+            String profileImgUrl = myPageService.updateProfileImage(memberId, profileImage); // profileImgUrl 전달해서 DB에 저장해야 함
 
             return new BaseResponse<>(profileImgUrl);
         } catch (InvalidMemberException e) {
