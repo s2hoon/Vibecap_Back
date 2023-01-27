@@ -51,6 +51,9 @@ dependencies {
     implementation 'com.google.http-client:google-http-client-jackson2:1.42.3'
     // Google translation
     implementation 'com.google.cloud:google-cloud-translate'
+
+    // Firebase
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
 }
 
 tasks.named('test') {

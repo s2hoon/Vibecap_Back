@@ -22,13 +22,13 @@ public class PostResponseDto {
     private String title;
     private String body;
     private Long vibeId;
-    private byte[] vibeImage;
+    private String vibeImage;
     private Long likeNumber;
     private Long scrapNumber;
     private Long commentNumber;
     private String tagName;
     //private List<Tags> tag_name;
-    private byte[] profileImage;
+    private String profileImage;
     private String nickname;
 
     @Builder

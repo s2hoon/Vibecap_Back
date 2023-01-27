@@ -7,6 +7,8 @@ import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.example.vibecap_back.domain.vibe.dto.CaptureResult;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
 import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
+import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
+import com.example.vibecap_back.global.config.storage.FireBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 @Service
 public class VibeService {
@@ -25,17 +26,19 @@ public class VibeService {
     private PlaylistSearchEngine playlistSearchEngine;
     private TextTranslator textTranslator;
     private final QueryMaker queryMaker;
+    private final FireBaseService fireBaseService;
 
     @Autowired
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
                        QueryMaker queryMaker,
                        VibeRepository vibeRepository,
-                       TextTranslator textTranslator) {
+                       TextTranslator textTranslator, FireBaseService fireBaseService) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
         this.queryMaker = queryMaker;
         this.vibeRepository = vibeRepository;
         this.textTranslator = textTranslator;
+        this.fireBaseService = fireBaseService;
     }
 
     /**
@@ -48,7 +51,7 @@ public class VibeService {
      * @throws IOException
      */
     public CaptureResult capture(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
-            throws ExternalApiException, IOException, NoProperVideoException {
+            throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
 
         byte[] data = imageFile.getBytes();
         String label;
@@ -65,9 +68,11 @@ public class VibeService {
         // query 결과 획득
         videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);
+        // 이미지 파일을 firebase storage에 저장
+        String imgUrl = fireBaseService.uploadFiles(imageFile);
         // 생성한 vibe를 DB에 저장
         keywords = label + extraInfo.toString();
-        saveVibe(memberId, data, videoLink, keywords);
+        saveVibe(memberId, imgUrl, videoLink, keywords);
 
         CaptureResult result = CaptureResult.builder()
                 .keywords(keywords.split(" "))
@@ -87,7 +92,7 @@ public class VibeService {
      * @throws IOException
      */
     public CaptureResult capture(Long memberId, MultipartFile imageFile)
-            throws ExternalApiException, IOException, NullPointerException, NoProperVideoException {
+            throws ExternalApiException, IOException, NullPointerException, NoProperVideoException, FileSaveErrorException {
 
         if (memberId == null || imageFile == null)
             throw new NullPointerException("empty request");
@@ -107,8 +112,10 @@ public class VibeService {
         query = queryMaker.assemble(label);
         videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);
+        // 이미지 파일을 firebase storage에 저장
+        String imgUrl = fireBaseService.uploadFiles(imageFile);
         // vibe를 DB에 저장
-        saveVibe(memberId, data, videoLink, label);
+        saveVibe(memberId, imgUrl, videoLink, label);
 
         CaptureResult result = CaptureResult.builder()
                 .keywords(keywords)
@@ -156,7 +163,7 @@ public class VibeService {
      * @return
      * 생성된 vibe의 id값
      */
-    private Long saveVibe(Long memberId, byte[] image, String link, String keywords) {
+    private Long saveVibe(Long memberId, String image, String link, String keywords) {
         Vibe vibe = Vibe.builder()
                 .memberId(memberId)
                 .vibeImage(image)

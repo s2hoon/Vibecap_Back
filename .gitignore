@@ -4,6 +4,8 @@ credential/
 capturedImgs/*
 ### secret ###
 **/Secret.java
+### firebase private key json ####
+**/serviceAccountKey.json
 
 ### switch for profile
 src/main/resources/application.properties

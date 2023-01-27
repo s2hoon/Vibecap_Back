@@ -3,7 +3,9 @@ package com.example.vibecap_back.domain.mypage.api;
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.application.MyPostsService;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
+import com.example.vibecap_back.domain.mypage.dto.response.GetMyLikesResponse;
 import com.example.vibecap_back.domain.mypage.dto.response.GetMyPostsResponse;
+import com.example.vibecap_back.domain.mypage.dto.response.GetMyScrapsResponse;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
@@ -52,20 +54,39 @@ public class MyPosts {
 
     /**
      * 좋아요 한 게시물 (전체) 조회
-     * [GET] /app/my-page/likes
+     * [GET] /app/my-page/likes/:member_id
      */
-//    @ResponseBody
-//    @GetMapping("/likes")
-//    public BaseResponse<List<GetMyLikesResponse>> getMyLikes(@RequestBody GetMyPostsRequest request) {
-//        try {
-//            myPageService.checkMemberValid(request.getMemberId());
-//            List<GetMyLikesResponse> getMyLikesResponses = myPostsService.getMyLikes(request);
-//
-//            return new BaseResponse<>(getMyLikesResponses);
-//        } catch (InvalidMemberException e) {
-//            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
-//        } catch (BaseException exception) {
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
+    @ResponseBody
+    @GetMapping("/likes/{member_id}")
+    public BaseResponse<List<GetMyLikesResponse>> getMyLikes(@PathVariable("member_id") Long memberId) {
+        try {
+            myPageService.checkMemberValid(memberId);
+            List<GetMyLikesResponse> getMyLikesResponses = myPostsService.getMyLikes(memberId);
+
+            return new BaseResponse<>(getMyLikesResponses);
+        } catch (InvalidMemberException e) {
+            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 스크랩 한 게시물 (전체) 조회
+     * [GET] /app/my-page/scraps/:member_id
+     */
+    @ResponseBody
+    @GetMapping("/scraps/{member_id}")
+    public BaseResponse<List<GetMyScrapsResponse>> getMyScraps(@PathVariable("member_id") Long memberId) {
+        try {
+            myPageService.checkMemberValid(memberId);
+            List<GetMyScrapsResponse> getMyScrapsResponses = myPostsService.getMyScraps(memberId);
+
+            return new BaseResponse<>(getMyScrapsResponses);
+        } catch (InvalidMemberException e) {
+            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }

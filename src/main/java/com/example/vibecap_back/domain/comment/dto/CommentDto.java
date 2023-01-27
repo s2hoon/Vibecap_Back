@@ -21,7 +21,7 @@ public class CommentDto {
 
     @Lob
     @Column(table = "member")
-    private byte[] profileImage;
+    private String profileImage;
 
     public static CommentDto toDto(Comments comment) {
         return new CommentDto(

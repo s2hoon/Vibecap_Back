@@ -14,5 +14,5 @@ public class Album {
     @JsonProperty("vibe_id")
     private Long vibeId;
     @JsonProperty("vibe_image")
-    private byte[] vibeImage;
+    private String vibeImage;
 }

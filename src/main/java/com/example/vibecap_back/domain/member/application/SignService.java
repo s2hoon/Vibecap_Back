@@ -107,7 +107,10 @@ public class SignService {
      */
     private void checkDuplication(String email)
             throws EmailAlreadyExistException {
-        if (memberRepository.findByEmail(email).isPresent())
+
+        Optional<Member> member = memberRepository.findByEmail(email);
+        // 활성화된 회원인 경우
+        if (member.isPresent() && member.get().getStatus().equals(ACTIVE.toString()))
             throw new EmailAlreadyExistException();
     }
 

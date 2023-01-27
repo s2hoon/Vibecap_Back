@@ -10,7 +10,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetMyPostsResponse {
+public class GetMyScrapsResponse {
+    @JsonProperty("scrap_id")
+    private Long scrapId;
     @JsonProperty("post_id")
     private Long postId;
     @JsonProperty("vibe_id")
@@ -18,10 +20,10 @@ public class GetMyPostsResponse {
     @JsonProperty("vibe_image")
     private String vibeImage;
 
-    public GetMyPostsResponse(GetMyPostsResponse getMyPostsResponse) {
-        this.postId = getMyPostsResponse.getPostId();
-        this.vibeId = getMyPostsResponse.getVibeId();
-        this.vibeImage = getMyPostsResponse.getVibeImage();
+    public GetMyScrapsResponse(GetMyScrapsResponse getMyScrapsResponse) {
+        this.scrapId = getMyScrapsResponse.getScrapId();
+        this.postId = getMyScrapsResponse.getPostId();
+        this.vibeId = getMyScrapsResponse.getVibeId();
+        this.vibeImage = getMyScrapsResponse.getVibeImage();
     }
-
 }
