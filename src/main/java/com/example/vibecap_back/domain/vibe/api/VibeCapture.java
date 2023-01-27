@@ -10,6 +10,7 @@ import com.example.vibecap_back.domain.vibe.dto.CaptureWithExtraInfoRequest;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
 import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
+import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,8 @@ public class VibeCapture {
             return new BaseResponse<>(SAVE_TEMPORARY_FILE_FAILED);
         } catch (NoProperVideoException e) {
             return new BaseResponse<>(NO_PROPER_VIDEO);
+        } catch (FileSaveErrorException e) {
+            return new BaseResponse<>(FILE_SAVE_ERROR);
         }
     }
 
@@ -87,6 +90,8 @@ public class VibeCapture {
             return new BaseResponse(EMPTY_IMAGE);
         } catch (NoProperVideoException e) {
             return new BaseResponse<>(NO_PROPER_VIDEO);
+        } catch (FileSaveErrorException e) {
+            return new BaseResponse<>(FILE_SAVE_ERROR);
         }
 
     }

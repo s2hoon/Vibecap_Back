@@ -7,6 +7,8 @@ import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.example.vibecap_back.domain.vibe.dto.CaptureResult;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
 import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
+import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
+import com.example.vibecap_back.global.config.storage.FireBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 @Service
 public class VibeService {
@@ -25,17 +26,19 @@ public class VibeService {
     private PlaylistSearchEngine playlistSearchEngine;
     private TextTranslator textTranslator;
     private final QueryMaker queryMaker;
+    private final FireBaseService fireBaseService;
 
     @Autowired
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
                        QueryMaker queryMaker,
                        VibeRepository vibeRepository,
-                       TextTranslator textTranslator) {
+                       TextTranslator textTranslator, FireBaseService fireBaseService) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
         this.queryMaker = queryMaker;
         this.vibeRepository = vibeRepository;
         this.textTranslator = textTranslator;
+        this.fireBaseService = fireBaseService;
     }
 
     /**
@@ -48,7 +51,7 @@ public class VibeService {
      * @throws IOException
      */
     public CaptureResult capture(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
-            throws ExternalApiException, IOException, NoProperVideoException {
+            throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
 
         byte[] data = imageFile.getBytes();
         String label;
@@ -68,6 +71,8 @@ public class VibeService {
         // 생성한 vibe를 DB에 저장
         keywords = label + extraInfo.toString();
         saveVibe(memberId, data, videoLink, keywords);
+        // 이미지 파일을 firebase storage에 저장
+        String imgUrl = fireBaseService.uploadFiles(imageFile);
 
         CaptureResult result = CaptureResult.builder()
                 .keywords(keywords.split(" "))
@@ -87,7 +92,7 @@ public class VibeService {
      * @throws IOException
      */
     public CaptureResult capture(Long memberId, MultipartFile imageFile)
-            throws ExternalApiException, IOException, NullPointerException, NoProperVideoException {
+            throws ExternalApiException, IOException, NullPointerException, NoProperVideoException, FileSaveErrorException {
 
         if (memberId == null || imageFile == null)
             throw new NullPointerException("empty request");
@@ -109,6 +114,8 @@ public class VibeService {
         videoLink = getFullUrl(videoId);
         // vibe를 DB에 저장
         saveVibe(memberId, data, videoLink, label);
+        // 이미지 파일을 firebase storage에 저장
+        String imgUrl = fireBaseService.uploadFiles(imageFile);
 
         CaptureResult result = CaptureResult.builder()
                 .keywords(keywords)
