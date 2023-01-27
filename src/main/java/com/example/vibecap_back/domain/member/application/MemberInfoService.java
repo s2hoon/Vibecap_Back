@@ -7,19 +7,24 @@ import com.example.vibecap_back.domain.member.dto.QuitResult;
 import com.example.vibecap_back.domain.member.dto.request.ChangeNicknameRequest;
 import com.example.vibecap_back.domain.member.dto.request.QuitRequest;
 import com.example.vibecap_back.domain.model.MemberStatus;
+import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
+import com.example.vibecap_back.global.config.storage.FireBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
 public class MemberInfoService {
 
+    private final FireBaseService fireBaseService;
     private final MemberRepository memberRepository;
 
     @Autowired
-    public MemberInfoService(MemberRepository memberRepository) {
+    public MemberInfoService(FireBaseService fireBaseService, MemberRepository memberRepository) {
+        this.fireBaseService = fireBaseService;
         this.memberRepository = memberRepository;
     }
 
@@ -47,11 +52,17 @@ public class MemberInfoService {
         return result;
     }
 
-    public Long updateProfileImage(Long memberId, byte[] image) {
-
+    public Long updateProfileImage(Long memberId, MultipartFile image) throws IOException, FileSaveErrorException {
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         Member member = optionalMember.get();
-        member.setProfileImage(image);
+
+        // 프로필 이미지 존재할 경우, firebase 에서 삭제
+        if(member.getProfileImage() != null && member.getProfileImage().length() != 0) {
+            String fileName = fireBaseService.getFileName(member.getProfileImage());
+            fireBaseService.delete(fileName);
+        }
+        String profileImgUrl = fireBaseService.uploadFiles(image);
+        member.setProfileImage(profileImgUrl);
 
         return memberRepository.save(member).getMemberId();
     }

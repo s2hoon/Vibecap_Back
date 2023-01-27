@@ -21,7 +21,7 @@ public class GetMyPageResponse {
     private String gmail;
     private String nickname;
     @JsonProperty("profile_image")
-    private byte[] profileImage;
+    private String profileImage;
 
     public GetMyPageResponse(Member member) {
         this.memberId = member.getMemberId();

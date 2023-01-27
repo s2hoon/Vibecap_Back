@@ -55,12 +55,12 @@ public class MyPageService {
         Member member = optionalMember.get();
 
         // 프로필 이미지 존재할 경우, firebase 에서 삭제
-        if(member.getProfileImage() != null && member.getProfileImage().length != 0) {
+        if(member.getProfileImage() != null && member.getProfileImage().length() != 0) {
             String fileName = fireBaseService.getFileName(member.getProfileImage().toString());
             fireBaseService.delete(fileName);
         }
         String profileImgUrl = fireBaseService.uploadFiles(profileImage);
-        member.setProfileImage(profileImage.getBytes());
+        member.setProfileImage(profileImgUrl);
         myPageRepository.save(member);
 
         return profileImgUrl;

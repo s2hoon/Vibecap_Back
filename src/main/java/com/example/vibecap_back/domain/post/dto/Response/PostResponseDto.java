@@ -28,7 +28,7 @@ public class PostResponseDto {
     private Long commentNumber;
     private String tagName;
     //private List<Tags> tag_name;
-    private byte[] profileImage;
+    private String profileImage;
     private String nickname;
 
     @Builder

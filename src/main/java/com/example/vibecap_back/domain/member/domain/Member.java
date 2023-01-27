@@ -51,10 +51,9 @@ public class Member implements UserDetails {
     // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
     private String status;
 
-    @Lob
     @Column(name = "profile_image")
     // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
-    private byte[] profileImage;
+    private String profileImage;
 
     /** 좋아요 count **/
     @Builder.Default

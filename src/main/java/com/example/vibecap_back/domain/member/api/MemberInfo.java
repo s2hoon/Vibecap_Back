@@ -7,6 +7,7 @@ import com.example.vibecap_back.domain.member.dto.request.ChangeNicknameRequest;
 import com.example.vibecap_back.domain.member.dto.request.QuitRequest;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import com.example.vibecap_back.global.common.response.BaseResponseStatus;
+import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,10 +55,12 @@ public class MemberInfo {
 
         try {
             byte[] data = image.getBytes();
-            Long result = memberInfoService.updateProfileImage(memberId, data);
+            Long result = memberInfoService.updateProfileImage(memberId, image);
             return new BaseResponse<>(result);
         } catch (IOException e) {
             return new BaseResponse<>(BaseResponseStatus.SAVE_TEMPORARY_FILE_FAILED);
+        } catch (FileSaveErrorException e) {
+            return new BaseResponse<>(BaseResponseStatus.FILE_SAVE_ERROR);
         }
     }
 }
