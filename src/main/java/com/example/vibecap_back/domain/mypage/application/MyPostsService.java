@@ -3,6 +3,7 @@ package com.example.vibecap_back.domain.mypage.application;
 import com.example.vibecap_back.domain.mypage.dao.MyLikesRepository;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dao.MyPostsRepository;
+import com.example.vibecap_back.domain.mypage.dto.response.GetMyLikesResponse;
 import com.example.vibecap_back.domain.mypage.dto.response.GetMyPostsResponse;
 import com.example.vibecap_back.global.common.response.BaseException;
 import org.slf4j.Logger;
@@ -33,17 +34,16 @@ public class MyPostsService {
     // 내 게시물 (전체) 조회
     public List<GetMyPostsResponse> getMyPosts(Long memberId) throws BaseException {
 
-        return myPostsRepository.findMyPostsByMember_id(memberId)
+        return myPostsRepository.findMyPostsByMemberId(memberId)
                 .stream().map(GetMyPostsResponse::new).collect(Collectors.toList());
     }
 
     // 좋아요 한 게시물 (전체) 조회
-//    public List<GetMyLikesResponse> getMyLikes(GetMyPostsRequest request) throws BaseException {
-//        List<Long> postIdList = myLikesRepository.findPostIdByMemberId(request.getMemberId());
-////        LOGGER.info("postIdList: {}", postIdList.toString());
-//
-//        return myLikesRepository.findMyLikesById(postIdList, request.getMemberId())
-//                .stream().map(GetMyLikesResponse::new).collect(Collectors.toList());
-//    }
+    public List<GetMyLikesResponse> getMyLikes(Long memberId) throws BaseException {
+        List<Long> postIdList = myLikesRepository.findPostIdByMemberId(memberId);
+
+        return myLikesRepository.findMyLikesById(postIdList, memberId)
+                .stream().map(GetMyLikesResponse::new).collect(Collectors.toList());
+    }
 
 }
