@@ -5,6 +5,7 @@ import com.example.vibecap_back.domain.mypage.application.MyPostsService;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
 import com.example.vibecap_back.domain.mypage.dto.response.GetMyLikesResponse;
 import com.example.vibecap_back.domain.mypage.dto.response.GetMyPostsResponse;
+import com.example.vibecap_back.domain.mypage.dto.response.GetMyScrapsResponse;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
@@ -63,6 +64,25 @@ public class MyPosts {
             List<GetMyLikesResponse> getMyLikesResponses = myPostsService.getMyLikes(memberId);
 
             return new BaseResponse<>(getMyLikesResponses);
+        } catch (InvalidMemberException e) {
+            return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 스크랩 한 게시물 (전체) 조회
+     * [GET] /app/my-page/scraps/:member_id
+     */
+    @ResponseBody
+    @GetMapping("/scraps/{member_id}")
+    public BaseResponse<List<GetMyScrapsResponse>> getMyScraps(@PathVariable("member_id") Long memberId) {
+        try {
+            myPageService.checkMemberValid(memberId);
+            List<GetMyScrapsResponse> getMyScrapsResponses = myPostsService.getMyScraps(memberId);
+
+            return new BaseResponse<>(getMyScrapsResponses);
         } catch (InvalidMemberException e) {
             return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
         } catch (BaseException exception) {

@@ -57,7 +57,7 @@ public class MyPage {
      * [PATCH] /app/my-page/profile-image
      */
     @ResponseBody
-    @PostMapping(value = "/profile-image")
+    @PatchMapping(value = "/profile-image")
     public BaseResponse<String> updateProfileImage(@RequestParam(name = "member_id") Long memberId,
                                                    @RequestParam(name = "profile_image") MultipartFile profileImage) throws FileSaveErrorException {
         try {
