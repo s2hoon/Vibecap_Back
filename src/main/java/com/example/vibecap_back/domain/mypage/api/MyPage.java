@@ -59,7 +59,7 @@ public class MyPage {
     @ResponseBody
     @PostMapping(value = "/profile-image")
     public BaseResponse<String> updateProfileImage(@RequestParam(name = "member_id") Long memberId,
-                                                   @RequestParam(name = "profile_image") MultipartFile profileImage) {
+                                                   @RequestParam(name = "profile_image") MultipartFile profileImage) throws FileSaveErrorException {
         try {
             if (memberId == null) {
                 return new BaseResponse<>(BaseResponseStatus.REQUEST_ERROR);
@@ -70,14 +70,14 @@ public class MyPage {
 
             myPageService.checkMemberValid(memberId);
 
-            String profileImgUrl = fireBaseService.uploadFiles(profileImage, "profile_image" + memberId);
+            String profileImgUrl = fireBaseService.uploadFiles(profileImage);
             myPageService.updateProfileImage(memberId, profileImage); // profileImgUrl 전달해서 DB에 저장해야 함
 
             return new BaseResponse<>(profileImgUrl);
         } catch (InvalidMemberException e) {
             return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
         } catch (FileSaveErrorException e) {
-            return new BaseResponse<>(BaseResponseStatus.FILE_SAVE_ERROR);
+            throw new FileSaveErrorException();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
