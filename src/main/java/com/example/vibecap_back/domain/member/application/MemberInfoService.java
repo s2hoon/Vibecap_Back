@@ -49,7 +49,7 @@ public class MemberInfoService {
         Member member = optionalMember.get();
         originEmail = member.getEmail();
         member.setStatus(MemberStatus.QUIT.toString());
-        // 탈퇴한 회원의 이메일이 검색되지 않도록 가린다ㅂ.
+        // 탈퇴한 회원의 이메일이 검색되지 않도록 가린다.
         member.setEmail(originEmail + DISABLED_SUFFIX);
         Member quitMember = memberRepository.save(member);
 
