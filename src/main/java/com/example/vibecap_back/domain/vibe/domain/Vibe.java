@@ -24,9 +24,8 @@ public class Vibe {
     private Long memberId;
 
     // vibe 생성에 사용된 이미지
-    @Column(name = "vibe_image", columnDefinition = "BLOB")
-    @Lob
-    private byte[] vibeImage;
+    @Column(name = "vibe_image")
+    private String vibeImage;
 
     // 추천된 플레이리스트 링크
     @Column(name = "youtube_link")

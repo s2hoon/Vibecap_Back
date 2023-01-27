@@ -22,7 +22,7 @@ public class PostResponseDto {
     private String title;
     private String body;
     private Long vibeId;
-    private byte[] vibeImage;
+    private String vibeImage;
     private Long likeNumber;
     private Long scrapNumber;
     private Long commentNumber;

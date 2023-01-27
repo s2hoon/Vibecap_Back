@@ -14,7 +14,7 @@ public class GetVibeResponse {
     @JsonProperty("member_id")
     private Long memberId;
     @JsonProperty("vibe_image")
-    private byte[] vibeImage;
+    private String vibeImage;
     @JsonProperty("youtube_link")
     private String youtubeLink;
     @JsonProperty("vibe_keywords")

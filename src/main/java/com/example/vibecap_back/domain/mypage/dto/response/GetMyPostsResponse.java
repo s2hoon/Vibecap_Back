@@ -16,7 +16,7 @@ public class GetMyPostsResponse {
     @JsonProperty("vibe_id")
     private Long vibeId;
     @JsonProperty("vibe_image")
-    private byte[] vibeImage;
+    private String vibeImage;
 
     public GetMyPostsResponse(GetMyPostsResponse getMyPostsResponse) {
         this.postId = getMyPostsResponse.getPostId();

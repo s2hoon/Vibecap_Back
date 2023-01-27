@@ -17,7 +17,7 @@ public class PostListResponseDto {
     private Long postId;
     private Long memberId;
     private Long vibeId;
-    private byte[] vibeImage;
+    private String vibeImage;
 
     public PostListResponseDto(Posts entity)
     {

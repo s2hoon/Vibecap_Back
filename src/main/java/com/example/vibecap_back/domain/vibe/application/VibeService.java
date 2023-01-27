@@ -68,11 +68,11 @@ public class VibeService {
         // query 결과 획득
         videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);
-        // 생성한 vibe를 DB에 저장
-        keywords = label + extraInfo.toString();
-        saveVibe(memberId, data, videoLink, keywords);
         // 이미지 파일을 firebase storage에 저장
         String imgUrl = fireBaseService.uploadFiles(imageFile);
+        // 생성한 vibe를 DB에 저장
+        keywords = label + extraInfo.toString();
+        saveVibe(memberId, imgUrl, videoLink, keywords);
 
         CaptureResult result = CaptureResult.builder()
                 .keywords(keywords.split(" "))
@@ -112,10 +112,10 @@ public class VibeService {
         query = queryMaker.assemble(label);
         videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);
-        // vibe를 DB에 저장
-        saveVibe(memberId, data, videoLink, label);
         // 이미지 파일을 firebase storage에 저장
         String imgUrl = fireBaseService.uploadFiles(imageFile);
+        // vibe를 DB에 저장
+        saveVibe(memberId, imgUrl, videoLink, label);
 
         CaptureResult result = CaptureResult.builder()
                 .keywords(keywords)
@@ -163,7 +163,7 @@ public class VibeService {
      * @return
      * 생성된 vibe의 id값
      */
-    private Long saveVibe(Long memberId, byte[] image, String link, String keywords) {
+    private Long saveVibe(Long memberId, String image, String link, String keywords) {
         Vibe vibe = Vibe.builder()
                 .memberId(memberId)
                 .vibeImage(image)
