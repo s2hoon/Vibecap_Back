@@ -24,8 +24,4 @@ public class Tags {
     @Column(name="tag_name",length = 16, nullable = false)
     private String tagName;
 
-    public Tags(Long tagId, String tagName) {
-        this.tagId = tagId;
-        this.tagName = tagName;
-    }
 }

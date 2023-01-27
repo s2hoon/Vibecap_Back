@@ -62,12 +62,12 @@ public class Posts {
     private String tagName;
 
     //post 테이블이랑 tag 테이블 조인
-    @ManyToMany
+    /*@ManyToMany
     @JoinTable(name = "post_tag",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<Tags> tagList = new ArrayList<>();
+    private List<Tags> tagList = new ArrayList<>();*/
 
     /** Member 가 탈퇴하면 Member 가 작성한 모든 게시글 삭제 **/
     @ManyToOne(fetch = LAZY)

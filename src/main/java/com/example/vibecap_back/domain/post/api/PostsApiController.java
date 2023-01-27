@@ -108,7 +108,7 @@ public class PostsApiController{
     @GetMapping("")
     public List<PostListResponseDto> findAll(@RequestParam String tagName) {
 
-        return postService.findByTag_name(tagName);
+        return postService.findByTag_Name(tagName);
     }
 
     /** 게시물 좋아요 API **/

@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostsRepository extends JpaRepository<Posts, Long> {
-    @Query(value = "SELECT p FROM Posts p where p.tagName like %?1% order by p.postId DESC")
+    //@Query(value = "SELECT p FROM Posts p where p.tagName like %?1% order by p.postId DESC")
     //List<Posts> findAllDesc();
 
+    @Query(value = "SELECT p FROM Posts p Inner Join Tags t on t.tagId = p.postId where t.tagName like %?1% order by p.postId DESC")
     List<Posts> findByTagName(String tagName);
 
 

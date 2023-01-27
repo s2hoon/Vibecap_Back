@@ -89,7 +89,7 @@ public class PostService {
 
     /** 게시물 조회 API - 전체 **/
     @Transactional(readOnly = true)
-    public List<PostListResponseDto> findByTag_name(String tagName) {
+    public List<PostListResponseDto> findByTag_Name(String tagName) {
         return postsRepository.findByTagName(tagName).stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
