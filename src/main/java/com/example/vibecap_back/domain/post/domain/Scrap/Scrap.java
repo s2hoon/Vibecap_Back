@@ -1,8 +1,7 @@
 package com.example.vibecap_back.domain.post.domain.Scrap;
 
 import com.example.vibecap_back.domain.member.domain.Member;
-import com.example.vibecap_back.domain.post.domain.Like.Likes;
-import com.example.vibecap_back.domain.post.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,7 +28,7 @@ public class Scrap {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_PostScrap_Post"))
-    private Posts post;
+    private Post post;
 
     public static boolean isVotedPost(Optional<Scrap> optionalPostScrap) {
         return optionalPostScrap.isPresent();
@@ -40,7 +39,7 @@ public class Scrap {
         member.mappingPostScrap(this);
     }
 
-    public void mappingPost(Posts post) {
+    public void mappingPost(Post post) {
         this.post = post;
         post.mappingPostScrap(this);
     }

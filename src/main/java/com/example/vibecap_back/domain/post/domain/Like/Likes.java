@@ -1,7 +1,7 @@
 package com.example.vibecap_back.domain.post.domain.Like;
 
 import com.example.vibecap_back.domain.member.domain.Member;
-import com.example.vibecap_back.domain.post.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,7 +28,7 @@ public class Likes {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_PostLike_Post"))
-    private Posts post;
+    private Post post;
 
     public static boolean isVotedPost(Optional<Likes> optionalPostLike) {
         return optionalPostLike.isPresent();
@@ -39,7 +39,7 @@ public class Likes {
         member.mappingPostLike(this);
     }
 
-    public void mappingPost(Posts post) {
+    public void mappingPost(Post post) {
         this.post = post;
         post.mappingPostLike(this);
     }

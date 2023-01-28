@@ -1,22 +1,16 @@
 package com.example.vibecap_back.domain.post.domain;
 
-import com.example.vibecap_back.domain.comment.domain.Comments;
-import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
 import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
-import com.example.vibecap_back.domain.post.domain.Tag.Tags;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -27,7 +21,7 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name="post")
 @SecondaryTable(name = "tag",
         pkJoinColumns = @PrimaryKeyJoinColumn(name = "tag_id"))
-public class Posts {
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
@@ -76,9 +70,9 @@ public class Posts {
     private Member member;
 
     @Builder
-    public Posts(Long postId,String title, String body, Vibe vibe,
-                 Long likeNumber, Long scrapNumber, Long commentNumber, String tagName,
-                 Member member)
+    public Post(Long postId, String title, String body, Vibe vibe,
+                Long likeNumber, Long scrapNumber, Long commentNumber, String tagName,
+                Member member)
     {
         this.postId = postId;
         this.title = title;

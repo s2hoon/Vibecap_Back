@@ -13,7 +13,7 @@ public interface MyScrapsRepository extends JpaRepository<Scrap, Long> {
     List<Long> findPostIdByMemberId(@Param("memberId") Long memberId);
 
     @Query("select new com.example.vibecap_back.domain.mypage.dto.response.GetMyScrapsResponse(s.id, p.postId, p.vibe.vibeId, v.vibeImage) " +
-            "from Scrap s left join Posts p on s.post.postId in :postId and s.post.postId = p.postId left join Vibe v on s.member.memberId = :memberId and p.vibe.vibeId = v.vibeId " +
+            "from Scrap s left join Post p on s.post.postId in :postId and s.post.postId = p.postId left join Vibe v on s.member.memberId = :memberId and p.vibe.vibeId = v.vibeId " +
             "where s.member.memberId = :memberId order by s.id desc")
     List<GetMyScrapsResponse> findMyScrapsById(@Param("postId") List<Long> postId, @Param("memberId") Long memberId);
 }

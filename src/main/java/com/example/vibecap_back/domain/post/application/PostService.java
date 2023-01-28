@@ -7,7 +7,7 @@ import com.example.vibecap_back.domain.post.dao.PostsLikeRepository;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.dao.PostsScrapRepository;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
-import com.example.vibecap_back.domain.post.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Post;
 import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
 import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.vibecap_back.global.common.response.BaseResponseStatus.DBCONN_ERROR;
+import static com.example.vibecap_back.global.common.response.BaseResponseStatus.*;
 
 @RequiredArgsConstructor
 @Service
@@ -61,7 +61,7 @@ public class PostService {
     @Transactional
     public Long update(Long PostId, PostUpdateRequestDto requestDto) {
 
-        Posts posts = postsRepository.findById(PostId)
+        Post posts = postsRepository.findById(PostId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. post-id=" + PostId));
 
         posts.update(requestDto.getTitle(), requestDto.getBody());
@@ -72,24 +72,42 @@ public class PostService {
     /** 게시물 삭제 API **/
     @Transactional
     public void delete (Long postId) {
-        Posts posts = postsRepository.findById(postId)
+        Post posts = postsRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. post-id=" + postId));
 
         postsRepository.delete(posts);
     }
 
     /** 게시물 조회 API - 특정 게시물 **/
-    @Transactional(readOnly = true)
-    public PostResponseDto findById(Long postId) {
+   /*@Transactional(readOnly = true)
+    public List<PostResponseDto> findById(Long postId) {
         Posts entity = postsRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. post-id=" + postId));
 
         return new PostResponseDto(entity);
+    }*/
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> retrievePosts(Long postId) throws BaseException {
+        try{
+            List<PostResponseDto> getPosts = postsRepository.findByPost(postId);
+            return getPosts;
+        }
+        catch (Exception exception) {
+            System.out.println(exception);
+            throw new BaseException(SERVER_ERROR);
+        }
+    }
+
+    /**
+     * 게시글이 존재하는지 확인
+     **/
+    public Long checkPostExist(Long postId) throws BaseException{
+        return postsRepository.findByPostId(postId);
     }
 
     /** 게시물 조회 API - 전체 **/
     @Transactional(readOnly = true)
-    public List<PostListResponseDto> findByTag_Name(String tagName) {
+    public List<PostListResponseDto> findByTag_Name(String tagName) throws BaseException {
         return postsRepository.findByTagName(tagName).stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
@@ -97,7 +115,7 @@ public class PostService {
 
     /** 게시물 좋아요 API **/
     public void postLike(Long postId, Long memberId) {
-        Posts post = getPostInService(postId);
+        Post post = getPostInService(postId);
         Member member = getMemberInService(1l);
 
         Optional<Likes> byPostAndMember = postsLikeRepository.findByPostAndMember(post, member);
@@ -124,7 +142,7 @@ public class PostService {
 
     /** 게시물 스크랩 API **/
     public void postScrap(Long postId, Long memberId) {
-        Posts post = getPostInService(postId);
+        Post post = getPostInService(postId);
         Member member = getMemberInService(1l);
         Optional<Scrap> byPostAndMember = postsScrapRepository.findByPostAndMember(post, member);
 
@@ -147,8 +165,8 @@ public class PostService {
         );
     }
 
-    public Posts getPostInService(Long postId) {
-        Optional<Posts> byId = postsRepository.findById(postId);
+    public Post getPostInService(Long postId) {
+        Optional<Post> byId = postsRepository.findById(postId);
         return byId.orElseThrow(() -> new PostNotFound("해당 게시글이 존재하지 않습니다."));
     }
 
@@ -167,20 +185,11 @@ public class PostService {
         // memberId와 접근한 회원이 같은지 확인
         if (!Objects.equals(memberId, member.get().getMemberId())) {
             throw new InvalidMemberException();
-        }
-        else{
+        } else {
             System.out.println("memberId와 접근한 회원이 동일합니다.");
         }
+
     }
 
-    /**
-     * 유저가 존재하는지 확인
-     **/
-    public Optional<Member> checkUserExist(Long memberId) throws BaseException {
-        try{
-            return memberRepository.findByMemberId(memberId);
-        } catch (Exception exception){
-            throw new BaseException(DBCONN_ERROR);
-        }
-    }
+
 }

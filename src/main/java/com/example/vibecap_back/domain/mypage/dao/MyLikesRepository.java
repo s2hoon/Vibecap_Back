@@ -13,7 +13,7 @@ public interface MyLikesRepository extends JpaRepository<Likes, Long> {
     List<Long> findPostIdByMemberId(@Param("memberId") Long memberId);
 
     @Query("select new com.example.vibecap_back.domain.mypage.dto.response.GetMyLikesResponse(l.id, p.postId, p.vibe.vibeId, v.vibeImage) " +
-            "from Likes l left join Posts p on l.post.postId in :postId and l.post.postId = p.postId left join Vibe v on l.member.memberId = :memberId and p.vibe.vibeId = v.vibeId " +
+            "from Likes l left join Post p on l.post.postId in :postId and l.post.postId = p.postId left join Vibe v on l.member.memberId = :memberId and p.vibe.vibeId = v.vibeId " +
             "where l.member.memberId = :memberId order by l.id desc")
     List<GetMyLikesResponse> findMyLikesById(@Param("postId") List<Long> postId, @Param("memberId") Long memberId);
 

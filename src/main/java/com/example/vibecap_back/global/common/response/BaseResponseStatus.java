@@ -9,6 +9,7 @@ public enum BaseResponseStatus {
      * 1000 : Successed
      */
     SUCCESS(true, 1000, "요청에 성공했습니다."),
+    //NOT_EXISTS_POST(true,3012,"게시물이 존재하지 않습니다."),
 
     /**
      * 2XXX : Request 내용 오류
@@ -29,7 +30,7 @@ public enum BaseResponseStatus {
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
     POST_POSTS_INVALID_TITLE(false, 2011, "제목의 글자수를 확인해주세요."),
     POST_POSTS_INVALID_BODY(false, 2012, "내용의 글자수를 확인해주세요."),
-    DELETE_FAIL_POST(false, 2013, "게시물 삭제에 실패하였습니다."),
+
     // vibe
 
 
@@ -51,6 +52,10 @@ public enum BaseResponseStatus {
     // mypage
 
     // post
+    DELETE_FAIL_POST(false, 3010, "게시물 삭제에 실패하였습니다."),
+    FAILED_GET_POST(false,3011,"게시물 조회에 실패하였습니다."),
+    NOT_EXISTS_TAG_NAME_POST(true,3011,"해당 태그를 가진 게시물이 없습니다."),
+    NOT_EXISTS_POST(false,3012,"게시물이 존재하지 않습니다."),
 
     // vibe
     SAVE_TEMPORARY_FILE_FAILED(false, 3500, "이미지 파일 전달 실패. 요청을 다시 전송해주세요."),

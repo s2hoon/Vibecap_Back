@@ -1,12 +1,9 @@
 package com.example.vibecap_back.domain.post.dto.Response;
 
-import com.example.vibecap_back.domain.member.domain.Member;
-import com.example.vibecap_back.domain.post.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 // 게시물 조회 Dto - 전체
 @Getter
@@ -19,7 +16,7 @@ public class PostListResponseDto {
     private Long vibeId;
     private String vibeImage;
 
-    public PostListResponseDto(Posts entity)
+    public PostListResponseDto(Post entity)
     {
         this.postId = entity.getPostId();
         this.memberId = entity.getMember().getMemberId();

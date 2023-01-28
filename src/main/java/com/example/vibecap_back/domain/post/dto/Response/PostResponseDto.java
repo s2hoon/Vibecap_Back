@@ -1,15 +1,10 @@
 package com.example.vibecap_back.domain.post.dto.Response;
 
-import com.example.vibecap_back.domain.post.domain.Posts;
-import com.example.vibecap_back.domain.post.domain.Tag.Tags;
-import com.example.vibecap_back.domain.vibe.domain.Vibe;
+import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Column;
-import java.util.List;
 
 // 게시물 조회 Dto - 특정 게시물
 @Getter
@@ -32,7 +27,7 @@ public class PostResponseDto {
     private String nickname;
 
     @Builder
-    public PostResponseDto(Posts entity)
+    public PostResponseDto(Post entity)
     {
         this.postId = entity.getPostId();
         this.memberId = entity.getMember().getMemberId();

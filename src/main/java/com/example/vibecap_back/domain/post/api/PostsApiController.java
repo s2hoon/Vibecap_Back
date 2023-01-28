@@ -1,16 +1,15 @@
 package com.example.vibecap_back.domain.post.api;
 
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
-import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.domain.post.application.PostService;
+import com.example.vibecap_back.domain.post.dto.Response.PostDeleteResDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostUpdateRequestDto;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
-import com.example.vibecap_back.global.common.response.BaseResponseStatus;
 import com.example.vibecap_back.global.common.response.SuccessResponse;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import org.slf4j.Logger;
@@ -81,6 +80,10 @@ public class PostsApiController{
             {
                 return new BaseResponse<>(POST_POSTS_INVALID_TITLE);
             }
+            if(requestDto.getBody().length() > 140)
+            {
+                return new BaseResponse<>(POST_POSTS_INVALID_BODY);
+            }
             postService.update(postId, requestDto);
             String result = "게시물 수정을 완료했습니다";
             return new BaseResponse<>(result);
@@ -91,24 +94,49 @@ public class PostsApiController{
 
     /** 게시물 삭제 API **/
     @DeleteMapping("/{postId}") ///{postId}/status 고민
-    public Long delete(@PathVariable Long postId) {
+    public BaseResponse<String> delete(@PathVariable Long postId, @RequestBody PostDeleteResDto postDeleteResDto) {
         // 삭제하려는 사용자의 ID와 해당 글 작성자의 ID가 동일한지 확인 필요
-        postService.delete(postId);
-        return postId;
+        try {
+            postService.checkMemberValid(postDeleteResDto.getMemberId());
+            postService.delete(postId);
+            String result = "삭제를 완료했습니다";
+            return new BaseResponse<>(result);
+        } catch (InvalidMemberException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /** 게시물 조회 API - 특정 게시물 **/
     @GetMapping("/{postId}")
-    public PostResponseDto findById(@PathVariable Long postId) {
+    public BaseResponse<List<PostResponseDto>> retrievePosts(@PathVariable Long postId) throws BaseException {
 
-        return postService.findById(postId);
+        try {
+            if(postService.checkPostExist(postId)==null){
+                return new BaseResponse<>(NOT_EXISTS_POST);
+            }
+            List<PostResponseDto> postResponseDto = postService.retrievePosts(postId);
+            return new BaseResponse<>(postResponseDto);
+        } catch (BaseException exception) {
+            System.out.println(exception);
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 
     /** 게시물 조회 API - 해시태그별 게시물(전체) **/
     @GetMapping("")
-    public List<PostListResponseDto> findAll(@RequestParam String tagName) {
+    public BaseResponse<List<PostListResponseDto>> findAll(@RequestParam String tagName) throws BaseException {
 
-        return postService.findByTag_Name(tagName);
+        try{
+            if(postService.findByTag_Name(tagName).size() == 0){
+                //System.out.println(postService.findByTag_Name(tagName));
+                return new BaseResponse<>(NOT_EXISTS_TAG_NAME_POST);
+            }
+            List<PostListResponseDto> postListResponseDto = postService.findByTag_Name(tagName);
+            return new BaseResponse<>(postListResponseDto);
+        } catch (BaseException exception) {
+            System.out.println(exception);
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 
     /** 게시물 좋아요 API **/

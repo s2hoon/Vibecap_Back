@@ -5,7 +5,7 @@ import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.comment.domain.Comments;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
-import com.example.vibecap_back.domain.post.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,7 @@ public class CommentService {
         comment.setCommentBody(commentDto.getCommentBody());
 
         // 게시판 번호로 게시글 찾기
-        Posts post = postsRepository.findById(PostId).orElseThrow(() -> {
+        Post post = postsRepository.findById(PostId).orElseThrow(() -> {
             return new IllegalArgumentException("게시판을 찾을 수 없습니다.");
         });
 

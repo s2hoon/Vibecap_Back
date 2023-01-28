@@ -1,8 +1,7 @@
 package com.example.vibecap_back.domain.comment.domain;
 
-import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.member.domain.Member;
-import com.example.vibecap_back.domain.post.domain.Posts;
+import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -35,6 +34,6 @@ public class Comments {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Posts post;
+    private Post post;
 
 }
