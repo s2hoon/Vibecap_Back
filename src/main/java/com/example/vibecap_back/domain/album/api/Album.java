@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 /**
  * 앨범
  */
@@ -82,11 +84,12 @@ public class Album {
     public BaseResponse<String> deleteVibe(@PathVariable("vibe_id") Long vibeId) {
         try {
             albumService.deleteVibe(vibeId);
-
             String result = "해당 Vibe 삭제에 성공했습니다.";
             return new BaseResponse<>(result);
         } catch (NoAccessToVibeException e) {
             return new BaseResponse<>(BaseResponseStatus.NO_ACCESS_TO_VIBE);
+        } catch (IOException e) {
+            return new BaseResponse<>(BaseResponseStatus.FILE_DELETE_ERROR);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }

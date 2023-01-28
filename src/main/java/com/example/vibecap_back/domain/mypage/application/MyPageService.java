@@ -56,7 +56,7 @@ public class MyPageService {
 
         // 프로필 이미지 존재할 경우, firebase 에서 삭제
         if(member.getProfileImage() != null && member.getProfileImage().length() != 0) {
-            String fileName = fireBaseService.getFileName(member.getProfileImage().toString());
+            String fileName = fireBaseService.getFileName(member.getProfileImage());
             fireBaseService.delete(fileName);
         }
         String profileImgUrl = fireBaseService.uploadFiles(profileImage);

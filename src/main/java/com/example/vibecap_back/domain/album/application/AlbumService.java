@@ -8,14 +8,17 @@ import com.example.vibecap_back.domain.album.exception.NoAccessToVibeException;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.application.MyPageService;
 import com.example.vibecap_back.domain.mypage.dao.MyPageRepository;
+import com.example.vibecap_back.domain.post.application.PostService;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
+import com.example.vibecap_back.global.config.storage.FireBaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +28,16 @@ public class AlbumService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(MyPageService.class);
 
+    private final FireBaseService fireBaseService;
+    private final PostService postService;
     private final AlbumRepository albumRepository;
     private final MyPageRepository myPageRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public AlbumService(AlbumRepository albumRepository, MyPageRepository myPageRepository, JwtTokenProvider jwtTokenProvider) {
+    public AlbumService(FireBaseService fireBaseService, PostService postService, AlbumRepository albumRepository, MyPageRepository myPageRepository, JwtTokenProvider jwtTokenProvider) {
+        this.fireBaseService = fireBaseService;
+        this.postService = postService;
         this.albumRepository = albumRepository;
         this.myPageRepository = myPageRepository;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -64,8 +71,18 @@ public class AlbumService {
     }
 
     // 앨범에서 개별 Vibe 삭제
-    public void deleteVibe(Long vibeId) throws BaseException, NoAccessToVibeException {
+    public void deleteVibe(Long vibeId) throws BaseException, NoAccessToVibeException, IOException {
         checkAccessToVibe(vibeId);
+
+        Optional<Vibe> optionalVibe = albumRepository.findById(vibeId);
+        Vibe vibe = optionalVibe.get();
+        // firebase 에서 사진 삭제
+        String fileName = fireBaseService.getFileName(vibe.getVibeImage());
+        fireBaseService.delete(fileName);
+        // 해당 vibe_id 가진 게시물 삭제
+        Long postId = albumRepository.findPostIdByVibeId(vibeId);
+        postService.delete(postId);
+
         albumRepository.deleteById(vibeId);
     }
 
