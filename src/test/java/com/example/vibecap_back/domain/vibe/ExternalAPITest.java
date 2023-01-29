@@ -1,21 +1,16 @@
 package com.example.vibecap_back.domain.vibe;
 
-import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.model.ExtraInfo;
 import com.example.vibecap_back.domain.vibe.application.*;
 import com.example.vibecap_back.domain.vibe.application.Impl.GoogleCloudTranslationClient;
 import com.example.vibecap_back.domain.vibe.application.Impl.LabelDetectionClient;
 import com.example.vibecap_back.domain.vibe.application.Impl.YouTubeClient;
-import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
 import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import com.example.vibecap_back.util.FileWorker;
-import com.google.api.services.youtube.model.Playlist;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 /**
  * Google vision api, Youtube data api 호출 테스트
@@ -27,7 +22,8 @@ public class ExternalAPITest {
     private ImageAnalyzer imageAnalyzer;
     private PlaylistSearchEngine playlistSearchEngine;
     private byte[] data;
-    private static final String SAMPLE_IMAGE = "sea.jpeg";
+    private static final String SAMPLE_IMAGE = "lotte.jpeg";
+//    private static final String SAMPLE_IMAGE = "sea.jpeg";
 //    private static final String SAMPLE_IMAGE = "desk.JPG";
 //    private static final String SAMPLE_IMAGE = "airplane.JPG";
 //    private static final String SAMPLE_IMAGE = "flags.jpeg";
@@ -70,7 +66,7 @@ public class ExternalAPITest {
 
     @Test
     void 플레이리스트_추천_사진_이용() {
-        QueryMaker queryMaker = new QueryMaker();
+        VideoQuery videoQuery = new VideoQuery();
         ImageAnalyzer imageAnalyzer = new LabelDetectionClient();
         PlaylistSearchEngine playlistSearchEngine = new YouTubeClient();
         TextTranslator textTranslator = new GoogleCloudTranslationClient();
@@ -82,7 +78,7 @@ public class ExternalAPITest {
         try {
             label = imageAnalyzer.detectLabelsByWebReference(data);
             label = textTranslator.translate(label);
-            query = queryMaker.assemble(extraInfo, label);
+            query = videoQuery.assemble(extraInfo, label);
             videoId = playlistSearchEngine.search(query);
             printFullURL(videoId);
         } catch (ExternalApiException e) {

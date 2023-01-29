@@ -3,7 +3,7 @@ package com.example.vibecap_back.domain.vibe.api;
 import com.example.vibecap_back.domain.model.ExtraInfo;
 import com.example.vibecap_back.domain.vibe.application.ImageAnalyzer;
 import com.example.vibecap_back.domain.vibe.application.PlaylistSearchEngine;
-import com.example.vibecap_back.domain.vibe.application.QueryMaker;
+import com.example.vibecap_back.domain.vibe.application.VideoQuery;
 import com.example.vibecap_back.domain.vibe.application.VibeService;
 import com.example.vibecap_back.domain.vibe.dto.CaptureResult;
 import com.example.vibecap_back.domain.vibe.dto.CaptureWithExtraInfoRequest;
@@ -28,15 +28,15 @@ public class VibeCapture {
     private final Logger LOGGER = LoggerFactory.getLogger(VibeCapture.class);
     private ImageAnalyzer imageAnalyzer;
     private PlaylistSearchEngine playlistRecommender;
-    private final QueryMaker queryMaker;
+    private final VideoQuery videoQuery;
     private final VibeService vibeService;
 
     @Autowired
     public VibeCapture(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistRecommender,
-                       QueryMaker queryMaker, VibeService vibeService) {
+                       VideoQuery videoQuery, VibeService vibeService) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistRecommender = playlistRecommender;
-        this.queryMaker = queryMaker;
+        this.videoQuery = videoQuery;
         this.vibeService = vibeService;
     }
 

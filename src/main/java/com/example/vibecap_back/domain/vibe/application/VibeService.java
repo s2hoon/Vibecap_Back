@@ -25,17 +25,17 @@ public class VibeService {
     private ImageAnalyzer imageAnalyzer;
     private PlaylistSearchEngine playlistSearchEngine;
     private TextTranslator textTranslator;
-    private final QueryMaker queryMaker;
+    private final VideoQuery videoQuery;
     private final FireBaseService fireBaseService;
 
     @Autowired
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
-                       QueryMaker queryMaker,
+                       VideoQuery videoQuery,
                        VibeRepository vibeRepository,
                        TextTranslator textTranslator, FireBaseService fireBaseService) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
-        this.queryMaker = queryMaker;
+        this.videoQuery = videoQuery;
         this.vibeRepository = vibeRepository;
         this.textTranslator = textTranslator;
         this.fireBaseService = fireBaseService;
@@ -65,7 +65,7 @@ public class VibeService {
         label = imageAnalyzer.detectLabelsByWebReference(data);
         label = textTranslator.translate(label);
         // label로부터 youtube query 생성
-        query = queryMaker.assemble(extraInfo, label);
+        query = videoQuery.assemble(extraInfo, label);
         // query 결과 획득
         videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);
@@ -112,7 +112,7 @@ public class VibeService {
         label = textTranslator.translate(label);
         keywords[0] = label;
         // query 생성
-        query = queryMaker.assemble(label);
+        query = videoQuery.assemble(label);
         videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);
         // 이미지 파일을 firebase storage에 저장
@@ -143,7 +143,7 @@ public class VibeService {
         CaptureResult result;
         String[] keywords = new String[1];
 
-        query = queryMaker.assemble(extraInfo);
+        query = videoQuery.assemble(extraInfo);
         keywords[0] = query;
         videoId = playlistSearchEngine.search(query);
         videoLink = getFullUrl(videoId);

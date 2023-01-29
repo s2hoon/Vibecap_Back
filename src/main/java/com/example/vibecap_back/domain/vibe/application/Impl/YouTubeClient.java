@@ -48,6 +48,14 @@ public class YouTubeClient implements PlaylistSearchEngine {
      */
     private final static String CATEGORY_ID_MUSIC = "10";
 
+    /**
+     *
+     * @param query
+     * "{season} + {time} + {feeling} + {label} + {TYPE}" 형태의 문자열
+     * @return
+     * @throws ExternalApiException
+     *
+     */
     @Override
     public String search(String query) throws ExternalApiException, NoProperVideoException {
 
@@ -80,9 +88,23 @@ public class YouTubeClient implements PlaylistSearchEngine {
 
             // prettyPrint(searchResultList.iterator(), query);
 
-            // 무작위로 1개의 비디오 전송
-            // return selectRandomVideo(searchResultList);
-            return selectTheFirstVideo(searchResultList);
+            /**
+             * 검색 결과가 0개인 경우 query를 단순화 하여 재검색
+             *
+             * query 단순화
+             * "{추가정보} + TYPE" 또는 <== 이 방법으로만 진행
+             * "{label} + TYPE" 로 단순화
+             */
+            if (searchResultList.size() == 0) {
+                String simpleQuery;
+                simpleQuery = simplify(query);
+
+                // search 메서드 재귀적 호출 =>  depth = 2를 넘으면 10초 이상 걸릴 것으로 예상되지만 그럴 일은 없을 듯
+                return search(simpleQuery);
+            } else
+                return selectTheFirstVideo(searchResultList);
+                // 무작위로 1개의 비디오 전송
+                // return selectRandomVideo(searchResultList);
 
         } catch (GoogleJsonResponseException e) {
             LOGGER.warn(e.getDetails().getMessage());
@@ -90,8 +112,6 @@ public class YouTubeClient implements PlaylistSearchEngine {
         } catch (IOException e) {
             LOGGER.warn(e.getMessage());
             throw new ExternalApiException();
-        } catch (IndexOutOfBoundsException e) {
-            throw new NoProperVideoException();
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ExternalApiException();
@@ -123,11 +143,29 @@ public class YouTubeClient implements PlaylistSearchEngine {
      * @param searchResultList
      * @return
      */
-    private String selectTheFirstVideo(List<SearchResult> searchResultList)
-            throws IndexOutOfBoundsException {
-        if (searchResultList.size() == 0)
-            throw new IndexOutOfBoundsException();
+    private String selectTheFirstVideo(List<SearchResult> searchResultList) {
         return searchResultList.get(0).getId().getVideoId();
+    }
+
+    /**
+     * "{season} {time} {feeling} {label} TYPE" 형태의 originQuery를
+     * "{season} {time} {feeling} TYPE" 형태로 단순화
+     *
+     * label에 공백이 포함되어있는 경우도 존재한다
+     */
+    private String simplify(String originQuery) {
+        List<String> queryTokens;
+        List<String> simpleQueryTokens;
+        String type;
+
+        // label 제거
+        // TODO hardcoding 변수화하기
+        queryTokens = List.of(originQuery.split(" "));
+        simpleQueryTokens = new ArrayList<>(queryTokens.subList(0, 3));  // extra info
+        type = queryTokens.get(queryTokens.size()-1);
+        simpleQueryTokens.add(type);                    // type
+
+        return String.join(" ", simpleQueryTokens);
     }
 
     private void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {
