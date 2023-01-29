@@ -22,6 +22,8 @@ public enum BaseResponseStatus {
     // album
     NO_ACCESS_TO_VIBE(false, 2100, "해당 바이브에 대한 접근 권한이 없습니다."),
 
+    // comment
+
     // member
 
     // mypage
@@ -43,6 +45,10 @@ public enum BaseResponseStatus {
     RESPONSE_ERROR(false, 3000, "값을 불러오는 데 실패하였습니다."),
 
     // album
+
+    // comment
+    NOT_FOUND_SUB_COMMENT(false, 3100, "해당 대댓글이 존재하지 않습니다."),
+
 
     // member
     EMAIL_ALREADY_EXIST(false, 3200, "이미 가입된 이메일 주소입니다."),

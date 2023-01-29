@@ -6,6 +6,7 @@ import com.example.vibecap_back.domain.comment.domain.Comments;
 import com.example.vibecap_back.domain.comment.domain.SubComment;
 import com.example.vibecap_back.domain.comment.dto.SubCommentDto;
 import com.example.vibecap_back.domain.comment.dto.SubCommentSaveRequestDto;
+import com.example.vibecap_back.domain.comment.exception.NotFoundSubCommentException;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.domain.Post;
@@ -56,5 +57,11 @@ public class SubCommentService {
         subCommentRepository.save(subComment);
 
         return SubCommentDto.toDto(subComment);
+    }
+
+    // 대댓글 삭제
+    public void deleteSubComment(Long subCommentId) throws BaseException, NotFoundSubCommentException {
+        SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow(NotFoundSubCommentException::new);
+        subCommentRepository.deleteById(subComment.getSubCommentId());
     }
 }
