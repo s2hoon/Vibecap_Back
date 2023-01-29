@@ -26,7 +26,7 @@ CREATE TABLE member(
                        role            CHAR(16)    NOT NULL,
                        nickname        CHAR(64)    NOT NULL,
                        state           CHAR(16)    NOT NULL,
-                       profile_image   CHAR(512) ,
+                       profile_image   VARCHAR(2048) ,
 
                        PRIMARY KEY (member_id)
 );
@@ -81,7 +81,7 @@ CREATE TABLE tag (
 CREATE TABLE vibe(
                      vibe_id         INT         NOT NULL AUTO_INCREMENT,
                      member_id       INT         NOT NULL,
-                     vibe_image      CHAR(512)  NOT NULL,
+                     vibe_image      VARCHAR(2048)  NOT NULL,
                      youtube_link    CHAR(255)   NOT NULL,
                      vibe_keywords   CHAR(255)   NOT NULL,
 
