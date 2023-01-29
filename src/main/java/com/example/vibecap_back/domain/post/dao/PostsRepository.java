@@ -19,4 +19,7 @@ public interface PostsRepository extends JpaRepository<Post, Long> {
 
     @Query(value ="select p from Post p where p.postId = ?1")
     List<PostResponseDto> findByPost(Long postId);
+
+    @Query(value="select * from post;", nativeQuery = true)
+    List<Post> selectAllPost();
 }

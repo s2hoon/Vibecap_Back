@@ -117,7 +117,7 @@ public class PostService {
         return postsRepository.findByPostId(postId);
     }
 
-    /** 게시물 조회 API - 태그별 게시물 **/
+    /** 게시물 조회 API - tag별 **/
     @Transactional(readOnly = true)
     public List<PostListResponseDto> findByTag_Name(String tagName) throws BaseException {
         return postsRepository.findByTagName(tagName).stream()
@@ -125,10 +125,9 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    /** 게시물 조회 API - 전체 **/
-    @Transactional(readOnly = true)
-    public List<PostListResponseDto> findAllDesc() {
-        return postsRepository.findAllDesc().stream()
+    /** 게시글 조회 API - db에 존재하는 모든 게시글 **/
+    public List<PostListResponseDto> findEveryPost() throws BaseException {
+        return postsRepository.selectAllPost().stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }

@@ -111,7 +111,11 @@ public class PostsApiController{
 
     /** 게시물 조회 API - 해시태그별 게시물 **/
     @GetMapping("")
-    public BaseResponse<List<PostListResponseDto>> findAllByTagName(@RequestParam String tagName) throws BaseException {
+    public BaseResponse<List<PostListResponseDto>> findAll(
+            @RequestParam(required = false) String tagName) throws BaseException {
+
+        if (tagName == null)
+            return findAll();
 
         try{
             if(postService.findByTag_Name(tagName).size() == 0){
@@ -125,13 +129,16 @@ public class PostsApiController{
         }
     }
 
-    /** 게시물 조회 API - 전체 **/
-    /*@GetMapping("")
-    public BaseResponse<List<PostListResponseDto>> findAll() throws BaseException {
-
-        List<PostListResponseDto> postListResponseDto = postService.findAllDesc();
-        return new BaseResponse<>(postListResponseDto);
-    }*/
+    public BaseResponse<List<PostListResponseDto>> findAll() {
+        try {
+            if (postService.findEveryPost().size() == 0)
+                return new BaseResponse<>(NOT_EXISTS_POST);
+            List<PostListResponseDto> postListResponseDto = postService.findEveryPost();
+            return new BaseResponse<>(postListResponseDto);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     /** 게시물 좋아요 API **/
     @PostMapping("/{postId}/like")
