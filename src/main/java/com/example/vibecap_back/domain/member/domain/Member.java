@@ -53,6 +53,7 @@ public class Member implements UserDetails {
     private String status;
 
     @Column(name = "profile_image")
+    @JsonProperty("profile_image")
     // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
     private String profileImage;
 

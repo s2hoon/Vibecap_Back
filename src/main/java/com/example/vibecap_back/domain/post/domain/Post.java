@@ -4,6 +4,7 @@ import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
 import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -25,6 +26,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
+    @JsonProperty("post_id")
     private Long postId;
 
     @Column(name = "post_title", length = 32, nullable = false)
@@ -38,11 +40,14 @@ public class Post {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Vibe vibe;
     @Column(name="like_number")
+    @JsonProperty("like_number")
     private Long likeNumber;
     @Column(name="scrap_number")
+    @JsonProperty("scrap_number")
     private Long scrapNumber;
 
     @Column(name="comment_number")
+    @JsonProperty("comment_number")
     private Long commentNumber;
 
     @PrePersist
@@ -53,6 +58,7 @@ public class Post {
     }
 
     @Column(table = "tag", name = "tag_name")
+    @JsonProperty("tag_name")
     private String tagName;
 
     //post 테이블이랑 tag 테이블 조인
