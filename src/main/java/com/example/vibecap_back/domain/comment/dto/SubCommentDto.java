@@ -1,6 +1,7 @@
 package com.example.vibecap_back.domain.comment.dto;
 
 import com.example.vibecap_back.domain.comment.domain.SubComment;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,10 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubCommentDto {
+    @JsonProperty("sub_comment_id")
     private Long subCommentId;
+    @JsonProperty("comment_id")
     private Long commentId;
+    @JsonProperty("sub_comment_body")
     private String subCommentBody;
+    @JsonProperty("nickname")
     private String nickname;
+    @JsonProperty("profile_image")
     private String profileImage;
 
     public static SubCommentDto toDto(SubComment subComment) {

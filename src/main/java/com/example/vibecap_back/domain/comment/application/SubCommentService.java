@@ -47,5 +47,14 @@ public class SubCommentService {
         return SubCommentDto.toDto(subComment);
     }
 
+    // 대댓글 수정
+    public SubCommentDto updateSubComment(Long subCommentId, SubCommentSaveRequestDto subCommentSaveRequestDto) throws BaseException {
+        Optional<SubComment> optionalSubComment = subCommentRepository.findById(subCommentId);
+        SubComment subComment = optionalSubComment.get();
 
+        subComment.setSubCommentBody(subCommentSaveRequestDto.getSubCommentBody());
+        subCommentRepository.save(subComment);
+
+        return SubCommentDto.toDto(subComment);
+    }
 }

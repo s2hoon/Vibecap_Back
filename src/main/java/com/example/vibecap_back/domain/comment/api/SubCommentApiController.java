@@ -8,6 +8,7 @@ import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
+import com.example.vibecap_back.global.common.response.BaseResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,10 +36,38 @@ public class SubCommentApiController {
     public BaseResponse<SubCommentDto> writeSubComment(@PathVariable("comment_id") Long commentId,
                                                        @RequestBody SubCommentSaveRequestDto subCommentSaveRequestDto) {
         try {
+            if (commentId == null || subCommentSaveRequestDto == null) {
+                return new BaseResponse<>(BaseResponseStatus.REQUEST_ERROR);
+            }
+
             // 토큰으로 회원 권한 검사 추가 필요
             Long memberId = subCommentSaveRequestDto.getMemberId();
             Member member = memberRepository.findById(memberId).get();
             SubCommentDto result = subCommentService.writeSubComment(commentId, subCommentSaveRequestDto, member);
+
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    /**
+     * 대댓글 수정
+     * [PATCH] /app/sub/comments/:sub_comment_id
+     */
+    @ResponseBody
+    @PatchMapping("/{sub_comment_id}")
+    public BaseResponse<SubCommentDto> updateSubComment(@PathVariable("sub_comment_id") Long subCommentId,
+                                                        @RequestBody SubCommentSaveRequestDto subCommentSaveRequestDto) {
+        try {
+            if (subCommentId == null || subCommentSaveRequestDto == null) {
+                return new BaseResponse<>(BaseResponseStatus.REQUEST_ERROR);
+            }
+
+            // 토큰으로 회원 권한 검사 추가 필요
+            Long memberId = subCommentSaveRequestDto.getMemberId();
+            Member member = memberRepository.findById(memberId).get();
+            SubCommentDto result = subCommentService.updateSubComment(subCommentId, subCommentSaveRequestDto);
 
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
