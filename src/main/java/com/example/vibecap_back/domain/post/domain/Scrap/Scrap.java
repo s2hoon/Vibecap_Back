@@ -1,6 +1,7 @@
 package com.example.vibecap_back.domain.post.domain.Scrap;
 
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.post.domain.BaseTimeEntity;
 import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import static javax.persistence.FetchType.LAZY;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="post_scrap")
-public class Scrap {
+public class Scrap extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

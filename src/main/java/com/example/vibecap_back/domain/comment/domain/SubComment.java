@@ -1,6 +1,7 @@
 package com.example.vibecap_back.domain.comment.domain;
 
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.post.domain.BaseTimeEntity;
 import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -15,7 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Table(name = "sub_comment")
-public class SubComment {
+public class SubComment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

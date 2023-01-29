@@ -1,6 +1,7 @@
 package com.example.vibecap_back.domain.comment.domain;
 
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.post.domain.BaseTimeEntity;
 import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name="comment")
-public class Comments {
+public class Comments extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

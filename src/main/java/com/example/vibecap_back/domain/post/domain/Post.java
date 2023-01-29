@@ -22,7 +22,7 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name="post")
 @SecondaryTable(name = "tag",
         pkJoinColumns = @PrimaryKeyJoinColumn(name = "tag_id"))
-public class Post {
+public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
