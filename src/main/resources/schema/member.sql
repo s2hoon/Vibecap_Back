@@ -6,7 +6,7 @@ CREATE TABLE member(
     role            CHAR(16)    NOT NULL,
     nickname        CHAR(64)    NOT NULL,
     state           CHAR(16)    NOT NULL,
-    profile_image   MEDIUMBLOB  ,
+    profile_image   CHAR(512)  ,
 
     PRIMARY KEY (member_id)
 );

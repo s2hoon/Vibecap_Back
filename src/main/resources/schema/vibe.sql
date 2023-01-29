@@ -1,7 +1,7 @@
 CREATE TABLE vibe(
     vibe_id         INT         NOT NULL AUTO_INCREMENT,
     member_id       INT         NOT NULL,
-    vibe_image      MEDIUMBLOB  NOT NULL,
+    vibe_image      CHAR(512)  NOT NULL,
     youtube_link    CHAR(255)   NOT NULL,
     vibe_keywords   CHAR(255)   NOT NULL,
 
