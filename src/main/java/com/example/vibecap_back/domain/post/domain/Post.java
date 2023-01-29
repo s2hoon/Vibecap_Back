@@ -119,4 +119,16 @@ public class Post {
     public void discountScrap(Scrap postScrap) {
         this.postScrapList.remove(postScrap);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (obj instanceof Post)
+            return ((this.postId == ((Post) obj).getPostId())
+                && (this.title.equals(((Post) obj).getTitle()))
+                && (this.body.equals(((Post) obj).getBody())));
+        else
+            return false;
+    }
 }
