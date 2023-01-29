@@ -21,7 +21,7 @@ public class PostFactory {
         return dummy;
     }
 
-    public static Post select(Member member, Vibe vibe, Integer i) {
+    public static Post selectPost(Member member, Vibe vibe, Integer i) {
         Post post = Post.builder()
                 .postId(i.longValue())
                 .member(member)
