@@ -1,6 +1,5 @@
 package com.example.vibecap_back.domain.album.dao;
 
-import com.example.vibecap_back.domain.post.domain.Posts;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +14,6 @@ public interface AlbumRepository extends JpaRepository<Vibe, Long> {
     @Query("select v.vibeId from Vibe v where v.memberId = :memberId")
     List<Long> findVibeIdByMemberId(@Param("memberId") Long memberId);
 
-    @Query("select p.postId from Posts p where p.vibe.vibeId = :vibeId")
+    @Query("select p.postId from Post p where p.vibe.vibeId = :vibeId")
     Long findPostIdByVibeId(@Param("vibeId") Long vibeId);
 }
