@@ -1,6 +1,7 @@
 package com.example.vibecap_back.domain.post.dto.Response;
 
 import com.example.vibecap_back.domain.post.domain.Post;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,17 +13,26 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostResponseDto {
 
+    @JsonProperty("post_id")
     private Long postId;
+    @JsonProperty("member_id")
     private Long memberId;
     private String title;
     private String body;
+    @JsonProperty("vibe_id")
     private Long vibeId;
+    @JsonProperty("vibe_image")
     private String vibeImage;
+    @JsonProperty("like_number")
     private Long likeNumber;
+    @JsonProperty("scrap_number")
     private Long scrapNumber;
+    @JsonProperty("comment_number")
     private Long commentNumber;
+    @JsonProperty("tag_name")
     private String tagName;
     //private List<Tags> tag_name;
+    @JsonProperty("profile_image")
     private String profileImage;
     private String nickname;
 
