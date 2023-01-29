@@ -7,6 +7,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,4 +38,11 @@ public class Comments {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 
+    /** 대댓글 **/
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comments", cascade = CascadeType.REMOVE)
+    private List<SubComment> subCommentList = new ArrayList<>();
+
+    public void mappingSubComment(SubComment subComment) {
+        this.subCommentList.add(subComment);
+    }
 }

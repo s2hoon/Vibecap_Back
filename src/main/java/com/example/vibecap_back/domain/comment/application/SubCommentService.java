@@ -41,6 +41,9 @@ public class SubCommentService {
         subComment.setComments(comments);
         subComment.setMember(member);
         subComment.setPost(post);
+
+        subComment.mappingComment(comments);
+
         subCommentRepository.save(subComment);
 
         return SubCommentDto.toDto(subComment);

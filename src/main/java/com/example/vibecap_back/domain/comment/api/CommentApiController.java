@@ -2,6 +2,7 @@ package com.example.vibecap_back.domain.comment.api;
 
 import com.example.vibecap_back.domain.comment.application.CommentService;
 import com.example.vibecap_back.domain.comment.dto.CommentDto;
+import com.example.vibecap_back.domain.comment.dto.CommentReadDto;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.global.common.response.BaseResponse;
@@ -41,9 +42,9 @@ public class CommentApiController {
     @ApiOperation(value = "댓글 불러오기", notes = "게시글에 달린 모든 댓글 불러오기.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{PostId}")
-    public BaseResponse<List<CommentDto>> getComments(@PathVariable("PostId") Long PostId)
+    public BaseResponse<List<CommentReadDto>> getComments(@PathVariable("PostId") Long PostId)
     {
-        List<CommentDto> result = commentService.getComments(PostId);
+        List<CommentReadDto> result = commentService.getComments(PostId);
 
         return new BaseResponse<>(result);
     }

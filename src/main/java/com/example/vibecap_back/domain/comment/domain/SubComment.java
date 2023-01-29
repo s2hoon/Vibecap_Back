@@ -49,4 +49,9 @@ public class SubComment {
     @JoinColumn(name = "post_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
+
+    public void mappingComment(Comments comments) {
+        this.comments = comments;
+        comments.mappingSubComment(this);
+    }
 }

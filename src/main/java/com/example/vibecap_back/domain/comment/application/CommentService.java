@@ -1,8 +1,10 @@
 package com.example.vibecap_back.domain.comment.application;
 
 import com.example.vibecap_back.domain.comment.dao.CommentRepository;
+import com.example.vibecap_back.domain.comment.dao.SubCommentRepository;
 import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.comment.domain.Comments;
+import com.example.vibecap_back.domain.comment.dto.CommentReadDto;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.domain.Post;
@@ -17,6 +19,7 @@ import java.util.List;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final SubCommentRepository subCommentRepository;
     private final PostsRepository postsRepository;
 
     /** 댓글 작성 **/
@@ -40,12 +43,14 @@ public class CommentService {
 
     /** 댓글 조회 **/
     @Transactional(readOnly = true)
-    public List<CommentDto> getComments(Long PostId) {
+    public List<CommentReadDto> getComments(Long PostId) {
         List<Comments> comments = commentRepository.findAllByPost_PostId(PostId);
-        List<CommentDto> commentDto = new ArrayList<>();
 
-        comments.forEach(s -> commentDto.add(CommentDto.toDto(s)));
-        return commentDto;
+        List<CommentReadDto> commentReadDto = new ArrayList<>();
+        List<CommentReadDto> finalCommentReadDto = commentReadDto;
+        comments.forEach(c -> finalCommentReadDto.add(CommentReadDto.toDto(c, c.getSubCommentList())));
+
+        return commentReadDto;
     }
 
 
