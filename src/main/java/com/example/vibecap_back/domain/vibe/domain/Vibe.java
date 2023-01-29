@@ -1,6 +1,7 @@
 package com.example.vibecap_back.domain.vibe.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class Vibe {
     @Column(name = "vibe_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("vibe_id")
     private Long vibeId;
 
     // vibe를 만든 회원 식별자

@@ -29,6 +29,7 @@ public class Member implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @Column(name = "member_id")
+    @JsonProperty("member_id")
     private Long memberId;
 
     @Column(nullable = false)
