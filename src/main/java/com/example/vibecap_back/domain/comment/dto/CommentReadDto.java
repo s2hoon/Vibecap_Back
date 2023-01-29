@@ -25,7 +25,7 @@ public class CommentReadDto {
     @JsonProperty("comment_body")
     private String commentBody;
     private String nickname;
-    @Column(table = "profile_image")
+    @JsonProperty("profile_image")
     private String profileImage;
     @JsonProperty("sub_comment")
     private List<SubCommentDto> subComment;
