@@ -1,4 +1,4 @@
-package com.example.vibecap_back.domain.member;
+package com.example.vibecap_back.factory;
 
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.model.Authority;
@@ -15,7 +15,7 @@ public class MemberFactory {
      * @param i
      * @return
      */
-    static Member createMember(Integer i) {
+    public static Member getMember(Integer i) {
         Member dummy = Member.builder()
                 .email(TEST_EMAIL + i.toString())
                 .password(TEST_PW)
@@ -31,7 +31,7 @@ public class MemberFactory {
      * memberId, email, password, role, nickname, status 필드에 값이 들어있다.
      * @return
      */
-    static Member createMember() {
+    public static Member getMember() {
         Member dummy = Member.builder()
                 .email(TEST_EMAIL)
                 .password(TEST_PW)
@@ -47,7 +47,7 @@ public class MemberFactory {
      * DB에 저장된 형태의 member 객체 반환.
      * memberId 값을 가진다.
      */
-    static Member selectMember() {
+    public static Member selectMember() {
 
         Member dummy = Member.builder()
                 .memberId(TEST_MEMBER_ID)
@@ -66,7 +66,7 @@ public class MemberFactory {
      * @param i
      * @return
      */
-    static Member selectMember(Integer i) {
+    public static Member selectMember(Integer i) {
 
         Member dummy = Member.builder()
                 .memberId(i.longValue())
