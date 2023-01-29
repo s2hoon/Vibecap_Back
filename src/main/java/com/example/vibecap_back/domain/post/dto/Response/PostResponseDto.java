@@ -39,6 +39,7 @@ public class PostResponseDto {
     @Builder
     public PostResponseDto(Post entity)
     {
+
         this.postId = entity.getPostId();
         this.memberId = entity.getMember().getMemberId();
         this.profileImage = entity.getMember().getProfileImage();
@@ -50,7 +51,7 @@ public class PostResponseDto {
         this.likeNumber = entity.getLikeNumber();
         this.scrapNumber = entity.getScrapNumber();
         this.commentNumber = entity.getCommentNumber();
-        this.tagName = entity.getTagName() + " " + entity.getVibe().getVibeKeywords();
+        this.tagName = entity.getTagName();
     }
 
 }
