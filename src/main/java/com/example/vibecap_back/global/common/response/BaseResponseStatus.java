@@ -47,7 +47,8 @@ public enum BaseResponseStatus {
     // album
 
     // comment
-    NOT_FOUND_SUB_COMMENT(false, 3100, "해당 대댓글이 존재하지 않습니다."),
+    NOT_FOUND_COMMENT(false, 3100, "해당 댓글이 존재하지 않습니다."),
+    NOT_FOUND_SUB_COMMENT(false, 3101, "해당 대댓글이 존재하지 않습니다."),
 
 
     // member
