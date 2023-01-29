@@ -1,16 +1,14 @@
 package com.example.vibecap_back.domain.post.api;
 
-import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.domain.post.application.PostService;
-import com.example.vibecap_back.domain.post.dto.Response.PostDeleteResDto;
+import com.example.vibecap_back.domain.post.dto.Request.*;
+import com.example.vibecap_back.domain.post.dto.Response.PostLikeResDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
-import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;
-import com.example.vibecap_back.domain.post.dto.Request.PostUpdateRequestDto;
+import com.example.vibecap_back.domain.post.dto.Response.PostScrapResDto;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
-import com.example.vibecap_back.global.common.response.SuccessResponse;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +20,6 @@ import java.util.List;
 import static com.example.vibecap_back.global.common.response.BaseResponseStatus.*;
 
 
-//모든 내용에 필요
-//현재 로그인한 유저의 정보가 PathVariable 로 들어오는 BoardID 의 작성자인 user 정보와 일치하는지 확인하고
-//맞으면 아래 로직 수행, 틀리면 다른 로직(ResponseFail 등 커스텀으로 만들어서) 수행
 /**
  * 게시글 -> 생성/수정/삭제/조회 API
  */
@@ -33,16 +28,13 @@ import static com.example.vibecap_back.global.common.response.BaseResponseStatus
 public class PostsApiController{
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-
     private final PostService postService;
-    private final MemberRepository memberRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public PostsApiController(PostService postService, MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public PostsApiController(PostService postService, JwtTokenProvider jwtTokenProvider) {
         this.postService = postService;
-        this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -51,10 +43,6 @@ public class PostsApiController{
     public BaseResponse<Long> save(@RequestBody PostSaveRequestDto requestDto) {
         try {
             postService.checkMemberValid(requestDto.getMember().getMemberId());
-            /*int userIdxByJwt = jwtTokenProvider.extractMemberId();
-            if(requestDto.getMember().getMemberId() !=userIdxByJwt){
-                return new BaseResponse<>(BaseResponseStatus.INVALID_MEMBER_JWT);
-            }*/
             if(requestDto.getTitle().length() > 32)
             {
                 return new BaseResponse<>(POST_POSTS_INVALID_TITLE);
@@ -93,11 +81,10 @@ public class PostsApiController{
     }
 
     /** 게시물 삭제 API **/
-    @DeleteMapping("/{postId}") ///{postId}/status 고민
-    public BaseResponse<String> delete(@PathVariable Long postId, @RequestBody PostDeleteResDto postDeleteResDto) {
-        // 삭제하려는 사용자의 ID와 해당 글 작성자의 ID가 동일한지 확인 필요
+    @DeleteMapping("/{postId}")
+    public BaseResponse<String> delete(@PathVariable Long postId, @RequestBody PostDeleteDto postDeleteDto) {
         try {
-            postService.checkMemberValid(postDeleteResDto.getMemberId());
+            postService.checkMemberValid(postDeleteDto.getMemberId());
             postService.delete(postId);
             String result = "삭제를 완료했습니다";
             return new BaseResponse<>(result);
@@ -122,13 +109,12 @@ public class PostsApiController{
         }
     }
 
-    /** 게시물 조회 API - 해시태그별 게시물(전체) **/
+    /** 게시물 조회 API - 해시태그별 게시물 **/
     @GetMapping("")
-    public BaseResponse<List<PostListResponseDto>> findAll(@RequestParam String tagName) throws BaseException {
+    public BaseResponse<List<PostListResponseDto>> findAllByTagName(@RequestParam String tagName) throws BaseException {
 
         try{
             if(postService.findByTag_Name(tagName).size() == 0){
-                //System.out.println(postService.findByTag_Name(tagName));
                 return new BaseResponse<>(NOT_EXISTS_TAG_NAME_POST);
             }
             List<PostListResponseDto> postListResponseDto = postService.findByTag_Name(tagName);
@@ -139,21 +125,35 @@ public class PostsApiController{
         }
     }
 
+    /** 게시물 조회 API - 전체 **/
+    /*@GetMapping("")
+    public BaseResponse<List<PostListResponseDto>> findAll() throws BaseException {
+
+        List<PostListResponseDto> postListResponseDto = postService.findAllDesc();
+        return new BaseResponse<>(postListResponseDto);
+    }*/
+
     /** 게시물 좋아요 API **/
     @PostMapping("/{postId}/like")
-    public SuccessResponse<String> postLike(@PathVariable(name = "postId") Long postId, Long memberId) {
-
-        postService.postLike(postId, memberId);
-
-        return SuccessResponse.success(null);
+    public BaseResponse<PostLikeResDto> postLike(@PathVariable(name = "postId") Long postId, @RequestBody PostLikeDto postLikeDto) {
+        try {
+            postService.checkMemberValid(postLikeDto.getMemberId());
+            PostLikeResDto postLikeResDto = postService.postLike(postId, postLikeDto.getMemberId());
+            return new BaseResponse<>(postLikeResDto);
+        } catch (InvalidMemberException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /** 게시물 스크랩 API **/
     @PostMapping("/{postId}/scrap")
-    public SuccessResponse<String> postScrap(@PathVariable(name = "postId") Long postId, Long memberId) {
-
-        postService.postScrap(postId, memberId);
-
-        return SuccessResponse.success(null);
+    public BaseResponse<PostScrapResDto> postScrap(@PathVariable(name = "postId") Long postId, @RequestBody PostScrapDto postScrapDto) {
+        try {
+            postService.checkMemberValid(postScrapDto.getMemberId());
+            PostScrapResDto postScrapResDto = postService.postScrap(postId, postScrapDto.getMemberId());;
+            return new BaseResponse<>(postScrapResDto);
+        } catch (InvalidMemberException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
