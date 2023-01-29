@@ -16,6 +16,7 @@ import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostUpdateRequestDto;
 import com.example.vibecap_back.domain.post.dto.Response.PostScrapResDto;
 import com.example.vibecap_back.domain.post.exception.PostNotFound;
+import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -40,15 +41,18 @@ public class PostService {
     private final PostsRepository postsRepository;
     private final PostsLikeRepository postsLikeRepository;
     private final PostsScrapRepository postsScrapRepository;
+    private final VibeRepository vibeRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public PostService(MemberRepository memberRepository,PostsLikeRepository postsLikeRepository,
-                       PostsRepository postsRepository, PostsScrapRepository postsScrapRepository, JwtTokenProvider jwtTokenProvider) throws InvalidMemberException {
+                       PostsRepository postsRepository, PostsScrapRepository postsScrapRepository,
+                       VibeRepository vibeRepository, JwtTokenProvider jwtTokenProvider) throws InvalidMemberException {
         this.memberRepository = memberRepository;
         this.postsLikeRepository = postsLikeRepository;
         this.postsRepository = postsRepository;
         this.postsScrapRepository = postsScrapRepository;
+        this.vibeRepository = vibeRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -56,6 +60,19 @@ public class PostService {
     /** 게시물 작성 API - 저장 **/
     @Transactional
     public Long save(PostSaveRequestDto requestDto) {
+        /**
+         * tag_name은 "{사용자가 보낸 태그 문자열} {해당 vibe를 생성할 때 선택한 feeling}" 형태이다.
+         * feeling은 요청에 없기 때문에 찾아서 넣어줘야 한다.
+         */
+        String feeling;
+        String vibeKeywords;
+        String[] vibeKeywordToken;
+        vibeKeywords = vibeRepository.getReferenceById(requestDto.getVibe().getVibeId()).getVibeKeywords();
+        vibeKeywordToken = vibeKeywords.split(" ");
+        feeling = vibeKeywordToken[vibeKeywordToken.length-1];
+
+        requestDto.setTagName(requestDto.getTagName() + " " + feeling);
+
         return postsRepository.save(requestDto.toEntity()).getPostId();
     }
 
