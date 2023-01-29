@@ -79,9 +79,6 @@ public class AlbumService {
         // firebase 에서 사진 삭제
         String fileName = fireBaseService.getFileName(vibe.getVibeImage());
         fireBaseService.delete(fileName);
-        // 해당 vibe_id 가진 게시물 삭제
-        Long postId = albumRepository.findPostIdByVibeId(vibeId);
-        postService.delete(postId);
 
         albumRepository.deleteById(vibeId);
     }
