@@ -59,6 +59,7 @@ public class VibeService {
         String videoId;
         String videoLink;
         String keywords;
+        Long vibeId;
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
@@ -72,12 +73,13 @@ public class VibeService {
         String imgUrl = fireBaseService.uploadFiles(imageFile);
         // 생성한 vibe를 DB에 저장
         keywords = label + extraInfo.toString();
-        saveVibe(memberId, imgUrl, videoLink, keywords);
+        vibeId = saveVibe(memberId, imgUrl, videoLink, keywords);
 
         CaptureResult result = CaptureResult.builder()
                 .keywords(keywords.split(" "))
                 .youtubeLink(videoLink)
                 .videoId(videoId)
+                .vibeId(vibeId)
                 .build();
 
         return result;
@@ -103,6 +105,7 @@ public class VibeService {
         String videoId;
         String videoLink;
         String[] keywords = new String[1];
+        Long vibeId;
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
@@ -115,12 +118,13 @@ public class VibeService {
         // 이미지 파일을 firebase storage에 저장
         String imgUrl = fireBaseService.uploadFiles(imageFile);
         // vibe를 DB에 저장
-        saveVibe(memberId, imgUrl, videoLink, label);
+        vibeId = saveVibe(memberId, imgUrl, videoLink, label);
 
         CaptureResult result = CaptureResult.builder()
                 .keywords(keywords)
                 .youtubeLink(videoLink)
                 .videoId(videoId)
+                .vibeId(vibeId)
                 .build();
 
         return result;
