@@ -157,7 +157,6 @@ public class PostService {
                     postsLikeRepository.delete(postLike);
                     //result.set("해당 게시물의 좋아요를 취소하였습니다.");
                     postLikeResDto.setLikeOrElse("해당 게시물의 좋아요를 취소하였습니다.");
-
                 },
                 // 좋아요가 없을 경우 좋아요 추가
                 () -> {
