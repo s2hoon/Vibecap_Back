@@ -14,6 +14,7 @@ import com.example.vibecap_back.domain.post.domain.Post;
 import com.example.vibecap_back.global.common.response.BaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SubCommentService {
@@ -29,6 +30,7 @@ public class SubCommentService {
     }
 
     // 대댓글 작성
+    @Transactional
     public SubCommentDto writeSubComment(Long commentId, SubCommentSaveRequestDto subCommentSaveRequestDto, Member member) throws BaseException, NotFoundCommentException {
         SubComment subComment = new SubComment();
         subComment.setSubCommentBody(subCommentSaveRequestDto.getSubCommentBody());
@@ -50,6 +52,7 @@ public class SubCommentService {
     }
 
     // 대댓글 수정
+    @Transactional
     public SubCommentDto updateSubComment(Long subCommentId, SubCommentSaveRequestDto subCommentSaveRequestDto) throws BaseException, NotFoundSubCommentException {
         SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow(NotFoundSubCommentException::new);
 
@@ -60,6 +63,7 @@ public class SubCommentService {
     }
 
     // 대댓글 삭제
+    @Transactional
     public void deleteSubComment(Long subCommentId) throws BaseException, NotFoundSubCommentException {
         SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow(NotFoundSubCommentException::new);
         subCommentRepository.deleteById(subComment.getSubCommentId());
