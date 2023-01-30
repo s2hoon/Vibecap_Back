@@ -38,6 +38,7 @@ public class PostResponseDto {
     private String profileImage;
     private String nickname;
 
+    @JsonProperty("modified_date")
     private LocalDateTime modifiedDate;
 
     @Builder

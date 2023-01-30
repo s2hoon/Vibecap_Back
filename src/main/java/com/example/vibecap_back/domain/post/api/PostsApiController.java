@@ -59,8 +59,8 @@ public class PostsApiController{
     }
 
     /** 게시물 수정 API **/
-    @PatchMapping("/{postId}")
-    public BaseResponse<String> update(@PathVariable Long postId, @RequestBody PostUpdateRequestDto requestDto) {
+    @PatchMapping("/{post_id}")
+    public BaseResponse<String> update(@PathVariable("post_id") Long postId, @RequestBody PostUpdateRequestDto requestDto) {
         try {
             postService.checkMemberValid(requestDto.getMember().getMemberId());
 
@@ -81,8 +81,8 @@ public class PostsApiController{
     }
 
     /** 게시물 삭제 API **/
-    @DeleteMapping("/{postId}")
-    public BaseResponse<String> delete(@PathVariable Long postId, @RequestBody PostDeleteDto postDeleteDto) {
+    @DeleteMapping("/{post_id}")
+    public BaseResponse<String> delete(@PathVariable("post_id") Long postId, @RequestBody PostDeleteDto postDeleteDto) {
         try {
             postService.checkMemberValid(postDeleteDto.getMemberId());
             postService.delete(postId);
@@ -94,8 +94,8 @@ public class PostsApiController{
     }
 
     /** 게시물 조회 API - 특정 게시물 **/
-    @GetMapping("/{postId}")
-    public BaseResponse<List<PostResponseDto>> retrievePosts(@PathVariable Long postId) throws BaseException {
+    @GetMapping("/{post_id}")
+    public BaseResponse<List<PostResponseDto>> retrievePosts(@PathVariable("post_id") Long postId) throws BaseException {
 
         try {
             if(postService.checkPostExist(postId)==null){
@@ -155,8 +155,8 @@ public class PostsApiController{
 
 
     /** 게시물 좋아요 API **/
-    @PostMapping("/{postId}/like")
-    public BaseResponse<PostLikeResDto> postLike(@PathVariable(name = "postId") Long postId, @RequestBody PostLikeDto postLikeDto) {
+    @PostMapping("/{post_id}/like")
+    public BaseResponse<PostLikeResDto> postLike(@PathVariable(name = "post_id") Long postId, @RequestBody PostLikeDto postLikeDto) {
         try {
             postService.checkMemberValid(postLikeDto.getMemberId());
             PostLikeResDto postLikeResDto = postService.postLike(postId, postLikeDto.getMemberId());
@@ -167,8 +167,8 @@ public class PostsApiController{
     }
 
     /** 게시물 스크랩 API **/
-    @PostMapping("/{postId}/scrap")
-    public BaseResponse<PostScrapResDto> postScrap(@PathVariable(name = "postId") Long postId, @RequestBody PostScrapDto postScrapDto) {
+    @PostMapping("/{post_id}/scrap")
+    public BaseResponse<PostScrapResDto> postScrap(@PathVariable(name = "post_id") Long postId, @RequestBody PostScrapDto postScrapDto) {
         try {
             postService.checkMemberValid(postScrapDto.getMemberId());
             PostScrapResDto postScrapResDto = postService.postScrap(postId, postScrapDto.getMemberId());;
