@@ -154,24 +154,30 @@ public class PostsApiController{
     /** 게시물 좋아요 API **/
     @PostMapping("/{postId}/like")
     public BaseResponse<PostLikeResDto> postLike(@PathVariable(name = "postId") Long postId, @RequestBody PostLikeDto postLikeDto) {
-        try {
+        /*try {
             postService.checkMemberValid(postLikeDto.getMemberId());
             PostLikeResDto postLikeResDto = postService.postLike(postId, postLikeDto.getMemberId());
             return new BaseResponse<>(postLikeResDto);
         } catch (InvalidMemberException e) {
             throw new RuntimeException(e);
-        }
+        }*/
+
+        PostLikeResDto postLikeResDto = postService.postLike(postId, postLikeDto.getMemberId());
+        return new BaseResponse<>(postLikeResDto);
     }
 
     /** 게시물 스크랩 API **/
     @PostMapping("/{postId}/scrap")
     public BaseResponse<PostScrapResDto> postScrap(@PathVariable(name = "postId") Long postId, @RequestBody PostScrapDto postScrapDto) {
-        try {
+        /*try {
             postService.checkMemberValid(postScrapDto.getMemberId());
             PostScrapResDto postScrapResDto = postService.postScrap(postId, postScrapDto.getMemberId());;
             return new BaseResponse<>(postScrapResDto);
         } catch (InvalidMemberException e) {
             throw new RuntimeException(e);
-        }
+        }*/
+
+        PostScrapResDto postScrapResDto = postService.postScrap(postId, postScrapDto.getMemberId());;
+        return new BaseResponse<>(postScrapResDto);
     }
 }
