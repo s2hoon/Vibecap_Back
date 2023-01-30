@@ -17,7 +17,7 @@ CREATE TABLE hashtag(
                             ON DELETE CASCADE
 );
 
-CREATE TABLE _like(
+CREATE TABLE post_like(
                       member_id   INT     NOT NULL,
                       post_id     INT     NOT NULL,
 
