@@ -168,7 +168,7 @@ public class PostService {
     /**
      * 게시물 좋아요 API
      **/
-    @Transactional(readOnly = true)
+    @Transactional
     public PostLikeResDto postLike(Long postId, Long memberId) {
         Post post = getPostInService(postId);
         Member member = getMemberInService(memberId);
@@ -205,7 +205,7 @@ public class PostService {
     }
 
     /** 게시물 스크랩 API **/
-    @Transactional(readOnly = true)
+    @Transactional
     public PostScrapResDto postScrap(Long postId, Long memberId) {
         Post post = getPostInService(postId);
         Member member = getMemberInService(memberId);
