@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 // 게시물 조회 Dto - 특정 게시물
 @Getter
 @Setter
@@ -36,6 +38,8 @@ public class PostResponseDto {
     private String profileImage;
     private String nickname;
 
+    private LocalDateTime modifiedDate;
+
     @Builder
     public PostResponseDto(Post entity)
     {
@@ -52,6 +56,7 @@ public class PostResponseDto {
         this.scrapNumber = entity.getScrapNumber();
         this.commentNumber = entity.getCommentNumber();
         this.tagName = entity.getTagName();
+        this.modifiedDate = entity.getModifiedDate();
     }
 
 }

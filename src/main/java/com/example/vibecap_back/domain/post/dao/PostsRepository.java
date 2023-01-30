@@ -22,4 +22,7 @@ public interface PostsRepository extends JpaRepository<Post, Long> {
 
     @Query(value="select * from post;", nativeQuery = true)
     List<Post> selectAllPost();
+
+    List<Post> findTop3ByOrderByLikeNumberDesc();
+
 }

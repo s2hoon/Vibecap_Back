@@ -9,12 +9,9 @@ import com.example.vibecap_back.domain.post.dao.PostsScrapRepository;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
 import com.example.vibecap_back.domain.post.domain.Post;
 import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
-import com.example.vibecap_back.domain.post.dto.Response.PostLikeResDto;
-import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
-import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
+import com.example.vibecap_back.domain.post.dto.Response.*;
 import com.example.vibecap_back.domain.post.dto.Request.PostSaveRequestDto;
 import com.example.vibecap_back.domain.post.dto.Request.PostUpdateRequestDto;
-import com.example.vibecap_back.domain.post.dto.Response.PostScrapResDto;
 import com.example.vibecap_back.domain.post.exception.PostNotFound;
 import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.global.common.response.BaseException;
@@ -129,6 +126,13 @@ public class PostService {
     public List<PostListResponseDto> findEveryPost() throws BaseException {
         return postsRepository.selectAllPost().stream()
                 .map(PostListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    /** 게시글 조회 API - db에 존재하는 모든 게시글 중 생성 날짜가 최근이면서 좋아요 수가 가장 많은 게시물 **/
+    public List<PostWeeklyReqDto> findWeeklyPost() throws BaseException {
+        return postsRepository.findTop3ByOrderByLikeNumberDesc().stream()
+                .map(PostWeeklyReqDto::new)
                 .collect(Collectors.toList());
     }
 

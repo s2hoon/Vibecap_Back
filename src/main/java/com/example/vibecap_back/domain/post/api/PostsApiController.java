@@ -3,10 +3,7 @@ package com.example.vibecap_back.domain.post.api;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.domain.post.application.PostService;
 import com.example.vibecap_back.domain.post.dto.Request.*;
-import com.example.vibecap_back.domain.post.dto.Response.PostLikeResDto;
-import com.example.vibecap_back.domain.post.dto.Response.PostListResponseDto;
-import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
-import com.example.vibecap_back.domain.post.dto.Response.PostScrapResDto;
+import com.example.vibecap_back.domain.post.dto.Response.*;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
@@ -139,6 +136,20 @@ public class PostsApiController{
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /** 게시물 조회 API - weekly 게시물 **/
+    @GetMapping("/weekly")
+    public BaseResponse<List<PostWeeklyReqDto>> findWeekly() {
+        try{
+            if (postService.findWeeklyPost().size() == 0)
+                return new BaseResponse<>(NOT_EXISTS_POST);
+            List<PostWeeklyReqDto> postWeeklyReqDto = postService.findWeeklyPost();
+            return new BaseResponse<>(postWeeklyReqDto);
+        }catch(BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 
     /** 게시물 좋아요 API **/
     @PostMapping("/{postId}/like")
