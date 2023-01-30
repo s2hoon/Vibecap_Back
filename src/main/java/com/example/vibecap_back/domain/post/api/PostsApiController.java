@@ -10,6 +10,9 @@ import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -108,17 +111,17 @@ public class PostsApiController{
 
     /** 게시물 조회 API - 해시태그별 게시물 **/
     @GetMapping("")
-    public BaseResponse<List<PostListResponseDto>> findAll(
-            @RequestParam(required = false) String tagName) throws BaseException {
+    public BaseResponse<Page<PostListResponseDto>> findAll(
+            @RequestParam(required = false) String tagName, @PageableDefault(page=0, size=8) Pageable pageable) throws BaseException {
 
         if (tagName == null)
-            return findAll();
+            return findAll(pageable);
 
         try{
             if(postService.findByTag_Name(tagName).size() == 0){
                 return new BaseResponse<>(NOT_EXISTS_TAG_NAME_POST);
             }
-            List<PostListResponseDto> postListResponseDto = postService.findByTag_Name(tagName);
+            Page<PostListResponseDto> postListResponseDto = postService.findByTag_NameByPaging(tagName, pageable);
             return new BaseResponse<>(postListResponseDto);
         } catch (BaseException exception) {
             System.out.println(exception);
@@ -126,11 +129,11 @@ public class PostsApiController{
         }
     }
 
-    public BaseResponse<List<PostListResponseDto>> findAll() {
+    public BaseResponse<Page<PostListResponseDto>> findAll(@PageableDefault(page=0, size=8) Pageable pageable) {
         try {
             if (postService.findEveryPost().size() == 0)
                 return new BaseResponse<>(NOT_EXISTS_POST);
-            List<PostListResponseDto> postListResponseDto = postService.findEveryPost();
+            Page<PostListResponseDto> postListResponseDto = postService.findEveryPostByPaging(pageable);
             return new BaseResponse<>(postListResponseDto);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
