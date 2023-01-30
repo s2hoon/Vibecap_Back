@@ -18,6 +18,9 @@ import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +45,7 @@ public class PostService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public PostService(MemberRepository memberRepository,PostsLikeRepository postsLikeRepository,
+    public PostService(MemberRepository memberRepository, PostsLikeRepository postsLikeRepository,
                        PostsRepository postsRepository, PostsScrapRepository postsScrapRepository,
                        VibeRepository vibeRepository, JwtTokenProvider jwtTokenProvider) throws InvalidMemberException {
         this.memberRepository = memberRepository;
@@ -134,6 +137,32 @@ public class PostService {
         return postsRepository.findTop3ByOrderByLikeNumberDesc().stream()
                 .map(PostWeeklyReqDto::new)
                 .collect(Collectors.toList());
+    }
+
+    /** 게시글 조회 API - 페이징 처리 (tag별) **/
+    public Page<PostListResponseDto> findByTag_NameByPaging(String tagName, Pageable pageable) throws BaseException {
+        List<PostListResponseDto> postListByTagName = postsRepository.findByTagName(tagName).stream()
+                .map(PostListResponseDto::new)
+                .collect(Collectors.toList());
+
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), postListByTagName.size());
+        final Page<PostListResponseDto> page = new PageImpl<>(postListByTagName.subList(start, end), pageable, postListByTagName.size());
+
+        return page;
+    }
+
+    /*** 게시글 조회 API - 페이징 처리 (db에 존재하는 모든 게시글) **/
+    public Page<PostListResponseDto> findEveryPostByPaging(Pageable pageable) throws BaseException {
+        List<PostListResponseDto> postList = postsRepository.findAll().stream()
+                .map(PostListResponseDto::new)
+                .collect(Collectors.toList());
+
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), postList.size());
+        final Page<PostListResponseDto> page = new PageImpl<>(postList.subList(start, end), pageable, postList.size());
+
+        return page;
     }
 
     /**
