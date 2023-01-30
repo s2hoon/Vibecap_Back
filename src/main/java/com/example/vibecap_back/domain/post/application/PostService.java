@@ -107,14 +107,14 @@ public class PostService {
 
     /** 게시물 조회 API - 특정 게시물(1개 조회)**/
     @Transactional(readOnly = true)
-    public List<PostResponseDto> retrievePosts(Long postId) throws BaseException {
+    public PostResponseDto retrievePosts(Long postId) throws BaseException {
         try{
             Long totalCommentCount = commentRepository.countCommentsByPost_PostId(postId) + subCommentRepository.countSubCommentsByPost_PostId(postId);
             postsRepository.updateCount(totalCommentCount, postId);
 
-            List<PostResponseDto> getPosts = postsRepository.findByPost(postId);
+            PostResponseDto getPost = postsRepository.findByPost(postId);
 
-            return getPosts;
+            return getPost;
         }
         catch (Exception exception) {
             System.out.println(exception);

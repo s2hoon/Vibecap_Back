@@ -95,13 +95,13 @@ public class PostsApiController{
 
     /** 게시물 조회 API - 특정 게시물 **/
     @GetMapping("/{post_id}")
-    public BaseResponse<List<PostResponseDto>> retrievePosts(@PathVariable("post_id") Long postId) throws BaseException {
+    public BaseResponse<PostResponseDto> retrievePosts(@PathVariable("post_id") Long postId) throws BaseException {
 
         try {
             if(postService.checkPostExist(postId)==null){
                 return new BaseResponse<>(NOT_EXISTS_POST);
             }
-            List<PostResponseDto> postResponseDto = postService.retrievePosts(postId);
+            PostResponseDto postResponseDto = postService.retrievePosts(postId);
             return new BaseResponse<>(postResponseDto);
         } catch (BaseException exception) {
             System.out.println(exception);

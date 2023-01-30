@@ -25,6 +25,8 @@ public class PostResponseDto {
     private Long vibeId;
     @JsonProperty("vibe_image")
     private String vibeImage;
+    @JsonProperty("youtube_link")
+    private String youtubeLink;
     @JsonProperty("like_number")
     private Long likeNumber;
     @JsonProperty("scrap_number")
@@ -53,6 +55,7 @@ public class PostResponseDto {
         this.body = entity.getBody();
         this.vibeId = entity.getVibe().getVibeId();
         this.vibeImage = entity.getVibe().getVibeImage();
+        this.youtubeLink = entity.getVibe().getYoutubeLink();
         this.likeNumber = entity.getLikeNumber();
         this.scrapNumber = entity.getScrapNumber();
         this.commentNumber = entity.getCommentNumber();

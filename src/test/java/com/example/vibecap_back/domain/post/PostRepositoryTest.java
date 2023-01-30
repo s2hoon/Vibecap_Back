@@ -77,7 +77,7 @@ public class PostRepositoryTest {
         for (int i=1; i<=TEST_SIZE; i++) {
             // when :
             expectedPostResponseDto = new PostResponseDto(expectedPosts.get(i-1));
-            actualPostResponseDto = postsRepository.findByPost((long) i).get(0);
+            actualPostResponseDto = postsRepository.findByPost((long) i);
             // then : 게시글 id, title, body 확인
             if (!comparePostResponseDto(actualPostResponseDto, expectedPostResponseDto))
                 Assertions.fail();

@@ -20,7 +20,7 @@ public interface PostsRepository extends JpaRepository<Post, Long> {
     Long findByPostId(Long postId);
 
     @Query(value ="select p from Post p where p.postId = ?1")
-    List<PostResponseDto> findByPost(Long postId);
+    PostResponseDto findByPost(Long postId);
 
     @Query(value="select p from Post p order by p.postId desc")
     List<Post> selectAllPost();
