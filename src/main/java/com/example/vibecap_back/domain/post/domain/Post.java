@@ -1,5 +1,6 @@
 package com.example.vibecap_back.domain.post.domain;
 
+import com.example.vibecap_back.domain.comment.dao.CommentRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
 import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
@@ -60,14 +61,6 @@ public class Post extends BaseTimeEntity {
     @Column(table = "tag", name = "tag_name")
     @JsonProperty("tag_name")
     private String tagName;
-
-    //post 테이블이랑 tag 테이블 조인
-    /*@ManyToMany
-    @JoinTable(name = "post_tag",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tags> tagList = new ArrayList<>();*/
 
     /** Member 가 탈퇴하면 Member 가 작성한 모든 게시글 삭제 **/
     @ManyToOne(fetch = LAZY)

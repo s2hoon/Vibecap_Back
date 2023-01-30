@@ -1,5 +1,7 @@
 package com.example.vibecap_back.domain.post.application;
 
+import com.example.vibecap_back.domain.comment.dao.CommentRepository;
+import com.example.vibecap_back.domain.comment.dao.SubCommentRepository;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
@@ -44,16 +46,22 @@ public class PostService {
     private final VibeRepository vibeRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final CommentRepository commentRepository;
+    private final SubCommentRepository subCommentRepository;
+
     @Autowired
     public PostService(MemberRepository memberRepository, PostsLikeRepository postsLikeRepository,
                        PostsRepository postsRepository, PostsScrapRepository postsScrapRepository,
-                       VibeRepository vibeRepository, JwtTokenProvider jwtTokenProvider) throws InvalidMemberException {
+                       VibeRepository vibeRepository, JwtTokenProvider jwtTokenProvider,
+                       CommentRepository commentRepository, SubCommentRepository subCommentRepository) throws InvalidMemberException {
         this.memberRepository = memberRepository;
         this.postsLikeRepository = postsLikeRepository;
         this.postsRepository = postsRepository;
         this.postsScrapRepository = postsScrapRepository;
         this.vibeRepository = vibeRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.commentRepository = commentRepository;
+        this.subCommentRepository = subCommentRepository;
     }
 
 
@@ -97,11 +105,15 @@ public class PostService {
         postsRepository.delete(posts);
     }
 
-    /** 게시물 조회 API - 특정 게시물 **/
+    /** 게시물 조회 API - 특정 게시물(1개 조회)**/
     @Transactional(readOnly = true)
     public List<PostResponseDto> retrievePosts(Long postId) throws BaseException {
         try{
+            Long totalCommentCount = commentRepository.countCommentsByPost_PostId(postId) + subCommentRepository.countSubCommentsByPost_PostId(postId);
+            postsRepository.updateCount(totalCommentCount, postId);
+
             List<PostResponseDto> getPosts = postsRepository.findByPost(postId);
+
             return getPosts;
         }
         catch (Exception exception) {

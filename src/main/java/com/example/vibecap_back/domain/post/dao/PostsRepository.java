@@ -3,7 +3,9 @@ package com.example.vibecap_back.domain.post.dao;
 import com.example.vibecap_back.domain.post.domain.Post;
 import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,5 +26,10 @@ public interface PostsRepository extends JpaRepository<Post, Long> {
     List<Post> selectAllPost();
 
     List<Post> findTop3ByOrderByLikeNumberDesc();
+
+    @Transactional
+    @Modifying
+    @Query(value = "update Post p set p.commentNumber = ?1 where p.postId = ?2")
+    void updateCount(Long commentNumber, Long PostId);
 
 }
