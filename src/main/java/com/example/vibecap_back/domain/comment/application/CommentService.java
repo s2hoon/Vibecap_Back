@@ -61,6 +61,6 @@ public class CommentService {
             return new IllegalArgumentException("댓글 Id를 찾을 수 없습니다.");
         });
         commentRepository.deleteById(commentId);
-        return "삭제 완료";
+        return "댓글이 성공적으로 삭제되었습니다.";
     }
 }

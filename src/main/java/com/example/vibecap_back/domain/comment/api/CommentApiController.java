@@ -1,10 +1,13 @@
 package com.example.vibecap_back.domain.comment.api;
 
 import com.example.vibecap_back.domain.comment.application.CommentService;
+import com.example.vibecap_back.domain.comment.dto.CommentDeleteReqDto;
 import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.comment.dto.CommentReadDto;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
+import com.example.vibecap_back.domain.post.application.PostService;
 import com.example.vibecap_back.global.common.response.BaseResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.example.vibecap_back.global.common.response.BaseResponseStatus.*;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +25,8 @@ import java.util.List;
 public class CommentApiController {
 
     private final CommentService commentService;
+
+    private  final PostService postService;
     private final MemberRepository memberRepository;
 
     /** 댓글 작성 API **/
@@ -29,12 +36,21 @@ public class CommentApiController {
     public BaseResponse<CommentDto> writeComment(@PathVariable("PostId") Long PostId,
                                                  @RequestBody CommentDto commentDto)
     {
-        BaseResponse<CommentDto> response;
-        Member member = memberRepository.findById(1L).get();
-        CommentDto result = commentService.writeComment(PostId, commentDto, member);
-        response = new BaseResponse<>(result);
+        try {
+            postService.checkMemberValid(commentDto.getMemberId());
 
-        return response;
+            if(commentDto.getCommentBody().length() > 255)
+            {
+                return new BaseResponse<>(POST_COMMENT_INVALID_BODY);
+            }
+
+            Member member = memberRepository.findById(commentDto.getMemberId()).get();
+            CommentDto result = commentService.writeComment(PostId, commentDto, member);
+            return new BaseResponse<>(result);
+
+        } catch (InvalidMemberException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -55,10 +71,17 @@ public class CommentApiController {
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{PostId}/{commentId}")
     public BaseResponse<String> deleteComment(@PathVariable("PostId") Long PostId,
-                                                  @PathVariable("commentId") Long commentId)
+                                                  @PathVariable("commentId") Long commentId, @RequestBody CommentDeleteReqDto commentDeleteReqDto)
     {
-        String result = commentService.deleteComment(commentId);
+        try {
+            postService.checkMemberValid(commentDeleteReqDto.getMemberId());
 
-        return new BaseResponse<>(result);
+            String result = commentService.deleteComment(commentId);
+
+            return new BaseResponse<>(result);
+
+        } catch (InvalidMemberException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

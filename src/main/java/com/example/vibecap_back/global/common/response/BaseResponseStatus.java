@@ -23,6 +23,7 @@ public enum BaseResponseStatus {
     NO_ACCESS_TO_VIBE(false, 2100, "해당 바이브에 대한 접근 권한이 없습니다."),
 
     // comment
+    POST_COMMENT_INVALID_BODY(false, 2200,"댓글의 글자수를 확인해주세요."),
 
     // member
 

@@ -10,6 +10,7 @@ import org.hibernate.annotations.Table;
 
 import javax.persistence.Column;
 import javax.persistence.Lob;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +23,12 @@ public class CommentDto {
     @JsonProperty("comment_body")
     private String commentBody;
 
+    @JsonProperty("member_id")
+    private Long memberId;
+
     private String nickname;
+
+    private LocalDateTime createdDate;
 
     @Lob
     @Column(table = "member")
@@ -33,7 +39,9 @@ public class CommentDto {
         return new CommentDto(
                 comment.getCommentId(),
                 comment.getCommentBody(),
+                comment.getMember().getMemberId(),
                 comment.getMember().getNickname(),
+                comment.getCreatedDate(),
                 comment.getMember().getProfileImage()
         );
     }
