@@ -1,5 +1,7 @@
 package com.example.vibecap_back.domain.model;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * 알림이 전송되게 된 원인
  */
@@ -19,4 +21,5 @@ public enum NoticeEvent {
     public String toString() {
         return type;
     }
+
 }
