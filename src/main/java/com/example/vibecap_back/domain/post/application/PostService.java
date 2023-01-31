@@ -106,7 +106,7 @@ public class PostService {
     }
 
     /** 게시물 조회 API - 특정 게시물(1개 조회)**/
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public PostResponseDto retrievePosts(Long postId) throws BaseException {
         try{
             Long totalCommentCount = commentRepository.countCommentsByPost_PostId(postId) + subCommentRepository.countSubCommentsByPost_PostId(postId);
