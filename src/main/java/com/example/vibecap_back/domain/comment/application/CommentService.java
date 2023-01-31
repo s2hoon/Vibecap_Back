@@ -6,6 +6,7 @@ import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.comment.domain.Comments;
 import com.example.vibecap_back.domain.comment.dto.CommentReadDto;
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.notice.application.NoticeManager;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final SubCommentRepository subCommentRepository;
     private final PostsRepository postsRepository;
+    private final NoticeManager noticeManager;
 
     /** 댓글 작성 **/
     @Transactional
@@ -36,6 +38,9 @@ public class CommentService {
         comment.setMember(member);
         comment.setPost(post);
         commentRepository.save(comment);
+
+        // comment 알림 전송
+        noticeManager.sendNotice(comment);
 
         return CommentDto.toDto(comment);
     }

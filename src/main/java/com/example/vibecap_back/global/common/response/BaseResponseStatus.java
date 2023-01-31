@@ -77,7 +77,10 @@ public enum BaseResponseStatus {
      * 4XXX : DB, server 오류
      */
     DBCONN_ERROR(false, 4000, "데이터베이스 연결 오류"),
-    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),;
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
+
+    // notice
+    NO_SUCH_NOTICE(false, 5000, "존재하진 않는 알림");
     private final boolean isSuccess;
     private final int code;
     private final String message;

@@ -9,6 +9,7 @@ import com.example.vibecap_back.domain.comment.dto.SubCommentSaveRequestDto;
 import com.example.vibecap_back.domain.comment.exception.NotFoundSubCommentException;
 import com.example.vibecap_back.domain.comment.exception.NotFoundCommentException;
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.notice.application.NoticeManager;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.domain.Post;
 import com.example.vibecap_back.global.common.response.BaseException;
@@ -21,12 +22,17 @@ public class SubCommentService {
     private final SubCommentRepository subCommentRepository;
     private final CommentRepository commentRepository;
     private final PostsRepository postsRepository;
+    private final NoticeManager noticeManager;
 
     @Autowired
-    public SubCommentService(SubCommentRepository subCommentRepository, CommentRepository commentRepository, PostsRepository postsRepository) {
+    public SubCommentService(SubCommentRepository subCommentRepository,
+                             CommentRepository commentRepository,
+                             PostsRepository postsRepository,
+                             NoticeManager noticeManager) {
         this.subCommentRepository = subCommentRepository;
         this.commentRepository = commentRepository;
         this.postsRepository = postsRepository;
+        this.noticeManager = noticeManager;
     }
 
     // 대댓글 작성
@@ -47,6 +53,9 @@ public class SubCommentService {
         subComment.mappingComment(comments);
 
         subCommentRepository.save(subComment);
+
+        // 대댓글 알림 전송 (댓글 작성자에게만 전송)
+        noticeManager.sendNotice(subComment);
 
         return SubCommentDto.toDto(subComment);
     }
