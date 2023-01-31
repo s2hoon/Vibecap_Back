@@ -141,11 +141,11 @@ public class PostService {
         Optional<Likes> byPostAndMember = postsLikeRepository.findByPostAndMember(post, member);
 
         byPostAndMember.ifPresentOrElse(
-                // 좋아요 있을 경우 삭제
+                // 좋아요 있을 경우
                 postLike -> {
                     isLike.set(true);
                 },
-                // 좋아요가 없을 경우 좋아요 추가
+                // 좋아요가 없을 경우
                 () -> {
                     isLike.set(false);
                 }
@@ -153,7 +153,7 @@ public class PostService {
         return isLike.get();
     }
     /**
-     * 게시글에 좋아요를 눌렀는지 확인
+     * 게시글 스크랩 눌렀는지 확인
      **/
     public Boolean checkScrapExist(Long postId, Long memberId) throws BaseException{
         Post post = getPostInService(postId);
@@ -164,11 +164,11 @@ public class PostService {
         Optional<Scrap> byPostAndMember = postsScrapRepository.findByPostAndMember(post, member);
 
         byPostAndMember.ifPresentOrElse(
-                // 좋아요 있을 경우 삭제
+                // 스크랩 있을 경우
                 postLike -> {
                     isScrap.set(true);
                 },
-                // 좋아요가 없을 경우 좋아요 추가
+                // 스크랩 없을 경우
                 () -> {
                     isScrap.set(false);
                 }
