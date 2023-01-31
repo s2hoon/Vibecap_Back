@@ -1,11 +1,14 @@
 package com.example.vibecap_back.global.common.response;
 
+import com.example.vibecap_back.domain.post.dto.Response.PostResponseDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiResponse;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 import static com.example.vibecap_back.global.common.response.BaseResponseStatus.*;
 
@@ -39,4 +42,10 @@ public class BaseResponse<T> {
         this.message = status.getMessage();
     }
 
+    public BaseResponse(T result, BaseResponseStatus existsLike) {
+        this.isSuccess = existsLike.isSuccess();
+        this.code = existsLike.getCode();
+        this.message = existsLike.getMessage();
+        this.result = result;
+    }
 }

@@ -9,7 +9,10 @@ public enum BaseResponseStatus {
      * 1000 : Successed
      */
     SUCCESS(true, 1000, "요청에 성공했습니다."),
-    //NOT_EXISTS_POST(true,3012,"게시물이 존재하지 않습니다."),
+    EXISTS_LIKE_AND_EXISTS_SCRAP(true,1010,"좋아요와 스크랩 한 게시물 입니다."),
+    NOT_EXISTS_LIKE_NOT_EXISTS_SCRAP(true,1011,"좋아요와 스크랩 하지 않은 게시물입니다."),
+    EXISTS_LIKE_AND_NOT_EXISTS_SCRAP(true,1012,"좋아요 한 게시물이지만 스크랩은 하지 않은 게시물 입니다."),
+    NOT_EXISTS_LIKE_EXISTS_SCRAP(true,1013,"좋아요 하지 않은 게시물이지만 스크랩은 한 게시물입니다."),
 
     /**
      * 2XXX : Request 내용 오류
@@ -84,6 +87,7 @@ public enum BaseResponseStatus {
     private final boolean isSuccess;
     private final int code;
     private final String message;
+
 
     BaseResponseStatus(boolean isSuccess, int code, String message) {
         this.isSuccess = isSuccess;

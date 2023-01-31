@@ -6,6 +6,7 @@ import com.example.vibecap_back.domain.post.dto.Request.*;
 import com.example.vibecap_back.domain.post.dto.Response.*;
 import com.example.vibecap_back.global.common.response.BaseException;
 import com.example.vibecap_back.global.common.response.BaseResponse;
+import com.example.vibecap_back.global.common.response.BaseResponseStatus;
 import com.example.vibecap_back.global.config.security.JwtTokenProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,8 +60,8 @@ public class PostsApiController{
     }
 
     /** 게시물 수정 API **/
-    @PatchMapping("/{post_id}")
-    public BaseResponse<String> update(@PathVariable("post_id") Long postId, @RequestBody PostUpdateRequestDto requestDto) {
+    @PatchMapping("/{postId}")
+    public BaseResponse<String> update(@PathVariable Long postId, @RequestBody PostUpdateRequestDto requestDto) {
         try {
             postService.checkMemberValid(requestDto.getMember().getMemberId());
 
@@ -81,8 +82,8 @@ public class PostsApiController{
     }
 
     /** 게시물 삭제 API **/
-    @DeleteMapping("/{post_id}")
-    public BaseResponse<String> delete(@PathVariable("post_id") Long postId, @RequestBody PostDeleteDto postDeleteDto) {
+    @DeleteMapping("/{postId}")
+    public BaseResponse<String> delete(@PathVariable Long postId, @RequestBody PostDeleteDto postDeleteDto) {
         try {
             postService.checkMemberValid(postDeleteDto.getMemberId());
             postService.delete(postId);
@@ -94,15 +95,30 @@ public class PostsApiController{
     }
 
     /** 게시물 조회 API - 특정 게시물 **/
-    @GetMapping("/{post_id}")
-    public BaseResponse<PostResponseDto> retrievePosts(@PathVariable("post_id") Long postId) throws BaseException {
+    @GetMapping("/{postId}")
+    public  BaseResponse<PostResponseDto> retrievePosts(@PathVariable Long postId, @RequestBody PostLikeDto postLikeDto) throws BaseException {
 
         try {
             if(postService.checkPostExist(postId)==null){
                 return new BaseResponse<>(NOT_EXISTS_POST);
             }
-            PostResponseDto postResponseDto = postService.retrievePosts(postId);
-            return new BaseResponse<>(postResponseDto);
+            if(!postService.checkLikeExist(postId, postLikeDto.getMemberId())){
+                if(!postService.checkScrapExist(postId, postLikeDto.getMemberId())){
+                    PostResponseDto postResponseDto = postService.retrievePosts(postId);
+                    return new BaseResponse<>(postResponseDto, BaseResponseStatus.NOT_EXISTS_LIKE_NOT_EXISTS_SCRAP);
+                } else {
+                    PostResponseDto postResponseDto = postService.retrievePosts(postId);
+                    return new BaseResponse<>(postResponseDto, BaseResponseStatus.NOT_EXISTS_LIKE_EXISTS_SCRAP);
+                }
+            }else {
+                if(!postService.checkScrapExist(postId, postLikeDto.getMemberId())){
+                    PostResponseDto postResponseDto = postService.retrievePosts(postId);
+                    return new BaseResponse<>(postResponseDto, BaseResponseStatus.EXISTS_LIKE_AND_NOT_EXISTS_SCRAP);
+                } else {
+                    PostResponseDto postResponseDto = postService.retrievePosts(postId);
+                    return new BaseResponse<>(postResponseDto, BaseResponseStatus.EXISTS_LIKE_AND_EXISTS_SCRAP);
+                }
+            }
         } catch (BaseException exception) {
             System.out.println(exception);
             return new BaseResponse<>((exception.getStatus()));
@@ -155,8 +171,8 @@ public class PostsApiController{
 
 
     /** 게시물 좋아요 API **/
-    @PostMapping("/{post_id}/like")
-    public BaseResponse<PostLikeResDto> postLike(@PathVariable(name = "post_id") Long postId, @RequestBody PostLikeDto postLikeDto) {
+    @PostMapping("/{postId}/like")
+    public BaseResponse<PostLikeResDto> postLike(@PathVariable(name = "postId") Long postId, @RequestBody PostLikeDto postLikeDto) {
         try {
             postService.checkMemberValid(postLikeDto.getMemberId());
             PostLikeResDto postLikeResDto = postService.postLike(postId, postLikeDto.getMemberId());
@@ -167,8 +183,8 @@ public class PostsApiController{
     }
 
     /** 게시물 스크랩 API **/
-    @PostMapping("/{post_id}/scrap")
-    public BaseResponse<PostScrapResDto> postScrap(@PathVariable(name = "post_id") Long postId, @RequestBody PostScrapDto postScrapDto) {
+    @PostMapping("/{postId}/scrap")
+    public BaseResponse<PostScrapResDto> postScrap(@PathVariable(name = "postId") Long postId, @RequestBody PostScrapDto postScrapDto) {
         try {
             postService.checkMemberValid(postScrapDto.getMemberId());
             PostScrapResDto postScrapResDto = postService.postScrap(postId, postScrapDto.getMemberId());;

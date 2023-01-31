@@ -5,7 +5,6 @@ import com.example.vibecap_back.domain.comment.dao.SubCommentRepository;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
-import com.example.vibecap_back.domain.notice.application.NoticeManager;
 import com.example.vibecap_back.domain.post.dao.PostsLikeRepository;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.dao.PostsScrapRepository;
@@ -31,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.example.vibecap_back.global.common.response.BaseResponseStatus.*;
@@ -45,7 +45,6 @@ public class PostService {
     private final PostsScrapRepository postsScrapRepository;
     private final VibeRepository vibeRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final NoticeManager noticeManager;
 
     private final CommentRepository commentRepository;
     private final SubCommentRepository subCommentRepository;
@@ -54,8 +53,7 @@ public class PostService {
     public PostService(MemberRepository memberRepository, PostsLikeRepository postsLikeRepository,
                        PostsRepository postsRepository, PostsScrapRepository postsScrapRepository,
                        VibeRepository vibeRepository, JwtTokenProvider jwtTokenProvider,
-                       CommentRepository commentRepository, SubCommentRepository subCommentRepository,
-                       NoticeManager noticeManager) throws InvalidMemberException {
+                       CommentRepository commentRepository, SubCommentRepository subCommentRepository) throws InvalidMemberException {
         this.memberRepository = memberRepository;
         this.postsLikeRepository = postsLikeRepository;
         this.postsRepository = postsRepository;
@@ -64,8 +62,8 @@ public class PostService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.commentRepository = commentRepository;
         this.subCommentRepository = subCommentRepository;
-        this.noticeManager = noticeManager;
     }
+
 
     /** 게시물 작성 API - 저장 **/
     @Transactional
@@ -129,6 +127,53 @@ public class PostService {
      **/
     public Long checkPostExist(Long postId) throws BaseException{
         return postsRepository.findByPostId(postId);
+    }
+
+    /**
+     * 게시글에 좋아요를 눌렀는지 확인
+     **/
+    public Boolean checkLikeExist(Long postId, Long memberId) throws BaseException{
+        Post post = getPostInService(postId);
+        Member member = getMemberInService(memberId);
+
+        AtomicReference<Boolean> isLike = new AtomicReference<>(true);
+
+        Optional<Likes> byPostAndMember = postsLikeRepository.findByPostAndMember(post, member);
+
+        byPostAndMember.ifPresentOrElse(
+                // 좋아요 있을 경우 삭제
+                postLike -> {
+                    isLike.set(true);
+                },
+                // 좋아요가 없을 경우 좋아요 추가
+                () -> {
+                    isLike.set(false);
+                }
+        );
+        return isLike.get();
+    }
+    /**
+     * 게시글에 좋아요를 눌렀는지 확인
+     **/
+    public Boolean checkScrapExist(Long postId, Long memberId) throws BaseException{
+        Post post = getPostInService(postId);
+        Member member = getMemberInService(memberId);
+
+        AtomicReference<Boolean> isScrap = new AtomicReference<>(true);
+
+        Optional<Scrap> byPostAndMember = postsScrapRepository.findByPostAndMember(post, member);
+
+        byPostAndMember.ifPresentOrElse(
+                // 좋아요 있을 경우 삭제
+                postLike -> {
+                    isScrap.set(true);
+                },
+                // 좋아요가 없을 경우 좋아요 추가
+                () -> {
+                    isScrap.set(false);
+                }
+        );
+        return isScrap.get();
     }
 
     /** 게시물 조회 API - tag별 **/
@@ -213,11 +258,8 @@ public class PostService {
                     postsLikeRepository.save(postLike);
                     //result.set("해당 게시물에 좋아요를 눌렀습니다.");
                     postLikeResDto.setLikeOrElse("해당 게시물에 좋아요를 눌렀습니다.");
-
-                    // 게시글 작성자에게 알림 전송
-                    noticeManager.sendNotice(postLike);
                 }
-       );
+        );
         return postLikeResDto;
     }
 
