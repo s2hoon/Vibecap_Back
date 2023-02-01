@@ -45,7 +45,7 @@ public class Member implements UserDetails {
     // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
     private String role;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 16)
     private String nickname;
 
     @Column(nullable = false, name = "state")

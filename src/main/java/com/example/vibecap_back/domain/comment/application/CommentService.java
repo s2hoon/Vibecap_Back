@@ -39,8 +39,9 @@ public class CommentService {
         comment.setPost(post);
         commentRepository.save(comment);
 
-        // comment 알림 전송
-        noticeManager.sendNotice(comment);
+        // comment 알림 전송 (본인 게시글에 댓글 단 경우 제외)
+        if (post.getMember().getMemberId() != member.getMemberId())
+            noticeManager.sendNotice(comment);
 
         return CommentDto.toDto(comment);
     }

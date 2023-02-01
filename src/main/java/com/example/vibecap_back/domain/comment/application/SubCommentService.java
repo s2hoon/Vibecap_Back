@@ -54,8 +54,9 @@ public class SubCommentService {
 
         subCommentRepository.save(subComment);
 
-        // 대댓글 알림 전송 (댓글 작성자에게만 전송)
-        noticeManager.sendNotice(subComment);
+        // 대댓글 알림 전송 (본인을 제외한 댓글 작성자에게만 전송)
+        if (subComment.getMember().getMemberId() != member.getMemberId())
+            noticeManager.sendNotice(subComment);
 
         return SubCommentDto.toDto(subComment);
     }
