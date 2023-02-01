@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,13 +23,21 @@ public class CommentReadDto {
 
     @JsonProperty("comment_id")
     private Long commentId;
+
     @JsonProperty("comment_body")
     private String commentBody;
+
     private String nickname;
+
     @JsonProperty("profile_image")
     private String profileImage;
+
+    private LocalDateTime createdDate;
+
     @JsonProperty("sub_comment")
     private List<SubCommentDto> subComment;
+
+
 
     /* SubCommentDto
      *  - sub_comment_id
@@ -43,6 +52,7 @@ public class CommentReadDto {
                 comment.getCommentBody(),
                 comment.getMember().getNickname(),
                 comment.getMember().getProfileImage(),
+                comment.getCreatedDate(),
                 subCommentList.stream().map(subComment -> toDto(subComment)).collect(Collectors.toList())
         );
     }
@@ -53,7 +63,8 @@ public class CommentReadDto {
                 subComment.getComments().getCommentId(),
                 subComment.getSubCommentBody(),
                 subComment.getMember().getNickname(),
-                subComment.getMember().getProfileImage()
+                subComment.getMember().getProfileImage(),
+                subComment.getCreatedDate()
         );
     }
 }
