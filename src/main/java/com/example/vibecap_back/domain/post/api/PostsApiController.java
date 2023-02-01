@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,14 +97,14 @@ public class PostsApiController{
 
     /** 게시물 조회 API - 특정 게시물 **/
     @GetMapping("/{postId}")
-    public  BaseResponse<PostResponseDto> retrievePosts(@PathVariable Long postId, @RequestBody PostLikeDto postLikeDto) throws BaseException {
+    public  BaseResponse<PostResponseDto> retrievePosts(@PathVariable Long postId, @RequestParam Long memberId) throws BaseException {
 
         try {
             if(postService.checkPostExist(postId)==null){
                 return new BaseResponse<>(NOT_EXISTS_POST);
             }
-            if(!postService.checkLikeExist(postId, postLikeDto.getMemberId())){
-                if(!postService.checkScrapExist(postId, postLikeDto.getMemberId())){
+            if(!postService.checkLikeExist(postId, memberId)){
+                if(!postService.checkScrapExist(postId, memberId)){
                     PostResponseDto postResponseDto = postService.retrievePosts(postId);
                     return new BaseResponse<>(postResponseDto, BaseResponseStatus.NOT_EXISTS_LIKE_NOT_EXISTS_SCRAP);
                 } else {
@@ -111,7 +112,7 @@ public class PostsApiController{
                     return new BaseResponse<>(postResponseDto, BaseResponseStatus.NOT_EXISTS_LIKE_EXISTS_SCRAP);
                 }
             }else {
-                if(!postService.checkScrapExist(postId, postLikeDto.getMemberId())){
+                if(!postService.checkScrapExist(postId, memberId)){
                     PostResponseDto postResponseDto = postService.retrievePosts(postId);
                     return new BaseResponse<>(postResponseDto, BaseResponseStatus.EXISTS_LIKE_AND_NOT_EXISTS_SCRAP);
                 } else {
