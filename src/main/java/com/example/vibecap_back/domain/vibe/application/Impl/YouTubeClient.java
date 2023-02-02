@@ -98,9 +98,14 @@ public class YouTubeClient implements PlaylistSearchEngine {
             if (searchResultList.size() == 0) {
                 String simpleQuery;
                 simpleQuery = simplify(query);
+                LOGGER.warn("search again..." + simpleQuery);
 
-                // search 메서드 재귀적 호출 =>  depth = 2를 넘으면 10초 이상 걸릴 것으로 예상되지만 그럴 일은 없을 듯
-                return search(simpleQuery);
+                search.setQ(simpleQuery);
+                searchResponse = search.execute();
+                searchResultList = searchResponse.getItems();
+                if (searchResultList.size() == 0)
+                    throw new NoProperVideoException();
+                return selectTheFirstVideo(searchResultList);
             } else
                 return selectTheFirstVideo(searchResultList);
                 // 무작위로 1개의 비디오 전송
@@ -112,6 +117,8 @@ public class YouTubeClient implements PlaylistSearchEngine {
         } catch (IOException e) {
             LOGGER.warn(e.getMessage());
             throw new ExternalApiException();
+        } catch (NoProperVideoException e) {
+            throw new NoProperVideoException();
         } catch (Throwable t) {
             t.printStackTrace();
             throw new ExternalApiException();
