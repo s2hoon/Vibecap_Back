@@ -3,7 +3,7 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
     <!-- 변수 설정 -->
-    <property name="LOG_DIR" value="/vibecap/logs" />
+    <property name="LOG_DIR" value="/app/logs" />
 
     <!-- console appender -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
