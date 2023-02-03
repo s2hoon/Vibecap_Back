@@ -20,9 +20,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class NoticeManager {
 
-    NoticeCommentRepository noticeCommentRepository;
-    NoticeSubCommentRepository noticeSubCommentRepository;
-    NoticeLikeRepository noticeLikeRepository;
+    private static final int SUMMARY_MAX_LENGTH = 16;
+
+    private NoticeCommentRepository noticeCommentRepository;
+    private NoticeSubCommentRepository noticeSubCommentRepository;
+    private NoticeLikeRepository noticeLikeRepository;
 
     @Autowired
     public NoticeManager(NoticeCommentRepository noticeCommentRepository,
@@ -49,16 +51,21 @@ public class NoticeManager {
         Member receiver;
         Member sender;
         NoticeComment notice;
+        String summary;
 
         targetPost = comment.getPost();     // 댓글이 추가된 게시글
         receiver = targetPost.getMember();  // 게시글 작성자
         sender = comment.getMember();       // 댓글 작성자
+        if (comment.getCommentBody().length() > SUMMARY_MAX_LENGTH)
+            summary = comment.getCommentBody().substring(0, SUMMARY_MAX_LENGTH) + "...";
+        else
+            summary = comment.getCommentBody();
 
         notice = NoticeComment.builder()
                 .post(comment.getPost())
                 .receiverId(receiver.getMemberId())
                 .senderNickname(sender.getNickname())
-                .summary(comment.getCommentBody().substring(0, 12) + "...")
+                .summary(summary)
                 .build();
 
         return noticeCommentRepository.save(notice);
