@@ -70,8 +70,8 @@ public class MemberFactory {
 
         Member dummy = Member.builder()
                 .memberId(i.longValue())
-                .email(TEST_EMAIL)
-                .password(TEST_PW)
+                .email(TEST_EMAIL + i.toString())
+                .password(TEST_PW + i.toString())
                 .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME + i.toString())
                 .status(MemberStatus.ACTIVE.toString())
