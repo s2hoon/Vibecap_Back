@@ -213,7 +213,7 @@ public class PostService {
 
     /*** 게시글 조회 API - 페이징 처리 (db에 존재하는 모든 게시글) **/
     public Page<PostListResponseDto> findEveryPostByPaging(Pageable pageable) throws BaseException {
-        List<PostListResponseDto> postList = postsRepository.findAll().stream()
+        List<PostListResponseDto> postList = postsRepository.selectAllPost().stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
 
