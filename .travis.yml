@@ -4,7 +4,7 @@ jdk:
 
 branches:
   only:
-    - master
+    - main
 cache:
   directories:
     - '$HOME/Vibecap_Back/.m2/repository'
