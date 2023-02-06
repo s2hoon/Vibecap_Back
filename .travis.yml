@@ -1,17 +1,16 @@
 language: java
 jdk:
-  - open: openjdk11
+  - openjdk11
 
 branches:
   only:
     - main
 cache:
   directories:
-    - '$HOME/Vibecap_Back/.m2/repository'
+    - '$HOME/.m2/repository'
     - '$HOME/.gradle'
 
-      # script: "./gradlew clean build -x test"
-script: "echo $HOME >> hello.txt"
+script: "./gradlew clean build -x test"
 
 notifications: 
   email: 
