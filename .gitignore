@@ -4,6 +4,7 @@ credential/
 capturedImgs/*
 ### secret ###
 **/Secret.java
+*.tar
 ### firebase private key json ####
 **/serviceAccountKey.json
 

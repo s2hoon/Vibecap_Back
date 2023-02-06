@@ -1,20 +1,25 @@
 language: java
 jdk:
-  - openjdk11
-
+- openjdk11
 branches:
   only:
-    - main
+  - main
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.gradle'
-
+  - "$HOME/.m2/repository"
+  - "$HOME/.gradle"
 script: "./gradlew clean build -x test"
-
-notifications: 
-  email: 
+notifications:
+  email:
     recipients:
-      - zammanbo540@naver.com
+    - zammanbo540@naver.com
     on-success: always
     on-failure: always
+before_install:
+- openssl aes-256-cbc -K $encrypted_abe066967087_key -iv $encrypted_abe066967087_iv
+  -in secret.tar.enc -out src/main/java/com/example/vibecap_back/global/config/security/secret.tar
+  -d
+- openssl aes-256-cbc -K $encrypted_4769db5680b9_key -iv $encrypted_4769db5680b9_iv
+  -in prod-properties.tar.enc -out src/main/resources/prod-properties.tar -d
+- tar xvf src/main/java/com/example/vibecap_back/global/config/security/secret.tar -C src/main/java/com/example/vibecap_back/global/config/security
+- tar xvf src/main/resources/prod-properties.tar -C src/main/resources
