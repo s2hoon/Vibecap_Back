@@ -10,7 +10,8 @@ cache:
     - '$HOME/Vibecap_Back/.m2/repository'
     - '$HOME/.gradle'
 
-script: "./gradlew clean build -x test"
+      # script: "./gradlew clean build -x test"
+script: "echo $HOME >> hello.txt"
 
 notifications: 
   email: 
