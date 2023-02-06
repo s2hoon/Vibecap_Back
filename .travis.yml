@@ -1,0 +1,20 @@
+language: java
+jdk:
+  - open: openjdk11
+
+branches:
+  only:
+    - master
+cache:
+  directories:
+    - '$HOME/Vibecap_Back/.m2/repository'
+    - '$HOME/.gradle'
+
+script: "./gradlew clean build -x test"
+
+notifications: 
+  email: 
+    recipients:
+      - zammanbo540@naver.com
+    on-success: always
+    on-failure: always
