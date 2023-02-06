@@ -104,7 +104,7 @@ class VibecapBackApplicationTests {
                 keywords[TIME_IDX] = times[(i-1) % (times.length)];
                 keywords[FEELING_IDX] = feelings[(i-1) % (feelings.length)];
                 dummyVibe = Vibe.builder()
-                        .memberId((long) i)
+                        .memberId((long) member.getMemberId())
                         .vibeImage(IMAGE_URL)
                         .youtubeLink(VIDEO_LINK)
                         .vibeKeywords(String.join(" ", keywords))
