@@ -48,7 +48,7 @@ public class SingleNoticeDto implements Comparable<SingleNoticeDto> {
         this.noticeId = noticeComment.getNoticeCommentId();
         this.event = noticeComment.getEventType().toString();
         this.postId = noticeComment.getPost().getPostId();
-        this.time = noticeComment.getCreatedTime().toString().substring(0,15);
+        this.time = noticeComment.getCreatedTime().toString().substring(0,16);
         this.sender = noticeComment.getSenderNickname();
         // comment, subComment
         this.summary = noticeComment.getSummary();
@@ -58,7 +58,7 @@ public class SingleNoticeDto implements Comparable<SingleNoticeDto> {
         this.noticeId = noticeSubComment.getSubCommentNoticeId();
         this.event = noticeSubComment.getEventType().toString();
         this.postId = noticeSubComment.getComment().getPost().getPostId();
-        this.time = noticeSubComment.getCreatedTime().toString().substring(0,15);
+        this.time = noticeSubComment.getCreatedTime().toString().substring(0,16);
         this.sender = noticeSubComment.getSenderNickname();
         // comment, subComment
         this.summary = noticeSubComment.getSummary();
@@ -68,7 +68,7 @@ public class SingleNoticeDto implements Comparable<SingleNoticeDto> {
         this.noticeId = noticeLike.getNoticeLikeId();
         this.event = noticeLike.getEventType().toString();
         this.postId = noticeLike.getPost().getPostId();
-        this.time = noticeLike.getCreatedTime().toString().substring(0,15);
+        this.time = noticeLike.getCreatedTime().toString().substring(0,16);
         this.sender = noticeLike.getSenderNickname();
         this.summary = null;
     }
