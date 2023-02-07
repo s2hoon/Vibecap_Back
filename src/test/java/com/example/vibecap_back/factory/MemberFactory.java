@@ -3,10 +3,12 @@ package com.example.vibecap_back.factory;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.model.Authority;
 import com.example.vibecap_back.domain.model.MemberStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class MemberFactory {
     private static final String TEST_EMAIL = "hello@naver.com";
-    private static final String TEST_PW = "qwer1234";
+    // qwer1234
+    private static final String TEST_PW = "{bcrypt}$2a$10$t5y2mIDK1fP2MUe5K0Nrjej2aWqU/uTcHbFdKfjgVouNVGCdCabb.";
     private static final String TEST_NICKNAME = "Nick";
     public static final Long TEST_MEMBER_ID = 123L;
 
@@ -72,7 +74,7 @@ public class MemberFactory {
         Member dummy = Member.builder()
                 .memberId(i.longValue())
                 .email(TEST_EMAIL + i.toString())
-                .password(TEST_PW + i.toString())
+                .password(TEST_PW)
                 .role(Authority.ROLE_MEMBER.toString())
                 .nickname(TEST_NICKNAME + i.toString())
                 .status(MemberStatus.ACTIVE.toString())

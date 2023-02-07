@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NoticeManager {
 
-    private static final int SUMMARY_MAX_LENGTH = 16;
+    private static final int SUMMARY_MAX_LENGTH = 13;
 
     private NoticeCommentRepository noticeCommentRepository;
     private NoticeSubCommentRepository noticeSubCommentRepository;

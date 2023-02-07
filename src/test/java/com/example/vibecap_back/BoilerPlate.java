@@ -1,21 +1,16 @@
 package com.example.vibecap_back;
 
-import com.example.vibecap_back.domain.comment.dao.CommentRepository;
 import com.example.vibecap_back.domain.comment.domain.Comments;
-import com.example.vibecap_back.domain.member.application.SignService;
+import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.member.dto.MemberDto;
 import com.example.vibecap_back.domain.member.exception.EmailAlreadyExistException;
-import com.example.vibecap_back.domain.model.Authority;
-import com.example.vibecap_back.domain.model.MemberStatus;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.domain.Post;
 import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.example.vibecap_back.factory.MemberFactory;
 import com.example.vibecap_back.factory.PostFactory;
-import org.junit.jupiter.api.Assertions;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,11 +42,30 @@ public class BoilerPlate {
     }
 
     /**
+     * 준비한 mock data를 DB에 저장
+     * @param memberRepository
+     * @param vibeRepository
+     * @param postsRepository
+     * @param vibeAndPostPerMember
+     */
+    public void persist(MemberRepository memberRepository,
+                        VibeRepository vibeRepository, PostsRepository postsRepository,
+                        int vibeAndPostPerMember) {
+        for (Member member : members) {
+            memberRepository.save(member);
+            for (int i=0; i<vibeAndPostPerMember; i++) {
+                vibeRepository.save(vibes.get(member.getMemberId()).get(i));
+                postsRepository.save(posts.get(member.getMemberId()).get(i));
+            }
+        }
+    }
+
+    /**
      * n명의 회원을 생성하고 각 회원이 만든 m개의 vibe와 그에 대한 게시글을 DB에 넣는다.
      */
-    void prepare(int n, int m) throws Exception{
-        insertDummyMembers(n);
-        insertDummyVibesAndPosts(m);
+    private void prepare(int n, int m) throws Exception{
+        createDummyMembers(n);
+        createDummyVibesAndPosts(m);
     }
 
     public List<Member> getMembers() {
@@ -69,7 +83,7 @@ public class BoilerPlate {
     /**
      * n명의 dummy member 회원가입
      */
-    void insertDummyMembers(int n) throws EmailAlreadyExistException {
+    void createDummyMembers(int n) throws EmailAlreadyExistException {
         Member dummy;
         MemberDto memberDto;
         for (int i=1; i<=n; i++) {
@@ -92,7 +106,7 @@ public class BoilerPlate {
      * 회원 1명이 n개의 dummy vibe, post 생성
      * @param n
      */
-    void insertDummyVibesAndPosts(int n) {
+    void createDummyVibesAndPosts(int n) {
         Vibe dummyVibe;
         Post dummyPost;
         // "{label} {season} {time} {feeling}"
@@ -114,6 +128,7 @@ public class BoilerPlate {
                 // vibeRepository.save(dummyVibe);
                 vibeOfMember.add(dummyVibe);
                 dummyPost = PostFactory.getPost(member, dummyVibe, i);
+                dummyPost.setTagName(keywords[FEELING_IDX]);
                 postOfMember.add(dummyPost);
                 // postsRepository.save(dummyPost);
             }
