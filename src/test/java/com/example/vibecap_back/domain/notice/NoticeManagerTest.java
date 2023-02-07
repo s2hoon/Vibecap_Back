@@ -40,8 +40,6 @@ import java.util.Map;
 public class NoticeManagerTest {
 
     @Autowired
-    private NoticeLikeRepository likeRepository;
-    @Autowired
     private NoticeCommentRepository commentNoticeRepository;
     @Autowired
     private NoticeSubCommentRepository subCommentNoticeRepository;
@@ -71,7 +69,7 @@ public class NoticeManagerTest {
     @PostConstruct
     void initNoticeManager() {
         noticeManager = new NoticeManager(commentNoticeRepository,
-                subCommentNoticeRepository, likeRepository);
+                subCommentNoticeRepository, likeNoticeRepository);
     }
     @BeforeEach
     void initPosts() throws Exception {

@@ -89,16 +89,6 @@ public class BoilerPlate {
         for (int i=1; i<=n; i++) {
             dummy = MemberFactory.selectMember(i);
             members.add(dummy);
-            /**
-            memberDto = MemberDto.builder()
-                    .email(dummy.getEmail())
-                    .password(dummy.getPassword())
-                    .role(Authority.ROLE_MEMBER.toString())
-                    .nickname(dummy.getNickname())
-                    .status(MemberStatus.ACTIVE.toString())
-                    .build();
-            signService.signUp(memberDto);
-             */
         }
     }
 
