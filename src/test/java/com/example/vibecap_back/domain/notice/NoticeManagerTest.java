@@ -144,14 +144,4 @@ public class NoticeManagerTest {
         }
     }
 
-    void prepareTestDBData(List<Member> members,
-                           Map<Long, List<Vibe>> vibes, Map<Long, List<Post>> posts, int m) {
-        for (Member member : members) {
-            memberRepository.save(member);
-            for (int i=0;i<m;i++) {
-                vibeRepository.save(vibes.get(member.getMemberId()).get(i));
-                postsRepository.save(posts.get(member.getMemberId()).get(i));
-            }
-        }
-    }
 }
