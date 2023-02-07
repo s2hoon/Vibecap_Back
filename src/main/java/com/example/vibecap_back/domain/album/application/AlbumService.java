@@ -66,7 +66,7 @@ public class AlbumService {
         Optional<Vibe> optionalVibe = albumRepository.findById(vibeId);
         Vibe vibe = optionalVibe.get();
 
-        return new GetVibeResponse(vibe.getVibeId(), vibe.getMemberId(), vibe.getVibeImage(),
+        return new GetVibeResponse(vibe.getVibeId(), vibe.getMember().getMemberId(), vibe.getVibeImage(),
                 vibe.getYoutubeLink(), vibe.getVibeKeywords());
     }
 

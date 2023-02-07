@@ -1,8 +1,11 @@
 package com.example.vibecap_back.domain.vibe.domain;
 
 
+import com.example.vibecap_back.domain.member.domain.Member;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -22,9 +25,10 @@ public class Vibe {
     private Long vibeId;
 
     // vibe를 만든 회원 식별자
-    @Column(name = "member_id")
-    @JsonProperty("member_id")
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Member member;
 
     // vibe 생성에 사용된 이미지
     @Column(name = "vibe_image")

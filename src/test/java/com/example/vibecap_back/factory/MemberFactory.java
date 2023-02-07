@@ -29,7 +29,7 @@ public class MemberFactory {
 
     /**
      * memberId, email, password, role, nickname, status 필드에 값이 들어있다.
-     * @return
+     * 한 명의 회원에 대해서만 테스트 할 때 사용
      */
     public static Member getMember() {
         Member dummy = Member.builder()
@@ -46,6 +46,7 @@ public class MemberFactory {
     /**
      * DB에 저장된 형태의 member 객체 반환.
      * memberId 값을 가진다.
+     * 한 명의 회원에 대해서만 테스트할 때 사용
      */
     public static Member selectMember() {
 

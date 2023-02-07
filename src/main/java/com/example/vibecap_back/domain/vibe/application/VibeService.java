@@ -1,5 +1,7 @@
 package com.example.vibecap_back.domain.vibe.application;
 
+import com.example.vibecap_back.domain.member.dao.MemberRepository;
+import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.model.ExtraInfo;
 import com.example.vibecap_back.domain.vibe.api.VibeCapture;
 import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
@@ -13,9 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class VibeService {
@@ -27,18 +31,20 @@ public class VibeService {
     private TextTranslator textTranslator;
     private final VideoQuery videoQuery;
     private final FireBaseService fireBaseService;
+    private final MemberRepository memberRepository;
 
     @Autowired
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
-                       VideoQuery videoQuery,
-                       VibeRepository vibeRepository,
-                       TextTranslator textTranslator, FireBaseService fireBaseService) {
+                       VideoQuery videoQuery, VibeRepository vibeRepository,
+                       TextTranslator textTranslator, FireBaseService fireBaseService,
+                       MemberRepository memberRepository) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
         this.videoQuery = videoQuery;
         this.vibeRepository = vibeRepository;
         this.textTranslator = textTranslator;
         this.fireBaseService = fireBaseService;
+        this.memberRepository = memberRepository;
     }
 
     /**
@@ -50,6 +56,7 @@ public class VibeService {
      * @throws ExternalApiException
      * @throws IOException
      */
+    @Transactional
     public CaptureResult capture(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
             throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
 
@@ -93,6 +100,7 @@ public class VibeService {
      * @throws ExternalApiException
      * @throws IOException
      */
+    @Transactional
     public CaptureResult capture(Long memberId, MultipartFile imageFile)
             throws ExternalApiException, IOException, NullPointerException, NoProperVideoException, FileSaveErrorException {
 
@@ -136,6 +144,7 @@ public class VibeService {
      * @param extraInfo
      * @return
      */
+    @Transactional
     public CaptureResult capture(ExtraInfo extraInfo) throws ExternalApiException, NoProperVideoException {
         String query;
         String videoId;
@@ -168,8 +177,10 @@ public class VibeService {
      * 생성된 vibe의 id값
      */
     private Long saveVibe(Long memberId, String image, String link, String keywords) {
+        Optional<Member> author;
+        author = this.memberRepository.findById(memberId);
         Vibe vibe = Vibe.builder()
-                .memberId(memberId)
+                .member(author.get())
                 .vibeImage(image)
                 .youtubeLink(link)
                 .vibeKeywords(keywords)

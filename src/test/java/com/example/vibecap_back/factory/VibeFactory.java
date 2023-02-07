@@ -1,5 +1,6 @@
 package com.example.vibecap_back.factory;
 
+import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public class VibeFactory {
                 "label"+iStr, "season"+iStr, "time"+iStr, "feeling"+iStr);
 
        Vibe dummy = Vibe.builder()
-               .memberId(memberId)
+               .member(MemberFactory.selectMember(i))
                .vibeImage(BASE_IMAGE_URI + i.toString())
                .youtubeLink(BASE_YOUTUBE_LINK + i.toString())
                .vibeKeywords(keywords)
@@ -48,7 +49,7 @@ public class VibeFactory {
 
         Vibe vibe = Vibe.builder()
                 .vibeId(i.longValue())
-                .memberId(memberId)
+                .member(MemberFactory.selectMember(i))
                 .vibeImage(BASE_IMAGE_URI + i.toString())
                 .youtubeLink(BASE_YOUTUBE_LINK + i.toString())
                 .vibeKeywords(keywords)

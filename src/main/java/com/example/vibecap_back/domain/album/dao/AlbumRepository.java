@@ -8,10 +8,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AlbumRepository extends JpaRepository<Vibe, Long> {
-    @Query("select v from Vibe v where v.memberId = :memberId order by v.vibeId desc")
+    @Query("select v from Vibe v where v.member.memberId = :memberId order by v.vibeId desc")
     List<Vibe> findByMemberId(@Param("memberId") Long memberId);
 
-    @Query("select v.vibeId from Vibe v where v.memberId = :memberId")
+    @Query("select v.vibeId from Vibe v where v.member.memberId = :memberId")
     List<Long> findVibeIdByMemberId(@Param("memberId") Long memberId);
 
     @Query("select p.postId from Post p where p.vibe.vibeId = :vibeId")
