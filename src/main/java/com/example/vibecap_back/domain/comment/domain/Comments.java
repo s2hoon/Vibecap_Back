@@ -42,6 +42,7 @@ public class Comments extends BaseTimeEntity {
 
     /** 대댓글 **/
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "comments", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private List<SubComment> subCommentList = new ArrayList<>();
 
     public void mappingSubComment(SubComment subComment) {
