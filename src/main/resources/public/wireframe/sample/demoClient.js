@@ -1,12 +1,21 @@
 const baseUrl = "http://ec2-175-41-230-93.ap-northeast-1.compute.amazonaws.com:8080/wireframe";
+// const baseUrl = "http://localhost:8080/wireframe";
 const api_capture = "/vibe/capture";
 const api_capture_without_image = "/vibe/capture-without-image";
 const api_capture_from_gallery = "/vibe/capture-from-gallery";
 
+const COLOR_MOUSE_DOWN = "#673676"
+const COLOR_MOUSE_UP = "#BFAAF9"
+
+let currentBodyColorIndex = 0;
+const bodyColor = ["#F5C260", "#F5C26C", "#F58F6C", "#F6EB4E"];
+
+/************************************ event handlers ************************************/
+
 function handleButtonClick(e) {
     const checkedNodes = document.querySelectorAll('input[type="checkbox"]:checked');
     if (checkedNodes.length > 1 || checkedNodes.length == 0) {
-        alert("호출할 api를 하나 선택해주세요")
+        alert("추천 방식을 하나 선택해주세요")
         return
     }
     const checkedOption = checkedNodes[0].getAttribute("value")
@@ -25,10 +34,38 @@ function handleButtonClick(e) {
     call(apiUrl)
 }   
 
+function onMouseDown(button) {
+    const mouseDownStyle = `background-color: ${COLOR_MOUSE_DOWN};
+                            border-left: 5px solid black;
+                            border-top: 5px solid black;
+                            border-right: 2px solid black;
+                            border-bottom: 2px solid black;`
+    button.setAttribute("style", mouseDownStyle);
+}
+
+function onMouseUp(button) {
+    const mouseUpStyle = `background-color: ${COLOR_MOUSE_UP};
+                            border-left: 2px solid black;
+                            bordier-top: 2px solid black;
+                            border-right: 5px solid black;
+                            bordoer-bottom: 5px solid black;`
+    button.setAttribute("style", mouseUpStyle);
+}
+
+function scrollBodyColor(e) {
+    bodyTag = document.querySelector('body');
+    currentBodyColorIndex = (currentBodyColorIndex+1) % (bodyColor.length)
+    bodyTag.setAttribute("style", `background-color: ${bodyColor[currentBodyColorIndex]}`)
+}
+
+/****************************************************************************************/
+
+/******************************* REST API ***********************************************/
 function call(url) {
     let formData = new FormData();
 
-    const extraInfo = document.querySelector('input[type="text"]').value;
+    // TODO 수정
+    // const extraInfo = document.querySelector('input[type="text"]').value;
     const imgFile = document.querySelector('input[type="file"]').files[0]; 
 
     if (url == baseUrl + api_capture) {
@@ -48,6 +85,7 @@ function call(url) {
     .catch(error => alert('Error: ', error))
     .then(response => printResults(JSON.parse(JSON.stringify(response))))
 }
+/****************************************************************************************/
 
 /**
  * response 형태
@@ -69,3 +107,10 @@ function printResults(response) {
         ulTag.innerHTML += `<li><a href=${response.video_list[i]}>recommend ${i}</a></li>`;
     }
 }
+
+function extractInformation() {
+     
+}
+
+/***************************************** main *****************************************/
+// window.addEventListener("scroll", scrollBodyColor);

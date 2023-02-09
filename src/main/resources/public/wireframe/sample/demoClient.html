@@ -1,0 +1,48 @@
+<!--사용자들에게 보여줄 페이지-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vibecap --ver.demo</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css" >
+        <script src="demoClient.js"></script>
+    </head>
+    <body>
+        <main class="grid-container">
+            <h1 id="client-name" class="gcell relief-primary"> 
+                <!-- <div id="title-text">𝙑𝙞𝙗𝙚𝙘𝙖𝙥</div> -->
+                <div id="title-text">𝘼𝙢𝙗𝙞𝙚𝙣𝙩</div>
+                <div id="subtitle-text">sample client</div>
+            </h1>
+            <div class="gcell relief-primary" id="searching-query">
+                <label class="explanation" for="api-options">음악 추천 방식 선택</label>
+                <ul id="api-options">
+                    <li class="api-option" id="api-0">
+                        <input class="query-param" type="checkbox" id="api-0" value="0" />사진
+                        <input class="query-param" type="file" id="image_file" name="image_file" />
+                    </li>
+                    <li class="api-option" id="api-1">
+                        <input type="checkbox" id="api-1" value="1" />random (미완성)
+                    </li>
+                </ul>
+            </div>
+            <button id="search-button" 
+                class="relief-primary"
+                class="gcell" 
+                onclick="handleButtonClick()"
+                onmousedown="onMouseDown(this)"
+                onmouseup="onMouseUp(this)">
+                𝙨𝙚𝙖𝙧𝙘𝙝
+            </button>
+            <div class="gcell relief-primary" id="search-result">
+                <h3 class="explanation">검색 결과</h3>
+                <ul id="result-list">
+
+                </ul>
+            </div>
+        <!-- <footer class="meta-data">
+
+        </footer> -->
+        </main>
+    </body>
+</html>
