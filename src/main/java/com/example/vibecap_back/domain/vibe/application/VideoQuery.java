@@ -1,7 +1,10 @@
 package com.example.vibecap_back.domain.vibe.application;
 
 import com.example.vibecap_back.domain.model.ExtraInfo;
+import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +21,8 @@ import java.util.Map;
 @Component
 public class VideoQuery {
 
+    private TextTranslator textTranslator;
+
     private String[] timeList = {
             "아침", "낮", "저녁", "밤", "새벽"
     };
@@ -33,6 +38,11 @@ public class VideoQuery {
     private static String MUSIC_KR = "음악";
     private static String PLAYLIST_EN = "playlist";
 
+    @Autowired
+    public VideoQuery(TextTranslator textTranslator) {
+        this.textTranslator = textTranslator;
+    }
+
     /**
      * 사진과 추가 정보 모두 사용해서 query 생성
      * @param extraInfo
@@ -41,7 +51,8 @@ public class VideoQuery {
      * 이미지에서 추출한 label
      * @return
      */
-    public String assemble(ExtraInfo extraInfo, String label) {
+    public String assemble(ExtraInfo extraInfo, String label) throws ExternalApiException {
+        label = textTranslator.translate(label);
         String query;
         String season = extraInfo.getSeason();
         String time = extraInfo.getTime();
@@ -60,7 +71,8 @@ public class VideoQuery {
      * @param label
      * @return
      */
-    public String assemble(String label) {
+    public String assemble(String label) throws ExternalApiException {
+        label = textTranslator.translate(label);
         String query;
 
         query = String.format("%s %s",

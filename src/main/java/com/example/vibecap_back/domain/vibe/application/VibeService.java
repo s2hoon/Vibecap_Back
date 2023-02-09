@@ -11,6 +11,8 @@ import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
 import com.example.vibecap_back.domain.vibe.exception.NoProperVideoException;
 import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
 import com.example.vibecap_back.global.config.storage.FireBaseService;
+import com.google.api.services.youtube.model.ResourceId;
+import com.google.api.services.youtube.model.SearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class VibeService {
@@ -70,11 +72,10 @@ public class VibeService {
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
-        label = textTranslator.translate(label);
         // label로부터 youtube query 생성
         query = videoQuery.assemble(extraInfo, label);
         // query 결과 획득
-        videoId = playlistSearchEngine.search(query);
+        videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));
         videoLink = getFullUrl(videoId);
         // 이미지 파일을 firebase storage에 저장
         String imgUrl = fireBaseService.uploadFiles(imageFile);
@@ -117,11 +118,10 @@ public class VibeService {
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
-        label = textTranslator.translate(label);
         keywords[0] = label;
         // query 생성
         query = videoQuery.assemble(label);
-        videoId = playlistSearchEngine.search(query);
+        videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));
         videoLink = getFullUrl(videoId);
         // 이미지 파일을 firebase storage에 저장
         String imgUrl = fireBaseService.uploadFiles(imageFile);
@@ -154,7 +154,7 @@ public class VibeService {
 
         query = videoQuery.assemble(extraInfo);
         keywords[0] = query;
-        videoId = playlistSearchEngine.search(query);
+        videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));
         videoLink = getFullUrl(videoId);
 
         result = CaptureResult.builder()
@@ -195,5 +195,93 @@ public class VibeService {
      */
     private String getFullUrl(String videoId) {
         return  String.format("https://www.youtube.com/watch?v=%s", videoId);
+    }
+
+    /**
+     * NUMBER_OF_VIDEOS_RETURNED 개의 비디오 중 하나를 임의로 선택해 추천해준다.
+     * @param searchResultList
+     * @return
+     * key: "link", "videoId"
+     */
+    private String selectRandomVideo(List<SearchResult> searchResultList) {
+        // 현재 시간을 시드 값으로 사용하는 난수 생성기 초기화
+        Random random = new Random(new Date().getTime());
+        int randomIdx = random.nextInt(searchResultList.size());
+
+        // 임의의 컨텐츠 1개 획득
+        SearchResult singleVideo = searchResultList.get(randomIdx);
+        ResourceId rId = singleVideo.getId();
+
+        return rId.getVideoId();
+    }
+
+    /**
+     * 검색된 영상 중 첫 번째 비디오 아이디 반환.
+     * @param searchResultList
+     * @return
+     */
+    private String selectTheFirstVideo(List<SearchResult> searchResultList) {
+        return searchResultList.get(0).getId().getVideoId();
+    }
+
+    /**
+     * tester client가 사용하는 기능들
+     */
+    // 추가정보 + 사진
+    public List<String> getEveryVideos(ExtraInfo extraInfo, MultipartFile image)
+            throws ExternalApiException, IOException, NoProperVideoException {
+        String query;
+        String label;
+        List<SearchResult> videos;
+        List<String> results = new ArrayList<>();
+        // 검색어 생성
+        label = imageAnalyzer.detectLabelsByWebReference(image.getBytes());
+        query = videoQuery.assemble(extraInfo, label);
+        // 검색
+        videos = playlistSearchEngine.searchVideos(query);
+        for (SearchResult videoInfo : videos) {
+            String link = getFullUrl(videoInfo.getId().getVideoId());
+            results.add(link);
+        }
+
+        return results;
+    }
+
+    // 추가정보
+    public List<String> getEveryVideos(ExtraInfo extraInfo)
+            throws ExternalApiException, IOException, NoProperVideoException {
+        String query;
+        List<SearchResult> videos;
+        List<String> results = new ArrayList<>();
+        // 검색어 생성
+        query = videoQuery.assemble(extraInfo);
+        // 검색
+        videos = playlistSearchEngine.searchVideos(query);
+        for (SearchResult videoInfo : videos) {
+            String link = getFullUrl(videoInfo.getId().getVideoId());
+            results.add(link);
+        }
+
+        return results;
+    }
+
+    // 사진
+    public List<String> getEveryVideos(MultipartFile image)
+            throws ExternalApiException, IOException, NoProperVideoException {
+        String query;
+        String label;
+        List<SearchResult> videos;
+        List<String> results = new ArrayList<>();
+        // 검색어 생성
+        label = imageAnalyzer.detectLabelsByWebReference(image.getBytes());
+        query = videoQuery.assemble(label);
+        // 검색
+        videos = playlistSearchEngine.searchVideos(query);
+        for (SearchResult videoInfo : videos) {
+            String link = getFullUrl(videoInfo.getId().getVideoId());
+            results.add(link);
+        }
+
+        return results;
     }
 }

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Capture Client</title>
+        <meta charset="UTF-8">
+        <style>
+            h2 {
+                text-align: center;
+            }
+            main {
+                padding-left: 10%;
+                padding-right: 10%;
+            }
+            span.half-window {
+                display: inline-block;
+                width: 40%;
+            }
+            ul {
+                list-style: none;
+                padding-left: 0
+            }
+            button {
+                height: 50px;
+            }
+        </style>
+        <script src="wireFrameClient.js"></script>
+    </head>
+    <body>
+        <h2> Capture Engine Client </h2>
+
+        <main>
+            <span class="half-window" id="searching-query">
+                <label for="api-options">호출할 api 선택</label>
+                <ul id="api-options">
+                    <li id="api-0"><input type="checkbox" id="api-0" value="0" />사진</li>
+                    <li id="api-1"><input type="checkbox" id="api-1" value="1" />추가정보</li>
+                    <li id="api-2"><input type="checkbox" id="api-2" value="2" />사진 + 추가정보</li>
+                </ul>
+
+                <form id="request-data">
+                    <label class="search-parameter" for="extra_info">추가정보</label>
+                    <input type="text" id="extra_info" name="extra_info" placeholder="{season} {time} {feeling}" />
+                    <br>
+                    <label class="search-parameter" for="file_image">사진</label>
+                    <input type="file" id="image_file" name="image_file" />
+                </form>
+                <br>
+                <button onclick="handleButtonClick()">search</button>
+            </span>
+
+            <span class="half-window" id="search-rsult">
+                <h3>검색 결과</h3>
+                <ul id="result-list">
+
+                </ul>
+            </span>
+        </main>
+    </body>
+</html>
