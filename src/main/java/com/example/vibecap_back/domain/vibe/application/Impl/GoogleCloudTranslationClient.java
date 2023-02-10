@@ -35,6 +35,7 @@ public class GoogleCloudTranslationClient implements TextTranslator {
                     Translate.TranslateOption.targetLanguage("ko"),
                     Translate.TranslateOption.model("base"));
 
+            LOGGER.warn("[VIBE] 번역 결과: " + translation.getTranslatedText());
             return translation.getTranslatedText();
         } catch (TranslateException e) {
             LOGGER.warn(e.getMessage());

@@ -2,12 +2,10 @@ package com.example.vibecap_back.domain.vibe.application;
 
 import com.example.vibecap_back.domain.model.ExtraInfo;
 import com.example.vibecap_back.domain.vibe.exception.ExternalApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Text;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * query는 세 가지 종류 존재한다.
@@ -21,6 +19,7 @@ import java.util.Map;
 @Component
 public class VideoQuery {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(VideoQuery.class);
     private TextTranslator textTranslator;
 
     private String[] timeList = {
@@ -73,6 +72,7 @@ public class VideoQuery {
      */
     public String assemble(String label) throws ExternalApiException {
         label = textTranslator.translate(label);
+        LOGGER.warn("[VIBE] 이미지에서 추출한 label: " + label);
         String query;
 
         query = String.format("%s %s",

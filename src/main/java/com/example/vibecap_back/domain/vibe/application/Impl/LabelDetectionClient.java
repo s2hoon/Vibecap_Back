@@ -113,6 +113,7 @@ public class LabelDetectionClient implements ImageAnalyzer {
         // Web entities를 바탕으로 추측한 label
 
         // return trimLabel(labels.get(0));
+        LOGGER.warn("[VIBE] 이미지에서 추출한 label: " + labels.get(0));
         return labels.get(0);
     }
 
