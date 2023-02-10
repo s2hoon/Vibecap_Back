@@ -104,7 +104,7 @@ function printResults(response) {
     const ulTag = document.getElementById('result-list');
     ulTag.innerHTML ='';
     for (let i=0; i<response.video_list.length; i++) {
-        ulTag.innerHTML += `<li><a href=${response.video_list[i]}>recommend ${i}</a></li>`;
+        ulTag.innerHTML += `<li class="recommendation-link"><a target="_blank" href=${response.video_list[i]}>recommend ${i}</a></li>`;
     }
 }
 

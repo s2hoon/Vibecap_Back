@@ -85,6 +85,10 @@ input[type=checkbox] {
     grid-row: 4/6;
     grid-column: 2/5;
     /* background-color:#EC00FC; */
+    text-align: center;
+}
+li.recommendation-list {
+    /* */
 }
 
 .meta-data {
@@ -92,3 +96,4 @@ input[type=checkbox] {
     grid-column: 1/6;
     background-color: #FFFF00;
 }
+
