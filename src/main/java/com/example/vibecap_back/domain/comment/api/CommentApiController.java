@@ -1,11 +1,14 @@
 package com.example.vibecap_back.domain.comment.api;
 
 import com.example.vibecap_back.domain.comment.application.CommentService;
+import com.example.vibecap_back.domain.comment.dao.CommentRepository;
+import com.example.vibecap_back.domain.comment.dao.SubCommentRepository;
 import com.example.vibecap_back.domain.comment.dto.CommentDeleteReqDto;
 import com.example.vibecap_back.domain.comment.dto.CommentDto;
 import com.example.vibecap_back.domain.comment.dto.CommentReadDto;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
+import com.example.vibecap_back.domain.member.exception.NoSuchMemberExistException;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
 import com.example.vibecap_back.domain.post.application.PostService;
 import com.example.vibecap_back.global.common.response.BaseResponse;
@@ -76,7 +79,7 @@ public class CommentApiController {
         try {
             postService.checkMemberValid(commentDeleteReqDto.getMemberId());
 
-            String result = commentService.deleteComment(commentId);
+            String result = commentService.deleteComment(commentId, PostId);
 
             return new BaseResponse<>(result);
 
