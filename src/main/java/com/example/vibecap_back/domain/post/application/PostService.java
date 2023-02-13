@@ -113,9 +113,6 @@ public class PostService {
     @Transactional(readOnly = false)
     public PostResponseDto retrievePosts(Long postId) throws BaseException {
         try{
-            Long totalCommentCount = commentRepository.countCommentsByPost_PostId(postId) + subCommentRepository.countSubCommentsByPost_PostId(postId);
-            postsRepository.updateCount(totalCommentCount, postId);
-
             PostResponseDto getPost = postsRepository.findByPost(postId);
 
             return getPost;

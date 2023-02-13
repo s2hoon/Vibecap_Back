@@ -21,16 +21,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class SubCommentService {
     private final SubCommentRepository subCommentRepository;
     private final CommentRepository commentRepository;
+
+    private final CommentService commentService;
     private final PostsRepository postsRepository;
     private final NoticeManager noticeManager;
 
     @Autowired
     public SubCommentService(SubCommentRepository subCommentRepository,
-                             CommentRepository commentRepository,
+                             CommentRepository commentRepository, CommentService commentService,
                              PostsRepository postsRepository,
                              NoticeManager noticeManager) {
         this.subCommentRepository = subCommentRepository;
         this.commentRepository = commentRepository;
+        this.commentService = commentService;
         this.postsRepository = postsRepository;
         this.noticeManager = noticeManager;
     }
@@ -54,10 +57,10 @@ public class SubCommentService {
 
         subCommentRepository.save(subComment);
 
-        /* 대댓글 알림 전송 (본인을 제외한 댓글 작성자에게만 전송)
-         * member: 대댓글을 작성하는 회원
-         */
-        if (member.getMemberId() != comments.getMember().getMemberId())
+        commentService.countComments(post.getPostId());
+
+        // 대댓글 알림 전송 (본인을 제외한 댓글 작성자에게만 전송)
+        if (subComment.getMember().getMemberId() != member.getMemberId())
             noticeManager.sendNotice(subComment);
 
         return SubCommentDto.toDto(subComment);
@@ -76,8 +79,11 @@ public class SubCommentService {
 
     // 대댓글 삭제
     @Transactional
-    public void deleteSubComment(Long subCommentId) throws BaseException, NotFoundSubCommentException {
+    public void deleteSubComment(Long postId, Long subCommentId) throws BaseException, NotFoundSubCommentException {
         SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow(NotFoundSubCommentException::new);
         subCommentRepository.deleteById(subComment.getSubCommentId());
+
+        commentService.countComments(postId);
     }
+
 }
