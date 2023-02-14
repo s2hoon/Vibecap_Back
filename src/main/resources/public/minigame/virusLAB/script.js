@@ -135,6 +135,7 @@ function buttonMouseUp(button) {
     // 힌트 보기
     } else if (button.id == BUTTON_HINT_ID && GAME_STATE == PLAYING) {
         console.log(`안전 영역 넓이가 ${maxSafety} 되도록 벽을 설치하세요`)
+        alert(`안전 영역 넓이가 ${maxSafety} 되도록 벽을 설치하세요`);
     }
     console.log(answerIndex)
 }
