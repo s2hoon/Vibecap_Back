@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/app").permitAll()
                 .antMatchers("**exception**").permitAll()
                 .antMatchers("/wireframe/**").permitAll()
+                .antMatchers("/minigame/**").permitAll()
                 .anyRequest().hasAnyAuthority("ROLE_ADMIN", "ROLE_MEMBER")
                 .and()
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())
