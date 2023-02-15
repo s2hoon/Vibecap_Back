@@ -2,6 +2,7 @@ package com.example.vibecap_back.domain.album.dao;
 
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,4 +17,11 @@ public interface AlbumRepository extends JpaRepository<Vibe, Long> {
 
     @Query("select p.postId from Post p where p.vibe.vibeId = :vibeId")
     Long findPostIdByVibeId(@Param("vibeId") Long vibeId);
+
+    @Query("select p.postId from Post p join Vibe v on v.vibeId=p.vibe.vibeId where v.vibeId =:vibeId")
+    Long getPostIdByVibeId(@Param("vibeId") Long vibeId);
+
+    @Query("delete from Tag t where t.tagId=:tagId")
+    @Modifying
+    void deleteTagByPostId(@Param("tagId") Long tagId);
 }
