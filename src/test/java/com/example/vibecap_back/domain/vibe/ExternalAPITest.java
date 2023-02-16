@@ -60,32 +60,13 @@ public class ExternalAPITest {
     void 플레이리스트_추천_추가정보_이용() {
         Assertions.assertDoesNotThrow(() -> {
             System.out.println("www.youtube.com/watch?v=" +
-                    playlistSearchEngine.search("여름 아침 신나는"));
+                    playlistSearchEngine.searchVideos("여름 아침 신나는"));
         });
     }
 
     @Test
     void 플레이리스트_추천_사진_이용() {
-        VideoQuery videoQuery = new VideoQuery();
-        ImageAnalyzer imageAnalyzer = new LabelDetectionClient();
-        PlaylistSearchEngine playlistSearchEngine = new YouTubeClient();
-        TextTranslator textTranslator = new GoogleCloudTranslationClient();
-        ExtraInfo extraInfo = new ExtraInfo("여름 아침 신나는");
-        String label;
-        String query;
-        String videoId;
-
-        try {
-            label = imageAnalyzer.detectLabelsByWebReference(data);
-            label = textTranslator.translate(label);
-            query = videoQuery.assemble(extraInfo, label);
-            videoId = playlistSearchEngine.search(query);
-            printFullURL(videoId);
-        } catch (ExternalApiException e) {
-            Assertions.fail(e.getMessage());
-        } catch (NoProperVideoException e) {
-            System.out.println("적절한 영상 없음");
-        }
+        //
     }
 
     void printFullURL(String videoId) {

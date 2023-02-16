@@ -33,6 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // TODO 홈 화면 경로 : /app 으로 임시 설정
                 .antMatchers(HttpMethod.GET, "/app").permitAll()
                 .antMatchers("**exception**").permitAll()
+                .antMatchers("/wireframe/**").permitAll()
+                .antMatchers("/minigame/**").permitAll()
                 .anyRequest().hasAnyAuthority("ROLE_ADMIN", "ROLE_MEMBER")
                 .and()
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())

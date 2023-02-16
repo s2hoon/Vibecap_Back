@@ -2,9 +2,12 @@ package com.example.vibecap_back.domain.member.domain;
 
 import com.example.vibecap_back.domain.model.MemberStatus;
 import com.example.vibecap_back.domain.post.domain.Like.Likes;
+import com.example.vibecap_back.domain.post.domain.Post;
 import com.example.vibecap_back.domain.post.domain.Scrap.Scrap;
+import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,20 +45,25 @@ public class Member implements UserDetails {
     private String gmail;
 
     @Column(nullable = false)
-    // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
     private String role;
 
     @Column(nullable = false, length = 16)
     private String nickname;
 
     @Column(nullable = false, name = "state")
-    // TODO @Enumerate는 성능 개선 : https://lng1982.tistory.com/279
     private String status;
 
     @Column(name = "profile_image")
     @JsonProperty("profile_image")
-    // TODO 이 코드 그대로 진행할 경우 문제점 : https://greatkim91.tistory.com/102
     private String profileImage;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private List<Vibe> vibes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private List<Post> posts = new ArrayList<>();
 
     /** 좋아요 count **/
     @Builder.Default

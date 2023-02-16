@@ -41,6 +41,11 @@ public class MemberInfoService {
         return result;
     }
 
+    /**
+     * 회원 탈퇴. 회원 관련된 정보(게시글, 댓글, vibe 등 모두 삭제)
+     * @param request
+     * @return
+     */
     public QuitResult disableMember(QuitRequest request) {
 
         Optional<Member> optionalMember = memberRepository.findById(request.getMemberId());
@@ -48,12 +53,12 @@ public class MemberInfoService {
         // 이미 로그인에 성공한 회원이라면 반드시 찾을 수 있다.
         Member member = optionalMember.get();
         originEmail = member.getEmail();
-        member.setStatus(MemberStatus.QUIT.toString());
+        // member.setStatus(MemberStatus.QUIT.toString());
         // 탈퇴한 회원의 이메일이 검색되지 않도록 가린다.
-        member.setEmail(originEmail + DISABLED_SUFFIX);
-        Member quitMember = memberRepository.save(member);
+        // member.setEmail(originEmail + DISABLED_SUFFIX);
+        memberRepository.delete(member);
 
-        QuitResult result = new QuitResult(quitMember.getNickname());
+        QuitResult result = new QuitResult(member.getNickname());
         return result;
     }
 

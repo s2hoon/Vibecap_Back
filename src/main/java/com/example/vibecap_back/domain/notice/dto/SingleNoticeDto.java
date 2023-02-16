@@ -1,11 +1,14 @@
 package com.example.vibecap_back.domain.notice.dto;
 
-import com.example.vibecap_back.domain.model.NoticeEvent;
 import com.example.vibecap_back.domain.notice.domain.NoticeComment;
 import com.example.vibecap_back.domain.notice.domain.NoticeLike;
 import com.example.vibecap_back.domain.notice.domain.NoticeSubComment;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class SingleNoticeDto implements Comparable<SingleNoticeDto> {
     @JsonProperty("notice_id")
     private Long noticeId;
@@ -15,6 +18,12 @@ public class SingleNoticeDto implements Comparable<SingleNoticeDto> {
      * NoticeEvent.toString() 결과
      */
     private String event;
+
+    /**
+     * 게시글 id
+     */
+    @JsonProperty("post_id")
+    private Long postId;
 
     /**
      * event 발생 시각
@@ -38,7 +47,8 @@ public class SingleNoticeDto implements Comparable<SingleNoticeDto> {
     public SingleNoticeDto(NoticeComment noticeComment) {
         this.noticeId = noticeComment.getNoticeCommentId();
         this.event = noticeComment.getEventType().toString();
-        this.time = noticeComment.getCreatedTime().toString().substring(0,15);
+        this.postId = noticeComment.getPost().getPostId();
+        this.time = noticeComment.getCreatedTime().toString().substring(0,16);
         this.sender = noticeComment.getSenderNickname();
         // comment, subComment
         this.summary = noticeComment.getSummary();
@@ -47,7 +57,8 @@ public class SingleNoticeDto implements Comparable<SingleNoticeDto> {
     public SingleNoticeDto(NoticeSubComment noticeSubComment) {
         this.noticeId = noticeSubComment.getSubCommentNoticeId();
         this.event = noticeSubComment.getEventType().toString();
-        this.time = noticeSubComment.getCreatedTime().toString().substring(0,15);
+        this.postId = noticeSubComment.getComment().getPost().getPostId();
+        this.time = noticeSubComment.getCreatedTime().toString().substring(0,16);
         this.sender = noticeSubComment.getSenderNickname();
         // comment, subComment
         this.summary = noticeSubComment.getSummary();
@@ -56,7 +67,8 @@ public class SingleNoticeDto implements Comparable<SingleNoticeDto> {
     public SingleNoticeDto(NoticeLike noticeLike) {
         this.noticeId = noticeLike.getNoticeLikeId();
         this.event = noticeLike.getEventType().toString();
-        this.time = noticeLike.getCreatedTime().toString().substring(0,15);
+        this.postId = noticeLike.getPost().getPostId();
+        this.time = noticeLike.getCreatedTime().toString().substring(0,16);
         this.sender = noticeLike.getSenderNickname();
         this.summary = null;
     }

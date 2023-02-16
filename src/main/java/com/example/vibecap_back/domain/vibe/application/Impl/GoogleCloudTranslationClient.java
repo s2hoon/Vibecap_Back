@@ -27,6 +27,13 @@ public class GoogleCloudTranslationClient implements TextTranslator {
 
         if (detectedLanguage.equals("ko"))
             return foreignString;
+        /**
+         * heuristic: 두 단어 이상일 경우 고유명사일 확률이 높기 때문에 해석하면 의미가 깨지게 된다.
+         * 영어를 그대로 사용
+         */
+        else if (foreignString.split(" ").length > 1) {
+            return foreignString;
+        }
 
         try {
             Translation translation = translate.translate(
@@ -35,6 +42,7 @@ public class GoogleCloudTranslationClient implements TextTranslator {
                     Translate.TranslateOption.targetLanguage("ko"),
                     Translate.TranslateOption.model("base"));
 
+            LOGGER.warn("[VIBE] 번역 결과: " + translation.getTranslatedText());
             return translation.getTranslatedText();
         } catch (TranslateException e) {
             LOGGER.warn(e.getMessage());

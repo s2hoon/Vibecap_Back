@@ -95,10 +95,10 @@ public class SubCommentApiController {
      * [DELETE] /app/sub/comments/:sub_comment_id
      */
     @ResponseBody
-    @DeleteMapping("/{sub_comment_id}")
-    public BaseResponse<String> deleteSubComment(@PathVariable("sub_comment_id") Long subCommentId) {
+    @DeleteMapping("/{post_id}/{sub_comment_id}")
+    public BaseResponse<String> deleteSubComment(@PathVariable("post_id") Long postId, @PathVariable("sub_comment_id") Long subCommentId) {
         try {
-            subCommentService.deleteSubComment(subCommentId);
+            subCommentService.deleteSubComment(postId, subCommentId);
             String result = "해당 대댓글 삭제에 성공했습니다.";
 
             return new BaseResponse<>(result);

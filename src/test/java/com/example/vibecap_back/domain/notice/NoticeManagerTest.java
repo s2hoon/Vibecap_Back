@@ -1,5 +1,7 @@
 package com.example.vibecap_back.domain.notice;
 
+import com.example.vibecap_back.BoilerPlate;
+import com.example.vibecap_back.domain.comment.dao.CommentRepository;
 import com.example.vibecap_back.domain.comment.domain.Comments;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
@@ -25,8 +27,6 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,11 +40,11 @@ import java.util.Map;
 public class NoticeManagerTest {
 
     @Autowired
-    private NoticeLikeRepository likeRepository;
+    private NoticeCommentRepository commentNoticeRepository;
     @Autowired
-    private NoticeCommentRepository commentRepository;
+    private NoticeSubCommentRepository subCommentNoticeRepository;
     @Autowired
-    private NoticeSubCommentRepository subCommentRepository;
+    NoticeLikeRepository likeNoticeRepository;
     @Autowired
     private PostsRepository postsRepository;
     @Autowired
@@ -52,29 +52,32 @@ public class NoticeManagerTest {
     @Autowired
     private VibeRepository vibeRepository;
     @Autowired
-    NoticeLikeRepository noticeLikeRepository;
-    @Autowired
-    NoticeCommentRepository noticeCommentRepository;
+    private CommentRepository commentRepository;
     private NoticeManager noticeManager;
 
     // test members (id : 1~TEST_MEMBER_NUM)
     static final int TEST_MEMBER_NUM = 10;
-    List<Member> testMembers = new ArrayList<>(TEST_MEMBER_NUM);
     // test vibes
     static final int TEST_VIBE_PER_MEMBER = 5;
-    List<Vibe> testVibes = new ArrayList<>(TEST_VIBE_PER_MEMBER);
+
+    BoilerPlate boilerPlate;
+    List<Member> testMembers;
+    Map<Long, List<Vibe>> testVibes;
     // test posts
-    Map<Long, List<Post>> testPosts = new HashMap<>(TEST_MEMBER_NUM);
+    Map<Long, List<Post>> testPosts;
 
     @PostConstruct
     void initNoticeManager() {
-        noticeManager = new NoticeManager(commentRepository,
-                subCommentRepository, likeRepository);
+        noticeManager = new NoticeManager(commentNoticeRepository,
+                subCommentNoticeRepository, likeNoticeRepository);
     }
     @BeforeEach
-    void initPosts() {
-        initMembers();
-        initVibesAndPosts();
+    void initPosts() throws Exception {
+        boilerPlate = new BoilerPlate(TEST_MEMBER_NUM, TEST_VIBE_PER_MEMBER);
+        testMembers = boilerPlate.getMembers();
+        testVibes = boilerPlate.getVibes();
+        testPosts = boilerPlate.getPosts();
+        boilerPlate.persist(memberRepository, vibeRepository, postsRepository, TEST_VIBE_PER_MEMBER, true);
     }
 
     @Test
@@ -101,7 +104,7 @@ public class NoticeManagerTest {
             receiver = testMembers.get((i+1)%TEST_MEMBER_NUM);
             expectedSender = testMembers.get(i);
             // receiver가 받은 모든 알림을 하나씩 확인
-            actualNotices = noticeLikeRepository.selectAllLikeNotices(receiver.getMemberId());
+            actualNotices = likeNoticeRepository.selectAllLikeNotices(receiver.getMemberId());
             for (NoticeLike actualNotice : actualNotices) {
                 Assertions.assertThat(actualNotice.getSenderNickname()).isEqualTo(expectedSender.getNickname());
             }
@@ -121,6 +124,7 @@ public class NoticeManagerTest {
             targetPosts = testPosts.get(testMembers.get(targetIndex).getMemberId());
             for (Post post : targetPosts) {
                 comment = CommentFactory.getComment(testMembers.get(i), post, i);
+                commentRepository.save(comment);
                 noticeManager.sendNotice(comment);
             }
         }
@@ -131,48 +135,11 @@ public class NoticeManagerTest {
             receiver = testMembers.get((i+1)%TEST_MEMBER_NUM);
             expectedSender = testMembers.get(i);
             // receiver가 받은 알림을 하나씩 확인
-            actualNotices = noticeCommentRepository.selectAllCommentNotices(receiver.getMemberId());
+            actualNotices = commentNoticeRepository.selectAllCommentNotices(receiver.getMemberId());
             for (NoticeComment noticeComment : actualNotices) {
                 Assertions.assertThat(noticeComment.getSenderNickname()).isEqualTo(expectedSender.getNickname());
             }
         }
     }
 
-    // id가 1~TEST_MEMBER_NUM인 회원 생성
-    void initMembers() {
-        this.testMembers = new ArrayList<>();
-        Member newMember;
-        for (int i=1;i<=TEST_MEMBER_NUM;i++) {
-            newMember = MemberFactory.getMember(i);
-            testMembers.add(newMember);
-            memberRepository.save(newMember);
-        }
-    }
-
-    // TEST_MEMBER_NUM 명의 회원이 각각 TEST_VIBE_PER_MEMBER 개의 vibe 생성하고
-    // 게시글까지 작성
-    void initVibesAndPosts() {
-        this.testVibes = new ArrayList<>();
-        Vibe vibe;
-
-        for (Member member : testMembers) {
-            createVibeAndPost(member, TEST_VIBE_PER_MEMBER);
-        }
-    }
-
-    // 각 회원이 n개의 vibe를 생성하고 게시글 작성
-    void createVibeAndPost(Member member, int n) {
-        Vibe vibe;
-        Post post;
-        List<Post> posts = new ArrayList<>(n);
-        for (int i=0;i<n;i++) {
-            vibe = VibeFactory.getVibe(member.getMemberId(), i);
-            vibeRepository.save(vibe);
-            post = PostFactory.getPost(member, vibe, i);
-            postsRepository.save(post);
-
-            posts.add(post);
-        }
-        testPosts.put(member.getMemberId(), posts);
-    }
 }

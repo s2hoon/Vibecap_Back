@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>VIRUS LAB</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+    </head>
+
+    <body>
+        <div class="grid-container-main">
+            <header class="gcell-title styled-block">
+                <h1 id="main-title">VIRUS LAB</h1>
+                <div id="version">ver. 1.0.0</div>
+            </header>
+                    <!-- <li>걸린 시간: </li>
+                    <li>고려한 경우의 수 : </li> -->
+                </ul>
+            </nav> -->
+            <aisde class="side-button gcell-button-start styled-block-clickable" 
+                id="button-start" 
+                onmousedown="buttonMouseDown(this)"
+                onmouseup="buttonMouseUp(this)">시작</aisde>
+            <aisde class="side-button gcell-button-new styled-block-clickable" 
+                id="button-new" 
+                onmousedown="buttonMouseDown(this)"
+                onmouseup="buttonMouseUp(this)">새 게임</aisde>
+            <aisde class="side-button gcell-button-hint styled-block-clickable" 
+                id="button-hint" 
+                onmousedown="buttonMouseDown(this)"
+                onmouseup="buttonMouseUp(this)">힌트</aisde>
+            <aisde class="side-button gcell-button-solution styled-block-clickable" 
+                id="button-solution" 
+                onmousedown="buttonMouseDown(this)"
+                onmouseup="buttonMouseUp(this)">정답 보기</aisde>
+            <div class="styled-block grid-container-info" id="solution-info"></div>
+            <section class="gcell-game-screen grid-container-game-screen styled-block" 
+                id="game-screen">
+                <!-- lab map data 
+                    div class="gcell map-element" id="0~n*n" 
+                -->
+                <ul id="legend" class="gcell-legend explain">
+                    <li class="legend-item">🦠 바이러스</li>
+                    <li class="legend-item">⬜️ 빈 공간</li>
+                    <li class="legend-item">⬛️ 벽</li>
+                </ul>
+                <div id="how-to-play-1" class="explain">
+                    안전 영역이 가장 넓어지도록 빈 공간에 벽 세 개를 설치해주세요!
+                </div>
+                <div id="how-to-play-2" class="explain">
+                    바이러스는 가로, 세로 방향으로 빈 공간을 통해 확산합니다.
+                </div>
+            </section>
+            <footer class="gcell-ref">이 게임은 <a href="https://www.acmicpc.net/problem/14502">14502 문제</a>에서 영감을 받아 제작했습니다.</footer>
+        </div>
+    </body>
+
+</html>

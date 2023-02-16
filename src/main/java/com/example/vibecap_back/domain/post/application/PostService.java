@@ -5,6 +5,7 @@ import com.example.vibecap_back.domain.comment.dao.SubCommentRepository;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
 import com.example.vibecap_back.domain.member.domain.Member;
 import com.example.vibecap_back.domain.mypage.exception.InvalidMemberException;
+import com.example.vibecap_back.domain.notice.application.NoticeManager;
 import com.example.vibecap_back.domain.post.dao.PostsLikeRepository;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.dao.PostsScrapRepository;
@@ -48,12 +49,14 @@ public class PostService {
 
     private final CommentRepository commentRepository;
     private final SubCommentRepository subCommentRepository;
+    private final NoticeManager noticeManager;
 
     @Autowired
     public PostService(MemberRepository memberRepository, PostsLikeRepository postsLikeRepository,
                        PostsRepository postsRepository, PostsScrapRepository postsScrapRepository,
                        VibeRepository vibeRepository, JwtTokenProvider jwtTokenProvider,
-                       CommentRepository commentRepository, SubCommentRepository subCommentRepository) throws InvalidMemberException {
+                       CommentRepository commentRepository, SubCommentRepository subCommentRepository,
+                       NoticeManager noticeManager) throws InvalidMemberException {
         this.memberRepository = memberRepository;
         this.postsLikeRepository = postsLikeRepository;
         this.postsRepository = postsRepository;
@@ -62,6 +65,7 @@ public class PostService {
         this.jwtTokenProvider = jwtTokenProvider;
         this.commentRepository = commentRepository;
         this.subCommentRepository = subCommentRepository;
+        this.noticeManager = noticeManager;
     }
 
 
@@ -109,9 +113,6 @@ public class PostService {
     @Transactional(readOnly = false)
     public PostResponseDto retrievePosts(Long postId) throws BaseException {
         try{
-            Long totalCommentCount = commentRepository.countCommentsByPost_PostId(postId) + subCommentRepository.countSubCommentsByPost_PostId(postId);
-            postsRepository.updateCount(totalCommentCount, postId);
-
             PostResponseDto getPost = postsRepository.findByPost(postId);
 
             return getPost;
@@ -213,7 +214,7 @@ public class PostService {
 
     /*** 게시글 조회 API - 페이징 처리 (db에 존재하는 모든 게시글) **/
     public Page<PostListResponseDto> findEveryPostByPaging(Pageable pageable) throws BaseException {
-        List<PostListResponseDto> postList = postsRepository.findAll().stream()
+        List<PostListResponseDto> postList = postsRepository.selectAllPost().stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
 
@@ -250,11 +251,12 @@ public class PostService {
                 // 좋아요가 없을 경우 좋아요 추가
                 () -> {
                     Likes postLike = Likes.builder().build();
-
                     postLike.mappingPost(post);
                     postLike.mappingMember(member);
                     post.updateLikeCount();
 
+                    if (!(post.getMember().getMemberId() == memberId))
+                        noticeManager.sendNotice(postLike);         // 좋아요 알림 전송 (본인의 게시물에 대한 좋아요 알림은 보내지 않는다.)
                     postsLikeRepository.save(postLike);
                     //result.set("해당 게시물에 좋아요를 눌렀습니다.");
                     postLikeResDto.setLikeOrElse("해당 게시물에 좋아요를 눌렀습니다.");

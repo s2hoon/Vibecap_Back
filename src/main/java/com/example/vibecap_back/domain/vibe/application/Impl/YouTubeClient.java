@@ -57,7 +57,7 @@ public class YouTubeClient implements PlaylistSearchEngine {
      *
      */
     @Override
-    public String search(String query) throws ExternalApiException, NoProperVideoException {
+    public List<SearchResult> searchVideos(String query) throws ExternalApiException, NoProperVideoException {
 
         try {
             youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
@@ -105,9 +105,9 @@ public class YouTubeClient implements PlaylistSearchEngine {
                 searchResultList = searchResponse.getItems();
                 if (searchResultList.size() == 0)
                     throw new NoProperVideoException();
-                return selectTheFirstVideo(searchResultList);
+                return searchResultList;
             } else
-                return selectTheFirstVideo(searchResultList);
+                return searchResultList;
                 // 무작위로 1개의 비디오 전송
                 // return selectRandomVideo(searchResultList);
 
@@ -124,34 +124,6 @@ public class YouTubeClient implements PlaylistSearchEngine {
             throw new ExternalApiException();
         }
 
-    }
-
-
-    /**
-     * NUMBER_OF_VIDEOS_RETURNED 개의 비디오 중 하나를 임의로 선택해 추천해준다.
-     * @param searchResultList
-     * @return
-     * key: "link", "videoId"
-     */
-    private String selectRandomVideo(List<SearchResult> searchResultList) {
-        // 현재 시간을 시드 값으로 사용하는 난수 생성기 초기화
-        Random random = new Random(new Date().getTime());
-        int randomIdx = random.nextInt(searchResultList.size());
-
-        // 임의의 컨텐츠 1개 획득
-        SearchResult singleVideo = searchResultList.get(randomIdx);
-        ResourceId rId = singleVideo.getId();
-
-        return rId.getVideoId();
-    }
-
-    /**
-     * 검색된 영상 중 첫 번째 비디오 아이디 반환.
-     * @param searchResultList
-     * @return
-     */
-    private String selectTheFirstVideo(List<SearchResult> searchResultList) {
-        return searchResultList.get(0).getId().getVideoId();
     }
 
     /**

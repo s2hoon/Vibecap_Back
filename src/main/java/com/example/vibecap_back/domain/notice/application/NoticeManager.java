@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NoticeManager {
 
-    private static final int SUMMARY_MAX_LENGTH = 16;
+    private static final int SUMMARY_MAX_LENGTH = 13;
 
     private NoticeCommentRepository noticeCommentRepository;
     private NoticeSubCommentRepository noticeSubCommentRepository;
@@ -80,16 +80,21 @@ public class NoticeManager {
         Member receiver;
         Member sender;
         NoticeSubComment notice;
+        String summary;
 
         targetComment = subComment.getComments();     // 대댓글이 추가된 댓글
         receiver = targetComment.getMember();         // 댓글 작성자
         sender = subComment.getMember();              // 대댓글 작성자
+        if (subComment.getSubCommentBody().length() > SUMMARY_MAX_LENGTH)
+            summary = subComment.getSubCommentBody().substring(0, SUMMARY_MAX_LENGTH) + "...";
+        else
+            summary = subComment.getSubCommentBody();
 
         notice = NoticeSubComment.builder()
                 .comment(subComment.getComments())
                 .receiverId(receiver.getMemberId())
                 .senderNickname(sender.getNickname())
-                .summary(subComment.getSubCommentBody().substring(0, 12) + "...")
+                .summary(summary)
                 .build();
 
         return noticeSubCommentRepository.save(notice);

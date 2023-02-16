@@ -12,6 +12,10 @@ capturedImgs/*
 src/main/resources/application.properties
 src/main/resources/application-prod.properties
 
+## scripts
+/**.py
+/**.png
+
 *.DS_Store
 .gradle
 build/
