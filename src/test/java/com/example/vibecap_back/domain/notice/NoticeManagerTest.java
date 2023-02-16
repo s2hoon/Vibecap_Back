@@ -77,7 +77,7 @@ public class NoticeManagerTest {
         testMembers = boilerPlate.getMembers();
         testVibes = boilerPlate.getVibes();
         testPosts = boilerPlate.getPosts();
-        boilerPlate.persist(memberRepository, vibeRepository, postsRepository, TEST_VIBE_PER_MEMBER);
+        boilerPlate.persist(memberRepository, vibeRepository, postsRepository, TEST_VIBE_PER_MEMBER, true);
     }
 
     @Test

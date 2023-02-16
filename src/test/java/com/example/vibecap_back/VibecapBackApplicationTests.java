@@ -1,5 +1,7 @@
 package com.example.vibecap_back;
 
+import com.example.vibecap_back.domain.album.api.Album;
+import com.example.vibecap_back.domain.album.application.AlbumService;
 import com.example.vibecap_back.domain.comment.dao.CommentRepository;
 import com.example.vibecap_back.domain.comment.domain.Comments;
 import com.example.vibecap_back.domain.member.dao.MemberRepository;
@@ -10,9 +12,11 @@ import com.example.vibecap_back.domain.notice.dao.NoticeLikeRepository;
 import com.example.vibecap_back.domain.notice.dao.NoticeSubCommentRepository;
 import com.example.vibecap_back.domain.post.dao.PostsRepository;
 import com.example.vibecap_back.domain.post.domain.Post;
+import com.example.vibecap_back.domain.vibe.application.VibeService;
 import com.example.vibecap_back.domain.vibe.dao.VibeRepository;
 import com.example.vibecap_back.domain.vibe.domain.Vibe;
 import com.example.vibecap_back.factory.CommentFactory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -32,6 +36,8 @@ class VibecapBackApplicationTests {
     private MemberRepository memberRepository;
     @Autowired
     private VibeRepository vibeRepository;
+    @Autowired
+    private AlbumService albumService;
     @Autowired
     private PostsRepository postsRepository;
     @Autowired
@@ -64,7 +70,7 @@ class VibecapBackApplicationTests {
         vibes = boilerPlate.getVibes();
         posts = boilerPlate.getPosts();
         // insert members, vibes, posts
-        boilerPlate.persist(memberRepository, vibeRepository, postsRepository, VIBE_AND_POST_PER_MEMBER);
+        boilerPlate.persist(memberRepository, vibeRepository, postsRepository, VIBE_AND_POST_PER_MEMBER, true);
         // insert comments and notices
         Comments comment;
         int index, targetIndex;         // 댓글을 작성할 회원, 댓글이 추가될 게시글 작성자
@@ -81,5 +87,4 @@ class VibecapBackApplicationTests {
         }
         // insert likes
     }
-
 }

@@ -50,12 +50,13 @@ public class BoilerPlate {
      */
     public void persist(MemberRepository memberRepository,
                         VibeRepository vibeRepository, PostsRepository postsRepository,
-                        int vibeAndPostPerMember) {
+                        int vibeAndPostPerMember, boolean savePost) {
         for (Member member : members) {
             memberRepository.save(member);
             for (int i=0; i<vibeAndPostPerMember; i++) {
                 vibeRepository.save(vibes.get(member.getMemberId()).get(i));
-                postsRepository.save(posts.get(member.getMemberId()).get(i));
+                if (savePost)
+                    postsRepository.save(posts.get(member.getMemberId()).get(i));
             }
         }
     }
