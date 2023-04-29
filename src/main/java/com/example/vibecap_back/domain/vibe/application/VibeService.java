@@ -73,7 +73,7 @@ public class VibeService {
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
         LOGGER.warn("[GOOGLE_VISION] 이미지로부터 추출한 label: " + label);
-        // label로부터 youtube query 생성
+        // label 로부터 youtube query 생성
         query = videoQuery.assemble(extraInfo, label);
         // query 결과 획득
         videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));
@@ -119,7 +119,11 @@ public class VibeService {
 
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
-        keywords[0] = label;
+        keywords[0] = label; //첫번째 라벨만 가져옴
+        //가져온 라벨을 chatgpt 이용하여 음악추천
+        
+        
+
         // query 생성
         query = videoQuery.assemble(label);
         videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));

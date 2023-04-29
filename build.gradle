@@ -54,6 +54,9 @@ dependencies {
 
     // Firebase
     implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
+
+    // Chatgpt
+    implementation group: 'com.theokanning.openai-gpt3-java', name: 'client', version: '0.9.0'
 }
 
 tasks.named('test') {
