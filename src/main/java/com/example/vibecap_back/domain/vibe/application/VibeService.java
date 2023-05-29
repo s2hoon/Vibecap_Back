@@ -13,6 +13,8 @@ import com.example.vibecap_back.global.config.storage.FileSaveErrorException;
 import com.example.vibecap_back.global.config.storage.FireBaseService;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Thumbnail;
+import com.google.api.services.youtube.model.ThumbnailDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 @Service
@@ -35,11 +37,16 @@ public class VibeService {
     private final FireBaseService fireBaseService;
     private final MemberRepository memberRepository;
 
+    private final AzureComputerVision azureComputerVision;
+
+
+
+
     @Autowired
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
                        VideoQuery videoQuery, VibeRepository vibeRepository,
                        TextTranslator textTranslator, FireBaseService fireBaseService,
-                       MemberRepository memberRepository) {
+                       MemberRepository memberRepository, AzureComputerVision azureComputerVision, AzureComputerVision azureComputerVision1) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
         this.videoQuery = videoQuery;
@@ -47,36 +54,75 @@ public class VibeService {
         this.textTranslator = textTranslator;
         this.fireBaseService = fireBaseService;
         this.memberRepository = memberRepository;
+
+        this.azureComputerVision = azureComputerVision1;
     }
 
+
     /**
-     * 사진과 추가 정보를 조합하여 vibe를 생성, 저장하고 결과 반환
-     * @param memberId
-     * @param imageFile
-     * @param extraInfo
-     * @return
-     * @throws ExternalApiException
-     * @throws IOException
-     */
+ * 사진과 추가 정보를 조합하여 vibe를 생성, 저장하고 결과 반환
+ * @param memberId
+ * @param imageFile
+ * @param extraInfo
+ * @return
+ * @throws ExternalApiException
+ * @throws IOException
+ */
     @Transactional
     public CaptureResult capture(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
             throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
 
         byte[] data = imageFile.getBytes();
-        String label;
+        List<String> label = new ArrayList<>();
+        label.add("test");
+        String query_label;
+        String imageCaption;
         String query;
+        String gpt_request;
+        String gpt_response;
         String videoId;
         String videoLink;
         String keywords;
         Long vibeId;
-
+        /** 구글비젼
         // 이미지를 설명하는 라벨 추출
-        label = imageAnalyzer.detectLabelsByWebReference(data);
+        label = imageAnalyzer.detectLabels(data);
+        query_label = label.get(0);
         LOGGER.warn("[GOOGLE_VISION] 이미지로부터 추출한 label: " + label);
-        // label 로부터 youtube query 생성
-        query = videoQuery.assemble(extraInfo, label);
+        // label + chatgpt 로 노래 추천
+        gpt_request = "calm"+ " " +label.get(0) + " " +label.get(1) + " " +
+                "Answer the music that matches these keywords in Korean in one sentence" + " " +
+                "Example keywords: exciting, buildings, people" + " " +
+                "Example result: Queen : dont stop me now" ;
+        OpenAiChat openai = new OpenAiChat();
+        gpt_response = openai.chat(gpt_request);
+        LOGGER.warn("[GOOGLE_VISION] chatgpt response :" + gpt_response);
+       **/
+        /** azure computer vision**/
+        imageCaption =azureComputerVision.getResponse(data);
+        gpt_request = "sentence:"+ imageCaption + ", feeling : exciting ." +
+                "using this sentence and my feeling , please recommend me a song ." +
+                "the answer just give me song's name ." +
+                "example result : Adele - Someone Like You";
+        OpenAiChat openai = new OpenAiChat();
+        gpt_response = openai.chat(gpt_request);
+        LOGGER.warn("[GOOGLE_VISION] chatgpt response :" + gpt_response);
+
+        // 추천 받은 노래를 그냥 query 로 사용
+        query = gpt_response.trim();
+        query = query +" " +  "playlist";
+        LOGGER.warn("[Youtube Query] query: "+ query);
+//        query = videoQuery.assemble(extraInfo, query_label);
         // query 결과 획득
         videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));
+
+        /**썸네일 비교
+        // 썸네일 취득
+        List<String> thumbnail;
+        thumbnail = getThumbnailUrl(playlistSearchEngine.searchVideos(query));
+        LOGGER.warn(thumbnail.toString());
+        **/
+
         videoLink = getFullUrl(videoId);
         // 이미지 파일을 firebase storage에 저장
         String imgUrl = fireBaseService.uploadFiles(imageFile);
@@ -120,10 +166,6 @@ public class VibeService {
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
         keywords[0] = label; //첫번째 라벨만 가져옴
-        //가져온 라벨을 chatgpt 이용하여 음악추천
-        
-        
-
         // query 생성
         query = videoQuery.assemble(label);
         videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));
@@ -289,4 +331,25 @@ public class VibeService {
 
         return results;
     }
+
+
+    // SearchResult 객체에서 썸네일 이미지 URL을 가져오는 메서드
+    public List<String> getThumbnailUrl(List<SearchResult> searchResults) {
+        List<String> thumbnailUrls = new ArrayList<>();
+
+        for (SearchResult searchResult : searchResults) {
+            ThumbnailDetails thumbnailDetails = searchResult.getSnippet().getThumbnails();
+            if (thumbnailDetails != null) {
+                Thumbnail defaultThumbnail = thumbnailDetails.getDefault();
+                if (defaultThumbnail != null) {
+                    String defaultThumbnailUrl = defaultThumbnail.getUrl();
+                    thumbnailUrls.add(defaultThumbnailUrl);
+                }
+            }
+        }
+
+        return thumbnailUrls;
+    }
+
+
 }

@@ -52,8 +52,8 @@ public class VibeCapture {
      * @return
      */
     @PostMapping(value = "/capture", consumes = {"multipart/form-data"})
-    public BaseResponse<CaptureResult> capture(@RequestParam("member_id") Long memberId,
-                                               @RequestParam("extra_info") String extraInfo,
+    public BaseResponse<CaptureResult> capture(@RequestParam(value = "member_id") Long memberId,
+                                               @RequestParam(value = "extra_info") String extraInfo,
                                                @RequestPart("image_file") MultipartFile imageFile) {
         CaptureResult result;
 

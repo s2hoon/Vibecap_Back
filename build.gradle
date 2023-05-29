@@ -33,30 +33,41 @@ dependencies {
 
     // security
     implementation 'org.springframework.boot:spring-boot-starter-security:2.7.7'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 
     // Swagger
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
 
     // Google Vision Api
     // implementation 'org.springframework.cloud:spring-cloud-gcp-starter-vision:1.2.8'
     // TODO what is BOM??
-    implementation platform('com.google.cloud:libraries-bom:26.1.5')
+    implementation platform('com.google.cloud:libraries-bom:26.10.0')
     implementation 'com.google.cloud:google-cloud-vision'
     // Google API java client & youtube
-    implementation 'com.google.api-client:google-api-client:1.31.1'
-    implementation 'com.google.apis:google-api-services-youtube:v3-rev222-1.25.0'
-    implementation 'com.google.http-client:google-http-client-jackson2:1.42.3'
+    implementation 'com.google.api-client:google-api-client:2.2.0'
+    implementation 'com.google.apis:google-api-services-youtube:v3-rev20230123-2.0.0'
+    implementation 'com.google.http-client:google-http-client-jackson2:1.43.1'
     // Google translation
     implementation 'com.google.cloud:google-cloud-translate'
 
     // Firebase
-    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.1.1'
 
     // Chatgpt
-    implementation group: 'com.theokanning.openai-gpt3-java', name: 'client', version: '0.9.0'
+    implementation group: 'com.theokanning.openai-gpt3-java', name: 'client', version: '0.11.1'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.json:json:20230227'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+
+    // computer vision
+    implementation 'com.microsoft.azure.cognitiveservices:azure-cognitiveservices-computervision:1.0.9-beta'
+
+
 }
 
 tasks.named('test') {

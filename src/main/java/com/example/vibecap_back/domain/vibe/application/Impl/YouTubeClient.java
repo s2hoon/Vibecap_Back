@@ -67,20 +67,20 @@ public class YouTubeClient implements PlaylistSearchEngine {
                 }}).setApplicationName("youtube-search-client")
                     .build();
 
-            YouTube.Search.List search = youtube.search().list("id, snippet");
+            YouTube.Search.List search = youtube.search().list(Collections.singletonList("id, snippet"));
 
             // Google 계정으로 인증받지 못한 요청을 위한 API key 설정
             search.setKey(Secret.YOUTUBE_DATA_API_KEY);
             search.setQ(query);
 
             // playlist 검색
-            search.setType("video");
+            search.setType(Collections.singletonList("video"));
             search.setVideoCategoryId(CATEGORY_ID_MUSIC);
             /**
              * 반환된 응답으로부터 원하는 필드만 추출 (type/subtype 구성)
              * video id, 컨텐츠 제목
              * */
-            search.setFields("items(id/kind, id/videoId, snippet/title)");
+            search.setFields("items(id/kind, id/videoId, snippet/title,snippet/thumbnails/default/url)");
             search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
             // 검색 결과 획득 (비디오 NUMBER_OF_VIDEOS_RETURNED개)
             SearchListResponse searchResponse = search.execute();
