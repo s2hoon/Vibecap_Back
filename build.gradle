@@ -66,7 +66,11 @@ dependencies {
 
     // computer vision
     implementation 'com.microsoft.azure.cognitiveservices:azure-cognitiveservices-computervision:1.0.9-beta'
+//
+//    // OpenCV 의존성 추가
+//    implementation group: 'org.bytedeco', name: 'javacv', version: '1.5.5'
 
+    implementation 'org.openpnp:opencv:4.5.1-2'
 
 }
 

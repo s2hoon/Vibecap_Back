@@ -45,7 +45,7 @@ public class VibeCapture {
     }
 
     /**
-     * 사진과 추가 정보를 모두 사용해서 음악 추천
+     * 사진과 추가 정보를 모두 사용해서 음악 추천(azure computer vision)
      * @param memberId
      * @param extraInfo
      * @param imageFile
@@ -72,6 +72,40 @@ public class VibeCapture {
             return new BaseResponse<>(FILE_SAVE_ERROR);
         }
     }
+
+
+
+    /**
+     * 사진과 추가 정보를 모두 사용해서 음악 추천(이미지 유사도)
+     * @param memberId
+     * @param extraInfo
+     * @param imageFile
+     * @return
+     */
+    @PostMapping(value = "/capture_similarity", consumes = {"multipart/form-data"})
+    public BaseResponse<CaptureResult> capture_similarity(@RequestParam(value = "member_id") Long memberId,
+                                               @RequestParam(value = "extra_info") String extraInfo,
+                                               @RequestPart("image_file") MultipartFile imageFile) {
+        CaptureResult result;
+
+        try {
+            result = vibeService.capture_similarity(memberId, imageFile, new ExtraInfo(extraInfo));
+
+            return new BaseResponse<>(result);
+
+        } catch (ExternalApiException e) {
+            return new BaseResponse<>(EXTERNAL_API_FAILED);
+        } catch (IOException e) {
+            return new BaseResponse<>(SAVE_TEMPORARY_FILE_FAILED);
+        } catch (NoProperVideoException e) {
+            return new BaseResponse<>(NO_PROPER_VIDEO);
+        } catch (FileSaveErrorException e) {
+            return new BaseResponse<>(FILE_SAVE_ERROR);
+        }
+    }
+    
+    
+
 
     /**
      * 사진으로만 음악 추천

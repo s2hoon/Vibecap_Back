@@ -19,8 +19,14 @@ public class ExtraInfo {
 
     public ExtraInfo(String infoString) {
         String[] info = infoString.split(" ");
-        this.season = info[0];
-        this.time = info[1];
-        this.feeling = info[2];
+        if (info.length == 1){
+            this.season = info[0];
+        }
+        if (info.length == 2) {
+            this.time = info[1];
+        }
+        if(info.length==3){
+            this.feeling = info[2];
+        }
     }
 }

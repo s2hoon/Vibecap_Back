@@ -54,13 +54,11 @@ public class VibeService {
         this.textTranslator = textTranslator;
         this.fireBaseService = fireBaseService;
         this.memberRepository = memberRepository;
-
         this.azureComputerVision = azureComputerVision1;
     }
 
-
     /**
- * 사진과 추가 정보를 조합하여 vibe를 생성, 저장하고 결과 반환
+ * 사진과 추가 정보를 조합하여 vibe를 생성, 저장하고 결과 반환(azure computer vision)
  * @param memberId
  * @param imageFile
  * @param extraInfo
@@ -71,11 +69,7 @@ public class VibeService {
     @Transactional
     public CaptureResult capture(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
             throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
-
         byte[] data = imageFile.getBytes();
-        List<String> label = new ArrayList<>();
-        label.add("test");
-        String query_label;
         String imageCaption;
         String query;
         String gpt_request;
@@ -84,50 +78,29 @@ public class VibeService {
         String videoLink;
         String keywords;
         Long vibeId;
-        /** 구글비젼
-        // 이미지를 설명하는 라벨 추출
-        label = imageAnalyzer.detectLabels(data);
-        query_label = label.get(0);
-        LOGGER.warn("[GOOGLE_VISION] 이미지로부터 추출한 label: " + label);
-        // label + chatgpt 로 노래 추천
-        gpt_request = "calm"+ " " +label.get(0) + " " +label.get(1) + " " +
-                "Answer the music that matches these keywords in Korean in one sentence" + " " +
-                "Example keywords: exciting, buildings, people" + " " +
-                "Example result: Queen : dont stop me now" ;
-        OpenAiChat openai = new OpenAiChat();
-        gpt_response = openai.chat(gpt_request);
-        LOGGER.warn("[GOOGLE_VISION] chatgpt response :" + gpt_response);
-       **/
+
         /** azure computer vision**/
         imageCaption =azureComputerVision.getResponse(data);
-        gpt_request = "sentence:"+ imageCaption + ", feeling : exciting ." +
+        gpt_request = "sentence:"+ imageCaption + ", feeling:"+ extraInfo +" . "+
                 "using this sentence and my feeling , please recommend me a song ." +
                 "the answer just give me song's name ." +
                 "example result : Adele - Someone Like You";
         OpenAiChat openai = new OpenAiChat();
         gpt_response = openai.chat(gpt_request);
-        LOGGER.warn("[GOOGLE_VISION] chatgpt response :" + gpt_response);
+        LOGGER.warn("[CHATGPT] chatgpt request: " + gpt_request);
+        LOGGER.warn("[CHATGPT] chatgpt response :" + gpt_response);
 
         // 추천 받은 노래를 그냥 query 로 사용
         query = gpt_response.trim();
         query = query +" " +  "playlist";
         LOGGER.warn("[Youtube Query] query: "+ query);
-//        query = videoQuery.assemble(extraInfo, query_label);
         // query 결과 획득
         videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));
-
-        /**썸네일 비교
-        // 썸네일 취득
-        List<String> thumbnail;
-        thumbnail = getThumbnailUrl(playlistSearchEngine.searchVideos(query));
-        LOGGER.warn(thumbnail.toString());
-        **/
-
         videoLink = getFullUrl(videoId);
         // 이미지 파일을 firebase storage에 저장
         String imgUrl = fireBaseService.uploadFiles(imageFile);
         // 생성한 vibe를 DB에 저장
-        keywords = label + extraInfo.toString();
+        keywords = extraInfo.toString();
         vibeId = saveVibe(memberId, imgUrl, videoLink, keywords);
 
         CaptureResult result = CaptureResult.builder()
@@ -138,6 +111,78 @@ public class VibeService {
                 .build();
 
         return result;
+    }
+
+
+    /**
+     * 
+     * 이미지 유사도
+     * @param memberId
+     * @param imageFile
+     * @param extraInfo
+     * @return
+     */
+    @Transactional
+    public CaptureResult capture_similarity(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
+            throws ExternalApiException, IOException, NullPointerException, NoProperVideoException, FileSaveErrorException {
+
+        if (memberId == null || imageFile == null)
+            throw new NullPointerException("empty request");
+
+        byte[] data = imageFile.getBytes();
+        String label;
+        String query;
+        String videoId;
+        String videoLink;
+        String[] keywords = new String[1];
+        Long vibeId;
+        String mostSimilarThumbnail = null;
+        double highestSimilarity = 0.0;
+        ImageComparator imageComparator = new ImageComparator();
+        int mostSimilarThumbnailIndex = 0;
+
+        // 이미지를 설명하는 라벨 추출
+        label = imageAnalyzer.detectLabelsByWebReference(data);
+        keywords[0] = label; //첫번째 라벨만 가져옴
+        // query 생성
+        query = videoQuery.assemble(label);
+
+        // 썸네일 비교
+        Map<Integer, String> thumbnailUrls = getThumbnailUrl(playlistSearchEngine.searchVideos(query));
+        LOGGER.warn(thumbnailUrls.toString());
+
+        for (Map.Entry<Integer, String> entry : thumbnailUrls.entrySet()) {
+            byte[] thumbnailData = imageComparator.fetchThumbnailBytes(entry.getValue()); // Function to get byte data of thumbnail
+            double similarity = imageComparator.compareImages(data, thumbnailData); // Function to compare images
+            if (similarity > highestSimilarity) {
+                highestSimilarity = similarity;
+                mostSimilarThumbnail = entry.getValue();
+                mostSimilarThumbnailIndex = entry.getKey();
+            }
+        }
+
+        // Here, use mostSimilarThumbnailIndex to select the video
+        videoId = selectVideoByIndex(playlistSearchEngine.searchVideos(query), mostSimilarThumbnailIndex);
+        videoLink = getFullUrl(videoId);
+
+        // 이미지 파일을 firebase storage에 저장
+        String imgUrl = fireBaseService.uploadFiles(imageFile);
+
+        // vibe를 DB에 저장
+        vibeId = saveVibe(memberId, imgUrl, videoLink, label);
+
+        CaptureResult result = CaptureResult.builder()
+                .keywords(keywords)
+                .youtubeLink(videoLink)
+                .videoId(videoId)
+                .vibeId(vibeId)
+                .build();
+
+        return result;
+    }
+
+    private String selectVideoByIndex(List<SearchResult> searchResultList, int index) {
+        return searchResultList.get(index).getId().getVideoId();
     }
 
     /**
@@ -184,6 +229,9 @@ public class VibeService {
 
         return result;
     }
+
+
+
 
     /**
      * 추가정보만 사용하여 음악 추천.
@@ -334,16 +382,17 @@ public class VibeService {
 
 
     // SearchResult 객체에서 썸네일 이미지 URL을 가져오는 메서드
-    public List<String> getThumbnailUrl(List<SearchResult> searchResults) {
-        List<String> thumbnailUrls = new ArrayList<>();
+    public Map<Integer, String> getThumbnailUrl(List<SearchResult> searchResults) {
+        Map<Integer, String> thumbnailUrls = new HashMap<>();
 
-        for (SearchResult searchResult : searchResults) {
+        for (int i = 0; i < searchResults.size(); i++) {
+            SearchResult searchResult = searchResults.get(i);
             ThumbnailDetails thumbnailDetails = searchResult.getSnippet().getThumbnails();
             if (thumbnailDetails != null) {
                 Thumbnail defaultThumbnail = thumbnailDetails.getDefault();
                 if (defaultThumbnail != null) {
                     String defaultThumbnailUrl = defaultThumbnail.getUrl();
-                    thumbnailUrls.add(defaultThumbnailUrl);
+                    thumbnailUrls.put(i, defaultThumbnailUrl);
                 }
             }
         }

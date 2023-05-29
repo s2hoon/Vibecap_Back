@@ -28,7 +28,7 @@ public class OpenAiChat {
         Request request = new Request.Builder()
                 .url("https://api.openai.com/v1/chat/completions")
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "Bearer " + "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")
+                .addHeader("Authorization", "Bearer " + "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")
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
