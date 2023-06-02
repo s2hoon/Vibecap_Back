@@ -39,6 +39,8 @@ public class VibeService {
 
     private final AzureComputerVision azureComputerVision;
 
+    private final OpenAiChat openAiChat;
+
 
 
 
@@ -46,7 +48,7 @@ public class VibeService {
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
                        VideoQuery videoQuery, VibeRepository vibeRepository,
                        TextTranslator textTranslator, FireBaseService fireBaseService,
-                       MemberRepository memberRepository, AzureComputerVision azureComputerVision, AzureComputerVision azureComputerVision1) {
+                       MemberRepository memberRepository, AzureComputerVision azureComputerVision, AzureComputerVision azureComputerVision1, OpenAiChat openAiChat) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
         this.videoQuery = videoQuery;
@@ -55,6 +57,7 @@ public class VibeService {
         this.fireBaseService = fireBaseService;
         this.memberRepository = memberRepository;
         this.azureComputerVision = azureComputerVision1;
+        this.openAiChat = openAiChat;
     }
 
     /**
@@ -85,8 +88,8 @@ public class VibeService {
                 "using this sentence and my feeling , please recommend me a song ." +
                 "the answer just give me song's name ." +
                 "example result : Adele - Someone Like You";
-        OpenAiChat openai = new OpenAiChat();
-        gpt_response = openai.chat(gpt_request);
+
+        gpt_response = openAiChat.chat(gpt_request);
         LOGGER.warn("[CHATGPT] chatgpt request: " + gpt_request);
         LOGGER.warn("[CHATGPT] chatgpt response :" + gpt_response);
 

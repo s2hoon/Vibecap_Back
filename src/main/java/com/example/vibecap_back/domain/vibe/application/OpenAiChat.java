@@ -4,17 +4,23 @@ import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+
+@Service
 public class OpenAiChat {
 
-
-
+    @Value("${chatgpt.api-key}")
+    private String api_key;
     private final OkHttpClient client;
 
     public OpenAiChat() {
+
         this.client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -23,12 +29,15 @@ public class OpenAiChat {
     }
 
     public String chat(String message) throws IOException {
+
+
+
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, "{\"model\":\"gpt-3.5-turbo\",\"messages\":[{\"role\":\"user\",\"content\":\"" + message + "\"}]}");
         Request request = new Request.Builder()
                 .url("https://api.openai.com/v1/chat/completions")
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "Bearer " + "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")
+                .addHeader("Authorization", "Bearer " + api_key)
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
