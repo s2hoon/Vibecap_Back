@@ -55,6 +55,7 @@ public class VibeCapture {
                                                @RequestParam("extra_info") String extraInfo){
         CaptureResult result;
         LOGGER.warn(extraInfo);
+        LOGGER.warn(String.valueOf(memberId));
 
         try {
             result = vibeService.capture_google(memberId, imageFile,extraInfo);
