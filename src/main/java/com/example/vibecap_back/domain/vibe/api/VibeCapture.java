@@ -44,6 +44,35 @@ public class VibeCapture {
         this.vibeService = vibeService;
     }
 
+
+    /**
+     * 사진 + 감정 으로만 음악 추천
+     * @return
+     */
+    @PostMapping(value = "/capture_google",consumes = {"multipart/form-data"})
+    public BaseResponse<CaptureResult> capture(@RequestParam("member_id") Long memberId,
+                                               @RequestParam("image_file") MultipartFile imageFile,
+                                               @RequestParam("extra_info") String extraInfo){
+        CaptureResult result;
+
+        try {
+            result = vibeService.capture_google(memberId, imageFile,new ExtraInfo(extraInfo));
+            // result = vibeService.capture(request.getMemberId(), request.getImageFile());
+            return new BaseResponse<>(result);
+        } catch (ExternalApiException e) {
+            return new BaseResponse(EXTERNAL_API_FAILED);
+        } catch (IOException e) {
+            return new BaseResponse(SAVE_TEMPORARY_FILE_FAILED);
+        } catch (NullPointerException e) {
+            return new BaseResponse(EMPTY_IMAGE);
+        } catch (NoProperVideoException e) {
+            return new BaseResponse<>(NO_PROPER_VIDEO);
+        } catch (FileSaveErrorException e) {
+            return new BaseResponse<>(FILE_SAVE_ERROR);
+        }
+
+    }
+
     /**
      * 사진과 추가 정보를 모두 사용해서 음악 추천(azure computer vision)
      * @param memberId
@@ -51,17 +80,17 @@ public class VibeCapture {
      * @param imageFile
      * @return
      */
-    @PostMapping(value = "/capture", consumes = {"multipart/form-data"})
+    @PostMapping(value = "/capture_azure", consumes = {"multipart/form-data"})
     public BaseResponse<CaptureResult> capture(@RequestParam(value = "member_id") Long memberId,
-                                               @RequestParam(value = "extra_info") String extraInfo,
+                                               @RequestParam(value = "extra_info" ,required = false) String extraInfo,
                                                @RequestPart("image_file") MultipartFile imageFile) {
         CaptureResult result;
 
         try {
-            result = vibeService.capture(memberId, imageFile, new ExtraInfo(extraInfo));
+
+            result = vibeService.capture_azure(memberId, imageFile, new ExtraInfo(extraInfo));
 
             return new BaseResponse<>(result);
-
         } catch (ExternalApiException e) {
             return new BaseResponse<>(EXTERNAL_API_FAILED);
         } catch (IOException e) {
@@ -103,8 +132,7 @@ public class VibeCapture {
             return new BaseResponse<>(FILE_SAVE_ERROR);
         }
     }
-    
-    
+
 
 
     /**

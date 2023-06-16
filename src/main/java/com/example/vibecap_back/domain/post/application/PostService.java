@@ -32,9 +32,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.example.vibecap_back.global.common.response.BaseResponseStatus.*;
+import static org.hibernate.tool.schema.SchemaToolingLogging.LOGGER;
 
 @RequiredArgsConstructor
 @Service
@@ -84,6 +86,7 @@ public class PostService {
         feeling = vibeKeywordToken[vibeKeywordToken.length-1];
 
         requestDto.setTagName(requestDto.getTagName() + " " + feeling);
+
 
         return postsRepository.save(requestDto.toEntity()).getPostId();
     }

@@ -20,5 +20,9 @@ public interface ImageAnalyzer {
      * @return
      * @throws ExternalApiException https://cloud.google.com/vision/docs/detecting-web
      */
+//    public String detectLabelsByWebReference(byte[] data) throws ExternalApiException;
+
     public String detectLabelsByWebReference(byte[] data) throws ExternalApiException;
+
+
 }

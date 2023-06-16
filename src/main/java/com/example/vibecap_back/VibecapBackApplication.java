@@ -1,5 +1,13 @@
 package com.example.vibecap_back;
 
+
+
+
+
+
+
+
+
 import org.opencv.core.Core;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +20,7 @@ import java.util.TimeZone;
 @EnableJpaAuditing // JPA Auditing 활성화
 @SpringBootApplication
 public class VibecapBackApplication {
+
 
 
     @PostConstruct

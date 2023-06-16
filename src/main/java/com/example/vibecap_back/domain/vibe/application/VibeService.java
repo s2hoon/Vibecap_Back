@@ -22,8 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 @Service
 public class VibeService {
@@ -36,10 +40,9 @@ public class VibeService {
     private final VideoQuery videoQuery;
     private final FireBaseService fireBaseService;
     private final MemberRepository memberRepository;
-
     private final AzureComputerVision azureComputerVision;
-
     private final OpenAiChat openAiChat;
+    private final ImageComparator comparator;
 
 
 
@@ -48,7 +51,7 @@ public class VibeService {
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
                        VideoQuery videoQuery, VibeRepository vibeRepository,
                        TextTranslator textTranslator, FireBaseService fireBaseService,
-                       MemberRepository memberRepository, AzureComputerVision azureComputerVision, AzureComputerVision azureComputerVision1, OpenAiChat openAiChat) {
+                       MemberRepository memberRepository, AzureComputerVision azureComputerVision, AzureComputerVision azureComputerVision1, OpenAiChat openAiChat, ImageComparator comparator) {
         this.imageAnalyzer = imageAnalyzer;
         this.playlistSearchEngine = playlistSearchEngine;
         this.videoQuery = videoQuery;
@@ -58,6 +61,7 @@ public class VibeService {
         this.memberRepository = memberRepository;
         this.azureComputerVision = azureComputerVision1;
         this.openAiChat = openAiChat;
+        this.comparator = comparator;
     }
 
     /**
@@ -70,9 +74,9 @@ public class VibeService {
  * @throws IOException
  */
     @Transactional
-    public CaptureResult capture(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
+    public CaptureResult capture_azure(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
             throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
-        byte[] data = imageFile.getBytes();
+        byte[] data = resizeImage(imageFile.getBytes(), 3 * 1024 * 1024); // 이미지 크기를 3MB로 제한
         String imageCaption;
         String query;
         String gpt_request;
@@ -116,6 +120,49 @@ public class VibeService {
         return result;
     }
 
+    /**
+     * 사진과 추가 정보를 조합하여 vibe를 생성, 저장하고 결과 반환(google vision)
+     * @param memberId
+     * @param imageFile
+     * @param extraInfo
+     * @return
+     * @throws ExternalApiException
+     * @throws IOException
+     */
+    @Transactional
+    public CaptureResult capture_google(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
+            throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
+        byte[] data = imageFile.getBytes();
+        String label;
+        String query;
+        String videoId;
+        String videoLink;
+        String keywords;
+        Long vibeId;
+
+        // 이미지를 설명하는 라벨 추출
+        label = imageAnalyzer.detectLabelsByWebReference(data);
+        LOGGER.warn("[GOOGLE_VISION] 이미지로부터 추출한 label: " + label);
+        // label로부터 youtube query 생성
+        query = videoQuery.assemble(extraInfo, label);
+        // query 결과 획득
+        videoId = selectTheFirstVideo(playlistSearchEngine.searchVideos(query));
+        videoLink = getFullUrl(videoId);
+        // 이미지 파일을 firebase storage에 저장
+        String imgUrl = fireBaseService.uploadFiles(imageFile);
+        // 생성한 vibe를 DB에 저장
+        keywords = label + extraInfo.toString();
+        vibeId = saveVibe(memberId, imgUrl, videoLink, keywords);
+
+        CaptureResult result = CaptureResult.builder()
+                .keywords(keywords.split(" "))
+                .youtubeLink(videoLink)
+                .videoId(videoId)
+                .vibeId(vibeId)
+                .build();
+
+        return result;
+    }
 
     /**
      * 
@@ -134,29 +181,34 @@ public class VibeService {
 
         byte[] data = imageFile.getBytes();
         String label;
+//        List<String> label = new ArrayList<>();
         String query;
         String videoId;
         String videoLink;
         String[] keywords = new String[1];
         Long vibeId;
+        String tt;
         String mostSimilarThumbnail = null;
         double highestSimilarity = 0.0;
-        ImageComparator imageComparator = new ImageComparator();
         int mostSimilarThumbnailIndex = 0;
 
-        // 이미지를 설명하는 라벨 추출
+//        // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
-        keywords[0] = label; //첫번째 라벨만 가져옴
+        keywords[0] = label; // 첫번째 라벨만 가져옴
+//        tt = label.get(0) + label.get(1);
+
         // query 생성
+//        query = videoQuery.assemble(extraInfo,tt);
         query = videoQuery.assemble(label);
 
-        // 썸네일 비교
+        // 썸네일 가져옴
         Map<Integer, String> thumbnailUrls = getThumbnailUrl(playlistSearchEngine.searchVideos(query));
         LOGGER.warn(thumbnailUrls.toString());
 
         for (Map.Entry<Integer, String> entry : thumbnailUrls.entrySet()) {
-            byte[] thumbnailData = imageComparator.fetchThumbnailBytes(entry.getValue()); // Function to get byte data of thumbnail
-            double similarity = imageComparator.compareImages(data, thumbnailData); // Function to compare images
+            byte[] thumbnailData = comparator.fetchThumbnailBytes(entry.getValue()); // Function to get byte data of thumbnail
+
+            double similarity = comparator.compareImages(data, thumbnailData); // Function to compare images
             if (similarity > highestSimilarity) {
                 highestSimilarity = similarity;
                 mostSimilarThumbnail = entry.getValue();
@@ -183,6 +235,7 @@ public class VibeService {
 
         return result;
     }
+
 
     private String selectVideoByIndex(List<SearchResult> searchResultList, int index) {
         return searchResultList.get(index).getId().getVideoId();
@@ -232,7 +285,6 @@ public class VibeService {
 
         return result;
     }
-
 
 
 
@@ -403,5 +455,29 @@ public class VibeService {
         return thumbnailUrls;
     }
 
+    private byte[] resizeImage(byte[] imageData, int maxSize) throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData);
+        BufferedImage image = ImageIO.read(inputStream);
+        inputStream.close();
 
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        if (imageData.length <= maxSize) {
+            return imageData; // 이미지 크기가 제한 크기 이하면 변경하지 않고 그대로 반환
+        }
+
+        double scaleFactor = Math.sqrt((double) maxSize / imageData.length);
+        int newWidth = (int) (width * scaleFactor);
+        int newHeight = (int) (height * scaleFactor);
+
+        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, image.getType());
+        Graphics2D g2d = resizedImage.createGraphics();
+        g2d.drawImage(image, 0, 0, newWidth, newHeight, null);
+        g2d.dispose();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(resizedImage, "jpg", outputStream);
+        return outputStream.toByteArray();
+    }
 }

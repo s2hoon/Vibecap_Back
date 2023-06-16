@@ -57,8 +57,7 @@ public class VideoQuery {
         String time = extraInfo.getTime();
         String feeling = extraInfo.getFeeling();
 
-        query = String.format("%s %s %s %s %s",
-                season, time, feeling, label, PLAYLIST_KR);
+        query = String.format("%s %s %s", feeling, label, PLAYLIST_KR);
 
         System.out.println(query);
 
@@ -70,7 +69,7 @@ public class VideoQuery {
      * @param label
      * @return
      */
-    public String assemble(String label) throws ExternalApiException {
+    public String assemble(String label ) throws ExternalApiException {
         label = textTranslator.translate(label);
         LOGGER.warn("[VIBE] 이미지에서 추출한 label: " + label);
         String query;
