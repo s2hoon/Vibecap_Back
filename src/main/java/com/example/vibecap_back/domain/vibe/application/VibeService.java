@@ -85,7 +85,7 @@ public class VibeService {
         String videoLink;
 
         Long vibeId;
-
+        extraInfo = "신나는";
         /** azure computer vision**/
         imageCaption =azureComputerVision.getResponse(data);
         gpt_request = "sentence:"+ imageCaption + ", feeling:"+ extraInfo +" . "+
@@ -129,7 +129,7 @@ public class VibeService {
      * @throws IOException
      */
     @Transactional
-    public CaptureResult capture_google(Long memberId, MultipartFile imageFile, String extraInfo)
+    public CaptureResult capture_google(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
             throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
         byte[] data = imageFile.getBytes();
         String label;
@@ -138,7 +138,7 @@ public class VibeService {
         String videoLink;
         String keywords;
         Long vibeId;
-
+        LOGGER.warn("[extrainfo]",extraInfo);
         // 이미지를 설명하는 라벨 추출
         label = imageAnalyzer.detectLabelsByWebReference(data);
         LOGGER.warn("[GOOGLE_VISION] 이미지로부터 추출한 label: " + label);

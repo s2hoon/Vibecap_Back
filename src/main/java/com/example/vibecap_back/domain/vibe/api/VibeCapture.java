@@ -52,10 +52,9 @@ public class VibeCapture {
     @PostMapping(value = "/capture_google",consumes = {"multipart/form-data"})
     public BaseResponse<CaptureResult> capture(@RequestParam("member_id") Long memberId,
                                                @RequestParam("image_file") MultipartFile imageFile,
-                                               @RequestParam("extra_info") String extraInfo){
+                                               @RequestParam("extra_info") ExtraInfo extraInfo){
         CaptureResult result;
-        LOGGER.warn(extraInfo);
-        LOGGER.warn(String.valueOf(memberId));
+
 
         try {
             result = vibeService.capture_google(memberId, imageFile,extraInfo);
@@ -84,10 +83,10 @@ public class VibeCapture {
      */
     @PostMapping(value = "/capture_azure", consumes = {"multipart/form-data"})
     public BaseResponse<CaptureResult> capture(@RequestParam(value = "member_id") Long memberId,
-                                               @RequestParam(value = "extra_info" ,required = false) String extraInfo,
+                                               @RequestParam(value = "extra_info" ) String extraInfo,
                                                @RequestPart("image_file") MultipartFile imageFile) {
         CaptureResult result;
-        LOGGER.warn(extraInfo);
+
 
         try {
 

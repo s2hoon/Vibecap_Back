@@ -17,6 +17,11 @@ public class ExtraInfo {
         return ' ' + season + ' ' + time + ' ' + feeling;
     }
 
+
+    public String getFeeling(){
+        return feeling;
+    }
+
     public ExtraInfo(String infoString) {
         String[] info = infoString.split(" ");
         if (info.length == 1){
