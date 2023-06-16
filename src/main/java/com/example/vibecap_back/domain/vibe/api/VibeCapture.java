@@ -54,6 +54,7 @@ public class VibeCapture {
                                                @RequestParam("image_file") MultipartFile imageFile,
                                                @RequestParam("extra_info") String extraInfo){
         CaptureResult result;
+        LOGGER.warn(extraInfo);
 
         try {
             result = vibeService.capture_google(memberId, imageFile,extraInfo);
@@ -85,6 +86,7 @@ public class VibeCapture {
                                                @RequestParam(value = "extra_info" ,required = false) String extraInfo,
                                                @RequestPart("image_file") MultipartFile imageFile) {
         CaptureResult result;
+        LOGGER.warn(extraInfo);
 
         try {
 
