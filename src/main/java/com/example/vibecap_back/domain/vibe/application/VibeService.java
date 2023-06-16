@@ -74,7 +74,7 @@ public class VibeService {
  * @throws IOException
  */
     @Transactional
-    public CaptureResult capture_azure(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
+    public CaptureResult capture_azure(Long memberId, MultipartFile imageFile, String extraInfo)
             throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
         byte[] data = resizeImage(imageFile.getBytes(), 3 * 1024 * 1024); // 이미지 크기를 3MB로 제한
         String imageCaption;
@@ -83,7 +83,7 @@ public class VibeService {
         String gpt_response;
         String videoId;
         String videoLink;
-        String keywords;
+
         Long vibeId;
 
         /** azure computer vision**/
@@ -107,11 +107,10 @@ public class VibeService {
         // 이미지 파일을 firebase storage에 저장
         String imgUrl = fireBaseService.uploadFiles(imageFile);
         // 생성한 vibe를 DB에 저장
-        keywords = extraInfo.toString();
-        vibeId = saveVibe(memberId, imgUrl, videoLink, keywords);
+        vibeId = saveVibe(memberId, imgUrl, videoLink, extraInfo);
 
         CaptureResult result = CaptureResult.builder()
-                .keywords(keywords.split(" "))
+                .keywords(extraInfo.split(" "))
                 .youtubeLink(videoLink)
                 .videoId(videoId)
                 .vibeId(vibeId)
@@ -130,7 +129,7 @@ public class VibeService {
      * @throws IOException
      */
     @Transactional
-    public CaptureResult capture_google(Long memberId, MultipartFile imageFile, ExtraInfo extraInfo)
+    public CaptureResult capture_google(Long memberId, MultipartFile imageFile, String extraInfo)
             throws ExternalApiException, IOException, NoProperVideoException, FileSaveErrorException {
         byte[] data = imageFile.getBytes();
         String label;

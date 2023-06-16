@@ -59,7 +59,20 @@ public class VideoQuery {
 
         query = String.format("%s %s %s", feeling, label, PLAYLIST_KR);
 
-        System.out.println(query);
+        LOGGER.warn("[VIBE] 유튜브 query:" + query);
+     
+
+        return query;
+    }
+
+    public String assemble(String extraInfo, String label) throws ExternalApiException {
+        label = textTranslator.translate(label);
+        String query;
+
+        query = String.format("%s %s %s", extraInfo, label, PLAYLIST_KR);
+
+        LOGGER.warn("[VIBE] 유튜브 query:" + query);
+
 
         return query;
     }

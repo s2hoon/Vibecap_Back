@@ -56,7 +56,7 @@ public class VibeCapture {
         CaptureResult result;
 
         try {
-            result = vibeService.capture_google(memberId, imageFile,new ExtraInfo(extraInfo));
+            result = vibeService.capture_google(memberId, imageFile,extraInfo);
             // result = vibeService.capture(request.getMemberId(), request.getImageFile());
             return new BaseResponse<>(result);
         } catch (ExternalApiException e) {
@@ -88,7 +88,7 @@ public class VibeCapture {
 
         try {
 
-            result = vibeService.capture_azure(memberId, imageFile, new ExtraInfo(extraInfo));
+            result = vibeService.capture_azure(memberId, imageFile, extraInfo);
 
             return new BaseResponse<>(result);
         } catch (ExternalApiException e) {
