@@ -17,23 +17,50 @@ import org.springframework.stereotype.Service;
 public class ImageComparator {
 
     public byte[] fetchThumbnailBytes(String thumbnailUrl) throws IOException {
-        URL url = new URL(thumbnailUrl);
+        if (thumbnailUrl == null || thumbnailUrl.isEmpty()) {
+            throw new IllegalArgumentException("Thumbnail URL cannot be null or empty");
+        }
+
+        URL url;
+        try {
+            url = new URL(thumbnailUrl);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid URL format");
+        }
+
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         InputStream inputStream = connection.getInputStream();
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int nRead;
+
         byte[] data = new byte[1024];
+        int nRead;
         while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
             buffer.write(data, 0, nRead);
         }
+
         buffer.flush();
+
+        if (buffer.size() == 0) {
+            throw new IOException("Failed to retrieve data from the provided URL");
+        }
+
         return buffer.toByteArray();
     }
 
     public double compareImages(byte[] img1, byte[] img2) throws IOException {
-        BufferedImage bufferedImage1 = ImageIO.read(new ByteArrayInputStream(img1));
-        BufferedImage bufferedImage2 = ImageIO.read(new ByteArrayInputStream(img2));
+        if (img1 == null || img1.length == 0 || img2 == null || img2.length == 0) {
+            throw new IllegalArgumentException("Both images must not be null or empty");
+        }
+
+        BufferedImage bufferedImage1;
+        BufferedImage bufferedImage2;
+        try {
+            bufferedImage1 = ImageIO.read(new ByteArrayInputStream(img1));
+            bufferedImage2 = ImageIO.read(new ByteArrayInputStream(img2));
+        } catch (IOException e) {
+            throw new IOException("Error reading image data", e);
+        }
 
         if (bufferedImage1 == null || bufferedImage2 == null) {
             throw new IllegalArgumentException("Cannot compare images, one or both images are empty or invalid");
@@ -41,7 +68,6 @@ public class ImageComparator {
 
         int width1 = bufferedImage1.getWidth();
         int height1 = bufferedImage1.getHeight();
-
         int width2 = bufferedImage2.getWidth();
         int height2 = bufferedImage2.getHeight();
 
@@ -83,6 +109,10 @@ public class ImageComparator {
     }
 
     private BufferedImage resizeImage(BufferedImage image, int width, int height) {
+        if (image == null) {
+            throw new IllegalArgumentException("Image to resize cannot be null");
+        }
+
         BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = resizedImage.createGraphics();
         g2d.drawImage(image, 0, 0, width, height, null);

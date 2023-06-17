@@ -47,6 +47,8 @@ public class VibeService {
 
 
 
+
+
     @Autowired
     public VibeService(ImageAnalyzer imageAnalyzer, PlaylistSearchEngine playlistSearchEngine,
                        VideoQuery videoQuery, VibeRepository vibeRepository,
@@ -62,6 +64,7 @@ public class VibeService {
         this.azureComputerVision = azureComputerVision1;
         this.openAiChat = openAiChat;
         this.comparator = comparator;
+
     }
 
     /**
@@ -85,7 +88,6 @@ public class VibeService {
         String videoLink;
 
         Long vibeId;
-        extraInfo = "신나는";
         /** azure computer vision**/
         imageCaption =azureComputerVision.getResponse(data);
         gpt_request = "sentence:"+ imageCaption + ", feeling:"+ extraInfo +" . "+
